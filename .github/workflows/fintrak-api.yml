@@ -1,12 +1,8 @@
 name: fintrack-api
-on:
-  push:
-    paths:
-      - fintech-api/**
-
+on: [ push, workflow_dispatch ]
 
 env:
-  DEPLOYMENT_PATH: /root/finrack/deployment
+  DEPLOYMENT_PATH: /root/fintrack/deployment
   REGISTRY: ghcr.io
   IMAGE: ghcr.io/maemresen/fintrack-api
   MODULE_NAME: fintrack-api

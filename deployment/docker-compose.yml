@@ -7,7 +7,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=budget_tracking
+      - POSTGRES_DB=fintrack_test
     ports:
       - 5432:5432
 
@@ -22,7 +22,7 @@ services:
     environment:
       SPRING_CONFIG_ADDITIONALLOCATION: file:/config/application.yml
     volumes:
-      - ./configs/backend/:/config/
+      - ./configs/api/:/config/
 
   fintrack-web-client:
     image: ghcr.io/maemresen/fintrack-web-client:latest

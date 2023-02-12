@@ -14,3 +14,4 @@ public class FintrackApplication {
         SpringApplication.run(FintrackApplication.class, args);
     }
 }
+
