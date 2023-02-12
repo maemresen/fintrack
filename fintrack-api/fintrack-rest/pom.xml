@@ -26,7 +26,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.maemresen.fintrack.rest.BudgetTrackingApplication</mainClass>
+                    <mainClass>com.maemresen.fintrack.rest.FintrackApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

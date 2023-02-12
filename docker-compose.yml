@@ -5,6 +5,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=budget_tracking
+      - POSTGRES_DB=fintrack_local
     ports:
       - '5432:5432'
