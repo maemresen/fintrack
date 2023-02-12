@@ -5,7 +5,7 @@ env:
   REGISTRY: ghcr.io
 
   # must be exists on deployment server
-  BASE_PATH: /root/budget-tracker
+  BASE_PATH: /root/fintrack
   FOLDER_NAME: deployment
 jobs:
   build-artifact:
