@@ -1,8 +1,11 @@
 name: fintrack-web-client
-on: [ push, workflow_dispatch ]
+on:
+  push:
+    paths:
+      - fintech-web-client/**
 
 env:
-  DEPLOYMENT_PATH: /root/budget-tracker/deployment
+  DEPLOYMENT_PATH: /root/finrack/deployment
   REGISTRY: ghcr.io
   IMAGE: ghcr.io/maemresen/fintrack-web-client
   MODULE_NAME: fintrack-web-client
