@@ -43,5 +43,5 @@ jobs:
             export REGISTRY_USERNAME="${{ github.actor }}"
             export REGISTRY_PASSWORD="${{ secrets.GITHUB_TOKEN }}"
             export FOLDER_PATH="${{ env.FOLDER_PATH }}"
-            export MODULES="database proxy backend client"
+            export MODULES="database proxy fintrack-api fintrack-web-client"
             ${{ env.FOLDER_PATH }}/scripts/deploy.sh
