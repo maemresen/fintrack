@@ -1,0 +1,6 @@
+server:
+  servlet:
+    context-path: /api
+spring:
+  datasource:
+    url: jdbc:postgresql://database:5432/budget_tracking

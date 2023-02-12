@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.maemresen</groupId>
+  <artifactId>fintrack-api</artifactId>
+  <version>1.0.00</version>
+  <packaging>pom</packaging>
+  <name>Fintrack API</name>
+
+  <modules>
+    <module>fintrack-domain</module>
+    <module>fintrack-rest</module>
+  </modules>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <spring.boot.version>3.0.2</spring.boot.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.maemresen</groupId>
+        <artifactId>fintrack-domain</artifactId>
+        <version>1.0.00</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

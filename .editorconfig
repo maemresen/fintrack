@@ -1,0 +1,12 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[*.java]
+max_line_length = 180
+indent_style = tab
+indent_size = 4
+ij_java_names_count_to_use_import_on_demand = 99999
+ij_java_class_count_to_use_import_on_demand = 99999

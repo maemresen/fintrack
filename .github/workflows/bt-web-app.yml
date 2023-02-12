@@ -1,0 +1,49 @@
+name: fintrack-web-client
+on: [ push, workflow_dispatch ]
+
+env:
+  DEPLOYMENT_PATH: /root/budget-tracker/deployment
+  REGISTRY: ghcr.io
+  IMAGE: ghcr.io/maemresen/fintrack-web-client
+  MODULE_NAME: fintrack-web-client
+jobs:
+  build-and-push:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -f ${{ env.MODULE_NAME }}/Dockerfile ${{ env.MODULE_NAME }} --tag ${{ env.IMAGE }}:latest
+          docker push ${{ env.IMAGE }}:latest
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-push
+    steps:
+      - name: Deploying to server
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.BT_SV_HOST }}
+          username: ${{ secrets.BT_SV_USERNAME }}
+          key: ${{ secrets.BT_SV_PRIVATE_KEY }}
+          port: ${{ secrets.BT_SV_PORT }}
+          script: |
+            export REGISTRY="${{ env.REGISTRY }}"
+            export REGISTRY_USERNAME="${{ github.actor }}"
+            export REGISTRY_PASSWORD="${{ secrets.GITHUB_TOKEN }}"
+            export FOLDER_PATH="${{ env.DEPLOYMENT_PATH }}"
+            export MODULES="${{ env.MODULE_NAME }}"
+            ${{ env.DEPLOYMENT_PATH }}/scripts/deploy.sh

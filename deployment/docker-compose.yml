@@ -1,0 +1,44 @@
+# Reference: https://graspingtech.com/docker-compose-postgresql
+version: '3.2'
+
+services:
+  database:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=budget_tracking
+    ports:
+      - 5432:5432
+
+  fintrack-api:
+    image: ghcr.io/maemresen/fintrack-api:latest
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    links:
+      - database
+    environment:
+      SPRING_CONFIG_ADDITIONALLOCATION: file:/config/application.yml
+    volumes:
+      - ./configs/backend/:/config/
+
+  fintrack-web-client:
+    image: ghcr.io/maemresen/fintrack-web-client:latest
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+
+  proxy:
+    image: nginx:alpine
+    ports:
+      - 80:80
+    expose:
+      - 80
+    volumes:
+      - ./configs/proxy.conf:/etc/nginx/conf.d/proxy.conf
+    links:
+      - fintrack-api
+      - fintrack-web-client
