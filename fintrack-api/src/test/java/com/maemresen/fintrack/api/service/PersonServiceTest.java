@@ -4,13 +4,19 @@ import com.maemresen.fintrack.api.dto.PersonDto;
 import com.maemresen.fintrack.api.entity.PersonEntity;
 import com.maemresen.fintrack.api.mapper.PersonMapper;
 import com.maemresen.fintrack.api.repository.PersonRepsitory;
+import com.maemresen.fintrack.api.service.impl.PersonServiceImpl;
+import jakarta.inject.Inject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,8 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
-@ActiveProfiles("test-h2")
+@ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
 
     protected Long MOCK_PERSON_ID_1;
@@ -36,14 +41,14 @@ class PersonServiceTest {
         MOCK_PERSON_DTO_1.setId(MOCK_PERSON_ID_1);
     }
 
-    @MockBean
+    @Mock
     private PersonRepsitory personRepsitory;
 
-    @MockBean
+    @Mock
     private PersonMapper personMapper;
 
-    @Autowired
-    private PersonService personService;
+    @InjectMocks
+    private PersonServiceImpl personService;
 
     @Test
     void findById(){
