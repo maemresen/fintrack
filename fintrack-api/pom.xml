@@ -113,9 +113,9 @@
                 <version>${org.jacaco.maven-plugin.version}</version>
                 <configuration>
                     <excludes>
-<!--                        <exclude>**/entity/**/*</exclude>-->
-<!--                        <exclude>**/dto/**/*</exclude>-->
-<!--                        <exclude>**/mapper/**/*</exclude>-->
+                        <exclude>**/entity/**/*</exclude>
+                        <exclude>**/dto/**/*</exclude>
+                        <exclude>**/mapper/**/*</exclude>
                         <exclude>**/FintrackApiApplication*</exclude>
                     </excludes>
                 </configuration>
