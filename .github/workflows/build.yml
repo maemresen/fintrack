@@ -15,7 +15,6 @@ jobs:
       - name: Execute mvn verify
         run: |
           ./mvnw clean verify -PcodeCoverage
-          mv fintrack-api/target/dependency-check-report.html fintrack-api/target/site/jacoco/  # Move the dependency-check-report.html to the jacoco directory
       - name: Upload fintrack-api coverage report
         uses: actions/upload-artifact@v2
         continue-on-error: true
