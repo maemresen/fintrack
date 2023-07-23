@@ -1,26 +1,20 @@
 package com.maemresen.fintrack.api.service;
 
+import com.maemresen.fintrack.api.dto.PersonCreateRequestDto;
 import com.maemresen.fintrack.api.dto.PersonDto;
 import com.maemresen.fintrack.api.entity.PersonEntity;
 import com.maemresen.fintrack.api.mapper.PersonMapper;
 import com.maemresen.fintrack.api.repository.PersonRepsitory;
 import com.maemresen.fintrack.api.service.impl.PersonServiceImpl;
-import jakarta.inject.Inject;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,18 +22,11 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
 
-    protected Long MOCK_PERSON_ID_1;
-    protected PersonEntity MOCK_PERSON_ENTITY_1;
-    protected PersonDto MOCK_PERSON_DTO_1;
-
-    @BeforeEach
-    void init(){
-        MOCK_PERSON_ENTITY_1 = new PersonEntity();
-        MOCK_PERSON_ENTITY_1.setId(MOCK_PERSON_ID_1);
-
-        MOCK_PERSON_DTO_1 = new PersonDto();
-        MOCK_PERSON_DTO_1.setId(MOCK_PERSON_ID_1);
-    }
+    private Long MOCK_PERSON_ID_1;
+    private PersonEntity MOCK_PERSON_ENTITY_1;
+    private PersonDto MOCK_PERSON_DTO_1;
+    private PersonCreateRequestDto MOCK_PERSON_CREATE_REQUEST_DTO_1;
+//    private List<S>
 
     @Mock
     private PersonRepsitory personRepsitory;
@@ -49,6 +36,15 @@ class PersonServiceTest {
 
     @InjectMocks
     private PersonServiceImpl personService;
+
+    @BeforeEach
+    void init(){
+        MOCK_PERSON_ENTITY_1 = new PersonEntity();
+        MOCK_PERSON_ENTITY_1.setId(MOCK_PERSON_ID_1);
+
+        MOCK_PERSON_DTO_1 = new PersonDto();
+        MOCK_PERSON_DTO_1.setId(MOCK_PERSON_ID_1);
+    }
 
     @Test
     void findById(){
@@ -71,4 +67,7 @@ class PersonServiceTest {
 
         Assertions.assertEquals(MOCK_PERSON_DTO_1, IterableUtils.get(foundPersons, 0));
     }
+//
+//    @Test
+//    void
 }
