@@ -7,6 +7,7 @@ import com.maemresen.fintrack.api.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,5 +20,12 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Optional<PersonDto> findById(Long mockPersonId1) {
         return personRepsitory.findById(mockPersonId1).map(personMapper::mapToPersonDto);
+    }
+
+    @Override
+    public List<PersonDto> findAll() {
+        return personRepsitory.findAll().stream()
+                .map(personMapper::mapToPersonDto)
+                .toList();
     }
 }

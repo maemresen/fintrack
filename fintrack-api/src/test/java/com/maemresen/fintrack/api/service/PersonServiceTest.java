@@ -4,6 +4,8 @@ import com.maemresen.fintrack.api.dto.PersonDto;
 import com.maemresen.fintrack.api.entity.PersonEntity;
 import com.maemresen.fintrack.api.mapper.PersonMapper;
 import com.maemresen.fintrack.api.repository.PersonRepsitory;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -14,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -51,5 +54,16 @@ class PersonServiceTest {
 
         Assertions.assertTrue(foundPerson.isPresent());
         Assertions.assertEquals(MOCK_PERSON_DTO_1, foundPerson.get());
+    }
+
+    @Test
+    void findAll(){
+        List<PersonEntity> mockPersonEntities = List.of(MOCK_PERSON_ENTITY_1);
+        Mockito.when(personRepsitory.findAll()).thenReturn(mockPersonEntities);
+        Mockito.when(personMapper.mapToPersonDto(MOCK_PERSON_ENTITY_1)).thenReturn(MOCK_PERSON_DTO_1);
+
+        List<PersonDto> foundPersons = personService.findAll();
+
+        Assertions.assertEquals(MOCK_PERSON_DTO_1, IterableUtils.get(foundPersons, 0));
     }
 }

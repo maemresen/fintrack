@@ -21,6 +21,7 @@
         <org.lombok.version>1.18.28</org.lombok.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.lombok.mapstruct-binding.version>0.2.0</org.lombok.mapstruct-binding.version>
+        <org.apache.commons.collections.version>4.4</org.apache.commons.collections.version>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +53,11 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${org.apache.commons.collections.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
