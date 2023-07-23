@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity(name = "person")
-public class Person {
+public class PersonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

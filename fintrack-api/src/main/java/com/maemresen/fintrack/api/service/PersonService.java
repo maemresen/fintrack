@@ -1,9 +1,9 @@
 package com.maemresen.fintrack.api.service;
 
-import com.maemresen.fintrack.api.entity.Person;
+import com.maemresen.fintrack.api.dto.PersonDto;
 
 import java.util.Optional;
 
 public interface PersonService {
-    Optional<Person> findById(Long mockPersonId1);
+    Optional<PersonDto> findById(Long mockPersonId1);
 }
