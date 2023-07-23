@@ -45,14 +45,14 @@ public class PersonServiceImpl implements PersonService {
 
     @BusinessMethod
     @Override
-    public PersonDto create(@NotNull PersonCreateRequestDto personCreateRequestDto) {
+    public PersonDto create(@Valid PersonCreateRequestDto personCreateRequestDto) {
         PersonEntity personEntity = personMapper.mapToPersonEntity(personCreateRequestDto);
         return personMapper.mapToPersonDto(personRepository.save(personEntity));
     }
 
     @BusinessMethod
     @Override
-    public PersonDto addStatement(@NotNull Long personId, @Valid StatementCreateDto statementCreateDto) {
+    public PersonDto addStatement(@NotNull(message = "Person Id cannot be null") Long personId, @Valid StatementCreateDto statementCreateDto) {
         PersonEntity personEntity = personRepository.findById(personId).orElseThrow(() -> new InvalidParameter("Person not found"));
         StatementEntity statementEntity = statementMapper.mapToStatementEntity(statementCreateDto);
         personEntity.getStatements().add(statementEntity);

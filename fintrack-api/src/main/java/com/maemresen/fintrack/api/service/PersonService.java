@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface PersonService {
     Optional<PersonDto> findById(@NotNull Long mockPersonId1);
     List<PersonDto> findAll();
-    PersonDto create(@NotNull PersonCreateRequestDto personCreateRequestDto);
-    PersonDto addStatement(@NotNull Long personId, @Valid StatementCreateDto statementCreateDto);
+    PersonDto create(@Valid PersonCreateRequestDto personCreateRequestDto);
+    PersonDto addStatement(@NotNull(message = "Person Id cannot be null") Long personId, @Valid StatementCreateDto statementCreateDto);
 }
