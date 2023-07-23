@@ -1,16 +1,14 @@
 CREATE TABLE budget
 (
-    id   BIGINT       NOT NULL,
+    id   BIGSERIAL       NOT NULL,
     name VARCHAR(255) NOT NULL,
     CONSTRAINT pk_budget PRIMARY KEY (id)
 );
 
 CREATE TABLE statement
 (
-    id           BIGINT                      NOT NULL,
-    created_by   VARCHAR(255)                NOT NULL,
+    id           BIGSERIAL                      NOT NULL,
     created_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_by   VARCHAR(255)                NOT NULL,
     updated_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     description  VARCHAR(255),
     amount       DOUBLE PRECISION            NOT NULL,

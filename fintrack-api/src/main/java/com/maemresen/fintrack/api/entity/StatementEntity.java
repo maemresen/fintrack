@@ -46,6 +46,7 @@ public class StatementEntity extends BaseDatedEntity {
 
     private String category;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "budget_id", nullable = false)
     private BudgetEntity budget;

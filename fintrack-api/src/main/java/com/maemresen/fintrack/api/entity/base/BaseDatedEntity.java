@@ -24,13 +24,7 @@ import java.time.LocalDateTime;
 public class BaseDatedEntity extends BaseEntity{
 
     @Column(nullable = false)
-    private String createdBy;
-
-    @Column(nullable = false)
     private LocalDateTime createdDate;
-
-    @Column(nullable = false)
-    private String updatedBy;
 
     @Column(nullable = false)
     private LocalDateTime updatedDate;

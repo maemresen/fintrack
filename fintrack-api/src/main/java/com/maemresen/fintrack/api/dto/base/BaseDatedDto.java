@@ -17,8 +17,6 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class BaseDatedDto extends BaseDto {
-    private String createdBy;
     private LocalDateTime createdDate;
-    private String updatedBy;
     private LocalDateTime updatedDate;
 }

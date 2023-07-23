@@ -26,6 +26,7 @@ public class StatementCreateDto {
     @Positive
     private Double amount;
 
+    @NotNull(message = "Currency cannot be null")
     private Currency currency;
 
     @NotNull(message = "Type cannot be null")
