@@ -149,6 +149,8 @@
                                 <exclude>**/entity/**/*</exclude>
                                 <exclude>**/dto/**/*</exclude>
                                 <exclude>**/mapper/**/*</exclude>
+                                <exclude>**/exceptions/**/*</exclude>
+                                <exclude>**/aspects/**/*</exclude>
                                 <exclude>**/FintrackApiApplication*</exclude>
                             </excludes>
                         </configuration>

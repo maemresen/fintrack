@@ -22,4 +22,3 @@ jobs:
         with:
           name: Fintrack API report
           path: fintrack-api/target/site/jacoco  # Change this path if your JaCoCo report is generated in a different location
-
