@@ -22,6 +22,7 @@
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.lombok.mapstruct-binding.version>0.2.0</org.lombok.mapstruct-binding.version>
         <org.apache.commons.collections.version>4.4</org.apache.commons.collections.version>
+        <org.owasp.dependency-check>8.3.1</org.owasp.dependency-check>
     </properties>
 
     <dependencyManagement>
@@ -152,6 +153,19 @@
                                 </rule>
                             </rules>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${org.owasp.dependency-check}</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

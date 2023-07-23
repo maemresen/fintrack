@@ -13,7 +13,7 @@ jobs:
           java-version: '17'  # Update to Java 17
           distribution: 'adopt'
       - name: Execute mvn verify
-        run: ./mvnw verify
+        run: ./mvnw clean verify
       - name: Upload fintrack-api coverage report
         uses: actions/upload-artifact@v2
         with:
