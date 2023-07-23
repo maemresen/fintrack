@@ -114,6 +114,8 @@
                 <configuration>
                     <excludes>
                         <exclude>**/entity/**/*</exclude>
+                        <exclude>**/dto/**/*</exclude>
+                        <exclude>**/mapper/**/*</exclude>
                         <exclude>**/FintrackApiApplication*</exclude>
                     </excludes>
                 </configuration>
@@ -125,7 +127,7 @@
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>verify</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
