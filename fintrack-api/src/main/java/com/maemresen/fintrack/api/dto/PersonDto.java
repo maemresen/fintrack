@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @SuperBuilder
@@ -16,5 +17,5 @@ import java.util.Set;
 @Setter
 public class PersonDto extends BaseDto {
     private String name;
-    private Set<StatementDto> statements;
+    private Set<StatementDto> statements = new HashSet<>();
 }

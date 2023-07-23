@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Builder
@@ -15,5 +16,5 @@ import java.util.Set;
 @Setter
 public class PersonCreateRequestDto {
     private String name;
-    private Set<StatementCreateDto> statements;
+    private Set<StatementCreateDto> statements = new HashSet<>();
 }

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -23,5 +25,5 @@ public class PersonEntity extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "person")
-    private Set<StatementEntity> statements;
+    private Set<StatementEntity> statements = new HashSet<>();
 }
