@@ -12,7 +12,7 @@ jobs:
         with:
           java-version: '17'  # Update to Java 17
           distribution: 'adopt'
-      - name: Execute mvn verify
+      - name: Execute mvn verify -PcodeCoverage,dependencyCheck
         run: |
           ./mvnw clean verify
           mv fintrack-api/target/dependency-check-report.html fintrack-api/target/site/jacoco/  # Move the dependency-check-report.html to the jacoco directory

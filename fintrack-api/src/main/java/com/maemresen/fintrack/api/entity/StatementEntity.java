@@ -1,6 +1,7 @@
 package com.maemresen.fintrack.api.entity;
 
 import com.maemresen.fintrack.api.entity.base.BaseEntity;
+import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +32,8 @@ public class StatementEntity extends BaseEntity {
     private Double amount;
 
     @Column(nullable = false)
-    private String currency;
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

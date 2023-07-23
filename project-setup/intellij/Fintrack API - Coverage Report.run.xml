@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Fintrack API - Test" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="Fintrack API - Coverage Report" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -11,12 +11,14 @@
           <option name="goals">
             <list>
               <option value="clean" />
-              <option value="test" />
+              <option value="verify" />
             </list>
           </option>
           <option name="pomFileName" />
           <option name="profilesMap">
-            <map />
+            <map>
+              <entry key="codeCoverage" value="true" />
+            </map>
           </option>
           <option name="resolveToWorkspace" value="false" />
           <option name="workingDirPath" value="$PROJECT_DIR$" />

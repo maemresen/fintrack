@@ -33,7 +33,4 @@ public class StatementCreateDto {
     private LocalDateTime date;
 
     private String category;
-
-    @NotNull(message = "Person cannot be null")
-    private Long personId;
 }
