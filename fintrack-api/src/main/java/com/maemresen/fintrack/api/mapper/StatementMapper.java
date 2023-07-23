@@ -8,7 +8,7 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface StatementMapper {
-    StatementDto mapToPersonDto(StatementEntity statementEntity);
+    StatementDto mapToStatementDto(StatementEntity statementEntity);
 
     StatementEntity  mapToStatementEntity(StatementCreateDto statementCreateDto);
 }

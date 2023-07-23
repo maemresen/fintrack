@@ -47,6 +47,6 @@ public class StatementEntity extends BaseDatedEntity {
     private String category;
 
     @ManyToOne
-    @JoinColumn(name = "person_id", nullable = false)
-    private PersonEntity person;
+    @JoinColumn(name = "budget_id", nullable = false)
+    private BudgetEntity budget;
 }

@@ -21,11 +21,11 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-@Entity(name = "person")
-public class PersonEntity extends BaseEntity {
+@Entity(name = "budget")
+public class BudgetEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "person", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "budget", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<StatementEntity> statements = new HashSet<>();
 }

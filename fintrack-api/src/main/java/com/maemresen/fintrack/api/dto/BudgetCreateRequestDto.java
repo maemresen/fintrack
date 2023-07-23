@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class PersonCreateRequestDto {
+public class BudgetCreateRequestDto {
 
     @NotNull
     private String name;

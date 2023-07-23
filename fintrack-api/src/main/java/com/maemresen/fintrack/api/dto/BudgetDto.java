@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-public class PersonDto extends BaseDto {
+public class BudgetDto extends BaseDto {
     private String name;
     private Set<StatementDto> statements = new HashSet<>();
 }
