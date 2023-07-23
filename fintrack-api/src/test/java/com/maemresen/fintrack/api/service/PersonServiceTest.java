@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -132,12 +133,12 @@ class PersonServiceTest {
 
         final StatementDto statementDto1 = StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_1);
         final StatementDto statementDto2 = StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_2);
-        final PersonDto mockPersonDtoWithStatement1And2 = PersonMockHelper.createMockPersonDtoWithIdAndStatements(MOCK_PERSON_ID_1, statementDto1, statementDto2);
+        final PersonDto personDtoWithStatement1And2 = PersonMockHelper.createMockPersonDtoWithIdAndStatements(MOCK_PERSON_ID_1, statementDto1, statementDto2);
 
         when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.of(existingPersonEntityWithStatement1));
         when(statementMapper.mapToStatementEntity(statementCreateDto2)).thenReturn(statementEntity2WithoutId);
         when(personRepository.save(PersonMockHelper.getPersonEntityIdAndStatementsArgumentMatcher(MOCK_PERSON_ID_1, statementEntity1, statementEntity2WithoutId))).thenReturn(newPersonEntityWithStatement1And2);
-        when(personMapper.mapToPersonDto(newPersonEntityWithStatement1And2)).thenReturn(mockPersonDtoWithStatement1And2);
+        when(personMapper.mapToPersonDto(newPersonEntityWithStatement1And2)).thenReturn(personDtoWithStatement1And2);
 
         PersonDto savedPerson = assertDoesNotThrow(() -> personService.addStatement(MOCK_PERSON_ID_1, statementCreateDto2));
 
@@ -145,7 +146,7 @@ class PersonServiceTest {
         assertTrue(existingPersonEntityWithStatement1.getStatements().contains(statementEntity2WithoutId), "Statement must be added to Person entity");
         verify(personRepository, times(1).description("Updated Person entity must be saved")).save(PersonMockHelper.getPersonEntityIdAndStatementsArgumentMatcher(MOCK_PERSON_ID_1, statementEntity1, statementEntity2WithoutId));
         assertNotNull(savedPerson, "Saved Person must be returned");
-        assertEquals(mockPersonDtoWithStatement1And2, savedPerson, "Saved Person must be mapped to PersonDto and returned");
+        assertEquals(personDtoWithStatement1And2, savedPerson, "Saved Person must be mapped to PersonDto and returned");
     }
 
     @Test
@@ -159,5 +160,56 @@ class PersonServiceTest {
         when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.empty());
         assertThrows(InvalidParameter.class, () -> personService.addStatement(MOCK_PERSON_ID_1, statementCreateDto2));
         verify(personRepository, never().description("In any error case, save method shouldn't be called")).save(any());
+    }
+
+    @Test
+    void whenRemoveStatementShouldReturnPersonWithStatements(){
+        final StatementEntity statementEntity1 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_1);
+        final StatementEntity statementEntity2 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_2);
+
+        final PersonEntity existingPersonEntityWithStatement1And2 = PersonMockHelper.createMockPersonEntityWithIdAndStatements(MOCK_PERSON_ID_1, statementEntity1, statementEntity2);
+        final PersonEntity newPersonEntityWithStatement1 = PersonMockHelper.createMockPersonEntityWithIdAndStatements(MOCK_PERSON_ID_1, statementEntity1);
+
+        final PersonDto personDtoWithStatement1 = PersonMockHelper.createMockPersonDtoWithIdAndStatements(MOCK_PERSON_ID_1, StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_1));
+
+        when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.of(existingPersonEntityWithStatement1And2));
+        when(personRepository.save(PersonMockHelper.getPersonEntityIdAndStatementsArgumentMatcher(MOCK_PERSON_ID_1, statementEntity1))).thenReturn(newPersonEntityWithStatement1);
+        when(personMapper.mapToPersonDto(newPersonEntityWithStatement1)).thenReturn(personDtoWithStatement1);
+
+        PersonDto savedPerson = assertDoesNotThrow(() -> personService.removeStatement(MOCK_PERSON_ID_1, MOCK_STATEMENT_ID_2));
+
+        verify(personRepository, times(1).description("Existing Person that statement will be removed must be get once from repository")).findById(MOCK_PERSON_ID_1);
+        assertFalse(existingPersonEntityWithStatement1And2.getStatements().contains(statementEntity2), "Statement must be removed from Person entity");
+        verify(personRepository, times(1).description("Updated Person entity must be saved")).save(PersonMockHelper.getPersonEntityIdAndStatementsArgumentMatcher(MOCK_PERSON_ID_1, statementEntity1));
+        assertNotNull(savedPerson, "Saved Person must be returned");
+        assertEquals(personDtoWithStatement1, savedPerson, "Saved Person must be mapped to PersonDto and returned");
+    }
+
+    @Test
+    void whenRemoveStatementWithNonExistingPersonIdShouldThrowException() {
+        when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.empty());
+
+        assertThrows(InvalidParameter.class, () -> personService.removeStatement(MOCK_PERSON_ID_1, MOCK_STATEMENT_ID_2));
+
+        verify(personRepository, never().description("In any error case, save method shouldn't be called")).save(any());
+    }
+
+    @Test
+    void whenRemoveStatementWithNonExistingStatementIdShouldThrowException() {
+        final StatementEntity statementEntity1 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_1);
+        final PersonEntity existingPersonEntityWithStatement1 = PersonMockHelper.createMockPersonEntityWithIdAndStatements(MOCK_PERSON_ID_1, statementEntity1);
+        final PersonDto personDtoWithStatement1 = PersonMockHelper.createMockPersonDtoWithIdAndStatements(MOCK_PERSON_ID_1, StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_1));
+
+        when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.of(existingPersonEntityWithStatement1));
+        when(personRepository.save(PersonMockHelper.getPersonEntityIdAndStatementsArgumentMatcher(MOCK_PERSON_ID_1, statementEntity1))).thenReturn(existingPersonEntityWithStatement1);
+        when(personMapper.mapToPersonDto(existingPersonEntityWithStatement1)).thenReturn(personDtoWithStatement1);
+
+        PersonDto savedPerson = assertDoesNotThrow(() -> personService.removeStatement(MOCK_PERSON_ID_1, MOCK_STATEMENT_ID_2));
+
+        verify(personRepository, times(1).description("Existing Person that statement will be removed must be get once from repository")).findById(MOCK_PERSON_ID_1);
+        assertTrue(existingPersonEntityWithStatement1.getStatements().contains(statementEntity1), "Statement must be removed from Person entity");
+        verify(personRepository, times(1).description("Updated Person entity must be saved")).save(PersonMockHelper.getPersonEntityIdAndStatementsArgumentMatcher(MOCK_PERSON_ID_1, statementEntity1));
+        assertNotNull(savedPerson, "Saved Person must be returned");
+        assertEquals(personDtoWithStatement1, savedPerson, "Saved Person must be mapped to PersonDto and returned");
     }
 }

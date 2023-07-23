@@ -62,6 +62,8 @@ public class PersonServiceImpl implements PersonService {
     @BusinessMethod
     @Override
     public PersonDto removeStatement(@NotNull(message = "Person Id cannot be null") Long personId, @NotNull(message = "Statement Id cannot be null") Long statementId) {
-        return null;
+        PersonEntity personEntity = personRepository.findById(personId).orElseThrow(() -> new InvalidParameter("Person not found"));
+        personEntity.getStatements().removeIf(statementEntity -> statementEntity.getId().equals(statementId));
+        return personMapper.mapToPersonDto(personRepository.save(personEntity));
     }
 }

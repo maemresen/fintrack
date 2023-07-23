@@ -1,6 +1,7 @@
 package com.maemresen.fintrack.api.entity;
 
 import com.maemresen.fintrack.api.entity.base.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -25,6 +26,6 @@ public class PersonEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<StatementEntity> statements = new HashSet<>();
 }
