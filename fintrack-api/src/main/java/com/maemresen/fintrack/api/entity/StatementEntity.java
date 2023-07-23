@@ -1,6 +1,6 @@
 package com.maemresen.fintrack.api.entity;
 
-import com.maemresen.fintrack.api.entity.base.BaseEntity;
+import com.maemresen.fintrack.api.entity.base.BaseDatedEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
 import jakarta.persistence.Column;
@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,8 +24,9 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 @Entity(name = "statement")
-public class StatementEntity extends BaseEntity {
+public class StatementEntity extends BaseDatedEntity {
 
     private String description;
 

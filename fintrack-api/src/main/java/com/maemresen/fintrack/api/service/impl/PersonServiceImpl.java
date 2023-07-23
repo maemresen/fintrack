@@ -58,4 +58,10 @@ public class PersonServiceImpl implements PersonService {
         personEntity.getStatements().add(statementEntity);
         return personMapper.mapToPersonDto(personRepository.save(personEntity));
     }
+
+    @BusinessMethod
+    @Override
+    public PersonDto removeStatement(@NotNull(message = "Person Id cannot be null") Long personId, @NotNull(message = "Statement Id cannot be null") Long statementId) {
+        return null;
+    }
 }

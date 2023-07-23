@@ -8,7 +8,6 @@ import com.maemresen.fintrack.api.entity.PersonEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
-import com.maemresen.fintrack.api.exceptions.BusinessException;
 import com.maemresen.fintrack.api.exceptions.InvalidParameter;
 import com.maemresen.fintrack.api.mapper.PersonMapper;
 import com.maemresen.fintrack.api.mapper.StatementMapper;
@@ -44,26 +43,13 @@ class PersonServiceTest {
     private static final Long MOCK_PERSON_ID_1 = 1L;
     private static final String MOCK_PERSON_NAME_1 = "Person 1";
     private static final Long MOCK_STATEMENT_ID_1 = 1L;
-    private static final String MOCK_STATEMENT_DESCRIPTION_1 = "Statement 1";
-    private static final Double MOCK_STATEMENT_AMOUNT_1 = 100.0;
-    private static final Currency MOCK_STATEMENT_CURRENCY_1 = Currency.TRY;
-    private static final StatementType MOCK_STATEMENT_TYPE_1 = StatementType.INCOME;
-    private static final LocalDateTime MOCK_STATEMENT_DATE_1 = LocalDateTime.now();
-    private static final String MOCK_STATEMENT_CATEGORY_1 = "Category 1";
-
-
-    private PersonEntity MOCK_PERSON_ENTITY_1;
-    private PersonEntity MOCK_PERSON_ENTITY_WITHOUT_ID_AND_WITH_STATEMENTS_1;
-    private PersonEntity MOCK_PERSON_ENTITY_WITH_STATEMENTS_1;
-    private StatementEntity MOCK_STATEMENT_ENTITY_1;
-    private StatementEntity MOCK_STATEMENT_ENTITY_WITHOUT_ID_1;
-
-    private PersonDto MOCK_PERSON_DTO_1;
-    private PersonDto MOCK_PERSON_DTO_WITH_STATEMENTS_1;
-    private PersonCreateRequestDto MOCK_PERSON_CREATE_REQUEST_DTO_WITH_STATEMENTS_1;
-
-    private StatementDto MOCK_STATEMENT_DTO_1;
-    private StatementCreateDto MOCK_STATEMENT_CREATE_DTO_1;
+    private static final Long MOCK_STATEMENT_ID_2 = 2L;
+    private static final String MOCK_STATEMENT_DESCRIPTION_2 = "Statement 2";
+    private static final Double MOCK_STATEMENT_AMOUNT_2 = 100.0;
+    private static final Currency MOCK_STATEMENT_CURRENCY_2 = Currency.TRY;
+    private static final StatementType MOCK_STATEMENT_TYPE_2 = StatementType.INCOME;
+    private static final LocalDateTime MOCK_STATEMENT_DATE_2 = LocalDateTime.now();
+    private static final String MOCK_STATEMENT_CATEGORY_2 = "Category 1";
 
     @MockBean
     private PersonRepository personRepository;
@@ -79,87 +65,99 @@ class PersonServiceTest {
 
     @BeforeEach
     void init() {
-        MOCK_PERSON_ENTITY_1 = PersonMockHelper.createMockPersonEntityWithId(MOCK_PERSON_ID_1);
-
-        MOCK_STATEMENT_ENTITY_1 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_1);
-        MOCK_PERSON_ENTITY_WITH_STATEMENTS_1 = PersonMockHelper.createMockPersonEntityWithIdAndStatements(MOCK_PERSON_ID_1, MOCK_STATEMENT_ENTITY_1);
-
-        MOCK_STATEMENT_ENTITY_WITHOUT_ID_1 = StatementMockHelper.createMockStatementEntityWithId(null);
-        MOCK_PERSON_ENTITY_WITHOUT_ID_AND_WITH_STATEMENTS_1 = PersonMockHelper.createMockPersonEntityWithIdAndStatements(null, MOCK_STATEMENT_ENTITY_WITHOUT_ID_1);
-
-        MOCK_PERSON_DTO_1 = PersonMockHelper.createMockPersonDtoWithId(MOCK_PERSON_ID_1);
-
-        MOCK_STATEMENT_DTO_1 = StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_1);
-        MOCK_PERSON_DTO_WITH_STATEMENTS_1 = PersonMockHelper.createMockPersonDtoWithIdAndStatements(MOCK_PERSON_ID_1, MOCK_STATEMENT_DTO_1);
-
-        MOCK_STATEMENT_CREATE_DTO_1 = StatementMockHelper.createMockStatementCreateDtoWithDescription(MOCK_STATEMENT_DESCRIPTION_1);
-        MOCK_STATEMENT_CREATE_DTO_1.setAmount(MOCK_STATEMENT_AMOUNT_1);
-        MOCK_STATEMENT_CREATE_DTO_1.setCurrency(MOCK_STATEMENT_CURRENCY_1);
-        MOCK_STATEMENT_CREATE_DTO_1.setType(MOCK_STATEMENT_TYPE_1);
-        MOCK_STATEMENT_CREATE_DTO_1.setDate(MOCK_STATEMENT_DATE_1);
-        MOCK_STATEMENT_CREATE_DTO_1.setCategory(MOCK_STATEMENT_CATEGORY_1);
-
-        MOCK_PERSON_CREATE_REQUEST_DTO_WITH_STATEMENTS_1 = PersonMockHelper.createMockPersonCreateRequestDtoWithNameAndStatements(MOCK_PERSON_NAME_1, MOCK_STATEMENT_CREATE_DTO_1);
-
     }
 
     @Test
     void whenFindByIdShouldReturnPerson() {
-        when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.of(MOCK_PERSON_ENTITY_1));
-        when(personMapper.mapToPersonDto(MOCK_PERSON_ENTITY_1)).thenReturn(MOCK_PERSON_DTO_1);
+        final PersonEntity existingPersonEntity = PersonMockHelper.createMockPersonEntityWithId(MOCK_PERSON_ID_1);
+        final PersonDto personDto = PersonMockHelper.createMockPersonDtoWithId(MOCK_PERSON_ID_1);
+
+        when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.of(existingPersonEntity));
+        when(personMapper.mapToPersonDto(existingPersonEntity)).thenReturn(personDto);
 
         Optional<PersonDto> foundPerson = assertDoesNotThrow(() -> personService.findById(MOCK_PERSON_ID_1));
 
         verify(personRepository).findById(MOCK_PERSON_ID_1);
         assertTrue(foundPerson.isPresent());
-        assertEquals(MOCK_PERSON_DTO_1, foundPerson.get());
+        assertEquals(personDto, foundPerson.get());
     }
 
     @Test
     void whenFindAllShouldReturnPersons() {
-        List<PersonEntity> mockPersonEntities = List.of(MOCK_PERSON_ENTITY_1);
+        final PersonEntity existingPersonEntity = PersonMockHelper.createMockPersonEntityWithId(MOCK_PERSON_ID_1);
+        final PersonDto personDto = PersonMockHelper.createMockPersonDtoWithId(MOCK_PERSON_ID_1);
+
+        List<PersonEntity> mockPersonEntities = List.of(existingPersonEntity);
         when(personRepository.findAll()).thenReturn(mockPersonEntities);
-        when(personMapper.mapToPersonDto(MOCK_PERSON_ENTITY_1)).thenReturn(MOCK_PERSON_DTO_1);
+        when(personMapper.mapToPersonDto(existingPersonEntity)).thenReturn(personDto);
 
         List<PersonDto> foundPersons = assertDoesNotThrow(() -> personService.findAll());
 
         verify(personRepository, times(1)).findAll();
-        assertEquals(MOCK_PERSON_DTO_1, IterableUtils.get(foundPersons, 0));
+        assertEquals(personDto, IterableUtils.get(foundPersons, 0));
     }
 
     @Test
     void whenSaveWithStatementsShouldReturnPerson() {
-        when(personMapper.mapToPersonEntity(MOCK_PERSON_CREATE_REQUEST_DTO_WITH_STATEMENTS_1)).thenReturn(MOCK_PERSON_ENTITY_WITHOUT_ID_AND_WITH_STATEMENTS_1);
-        when(personRepository.save(MOCK_PERSON_ENTITY_WITHOUT_ID_AND_WITH_STATEMENTS_1)).thenReturn(MOCK_PERSON_ENTITY_WITH_STATEMENTS_1);
-        when(personMapper.mapToPersonDto(MOCK_PERSON_ENTITY_WITH_STATEMENTS_1)).thenReturn(MOCK_PERSON_DTO_WITH_STATEMENTS_1);
+        PersonCreateRequestDto personCreateRequestDto = PersonMockHelper.createMockPersonCreateRequestDto(MOCK_PERSON_NAME_1);
+        PersonEntity personEntityWithoutId = PersonMockHelper.createMockPersonEntityWithoutId();
+        PersonEntity personEntityWithId = PersonMockHelper.createMockPersonEntityWithId(MOCK_PERSON_ID_1);
+        PersonDto personDto = PersonMockHelper.createMockPersonDtoWithId(MOCK_PERSON_ID_1);
 
-        PersonDto savedPerson = assertDoesNotThrow(()-> personService.create(MOCK_PERSON_CREATE_REQUEST_DTO_WITH_STATEMENTS_1));
+        when(personMapper.mapToPersonEntity(personCreateRequestDto)).thenReturn(personEntityWithoutId);
+        when(personRepository.save(personEntityWithoutId)).thenReturn(personEntityWithId);
+        when(personMapper.mapToPersonDto(personEntityWithId)).thenReturn(personDto);
 
-        verify(personRepository, times(1).description("Person entity contains statement must be saved")).save(MOCK_PERSON_ENTITY_WITHOUT_ID_AND_WITH_STATEMENTS_1);
+        PersonDto savedPerson = assertDoesNotThrow(() -> personService.create(personCreateRequestDto));
+
+        verify(personRepository, times(1).description("Person entity contains statement must be saved")).save(personEntityWithoutId);
         assertNotNull(savedPerson, "Saved Person must be returned");
-        assertEquals(MOCK_PERSON_DTO_WITH_STATEMENTS_1, savedPerson, "Saved Person must be mapped to PersonDto and returned");
+        assertEquals(personDto, savedPerson, "Saved Person must be mapped to PersonDto and returned");
     }
 
     @Test
     void whenAddStatementShouldReturnPersonWithStatements() {
-        when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.of(MOCK_PERSON_ENTITY_1));
-        when(statementMapper.mapToStatementEntity(MOCK_STATEMENT_CREATE_DTO_1)).thenReturn(MOCK_STATEMENT_ENTITY_WITHOUT_ID_1);
-        when(personRepository.save(MOCK_PERSON_ENTITY_1)).thenReturn(MOCK_PERSON_ENTITY_WITH_STATEMENTS_1);
-        when(personMapper.mapToPersonDto(MOCK_PERSON_ENTITY_WITH_STATEMENTS_1)).thenReturn(MOCK_PERSON_DTO_WITH_STATEMENTS_1);
+        final StatementCreateDto statementCreateDto2 = StatementMockHelper.createValidStatementCreateDto(MOCK_STATEMENT_DESCRIPTION_2,
+                MOCK_STATEMENT_AMOUNT_2,
+                MOCK_STATEMENT_CURRENCY_2,
+                MOCK_STATEMENT_TYPE_2,
+                MOCK_STATEMENT_DATE_2,
+                MOCK_STATEMENT_CATEGORY_2);
+        final StatementEntity statementEntity1 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_1);
+        final StatementEntity statementEntity2 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_2);
+        final StatementEntity statementEntity2WithoutId = StatementMockHelper.createMockStatementEntityWithoutId();
 
-        PersonDto savedPerson = assertDoesNotThrow(() -> personService.addStatement(MOCK_PERSON_ID_1, MOCK_STATEMENT_CREATE_DTO_1));
+        final PersonEntity existingPersonEntityWithStatement1 = PersonMockHelper.createMockPersonEntityWithIdAndStatements(MOCK_PERSON_ID_1, statementEntity1);
+        final PersonEntity newPersonEntityWithStatement1And2 = PersonMockHelper.createMockPersonEntityWithIdAndStatements(MOCK_PERSON_ID_1, statementEntity1, statementEntity2);
+
+        final StatementDto statementDto1 = StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_1);
+        final StatementDto statementDto2 = StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_2);
+        final PersonDto mockPersonDtoWithStatement1And2 = PersonMockHelper.createMockPersonDtoWithIdAndStatements(MOCK_PERSON_ID_1, statementDto1, statementDto2);
+
+        when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.of(existingPersonEntityWithStatement1));
+        when(statementMapper.mapToStatementEntity(statementCreateDto2)).thenReturn(statementEntity2WithoutId);
+        when(personRepository.save(PersonMockHelper.getPersonEntityIdAndStatementsArgumentMatcher(MOCK_PERSON_ID_1, statementEntity1, statementEntity2WithoutId))).thenReturn(newPersonEntityWithStatement1And2);
+        when(personMapper.mapToPersonDto(newPersonEntityWithStatement1And2)).thenReturn(mockPersonDtoWithStatement1And2);
+
+        PersonDto savedPerson = assertDoesNotThrow(() -> personService.addStatement(MOCK_PERSON_ID_1, statementCreateDto2));
 
         verify(personRepository, times(1).description("Existing Person that statement will be added must be get once from repository")).findById(MOCK_PERSON_ID_1);
-        assertTrue(MOCK_PERSON_ENTITY_1.getStatements().contains(MOCK_STATEMENT_ENTITY_WITHOUT_ID_1), "Statement must be added to Person entity");
-        verify(personRepository, times(1).description("Updated Person entity must be saved")).save(MOCK_PERSON_ENTITY_1);
+        assertTrue(existingPersonEntityWithStatement1.getStatements().contains(statementEntity2WithoutId), "Statement must be added to Person entity");
+        verify(personRepository, times(1).description("Updated Person entity must be saved")).save(PersonMockHelper.getPersonEntityIdAndStatementsArgumentMatcher(MOCK_PERSON_ID_1, statementEntity1, statementEntity2WithoutId));
         assertNotNull(savedPerson, "Saved Person must be returned");
-        assertEquals(MOCK_PERSON_DTO_WITH_STATEMENTS_1, savedPerson, "Saved Person must be mapped to PersonDto and returned");
+        assertEquals(mockPersonDtoWithStatement1And2, savedPerson, "Saved Person must be mapped to PersonDto and returned");
     }
 
     @Test
     void whenAddStatementWithNonExistingPersonIdShouldThrowException() {
+        final StatementCreateDto statementCreateDto2 = StatementMockHelper.createValidStatementCreateDto(MOCK_STATEMENT_DESCRIPTION_2,
+                MOCK_STATEMENT_AMOUNT_2,
+                MOCK_STATEMENT_CURRENCY_2,
+                MOCK_STATEMENT_TYPE_2,
+                MOCK_STATEMENT_DATE_2,
+                MOCK_STATEMENT_CATEGORY_2);
         when(personRepository.findById(MOCK_PERSON_ID_1)).thenReturn(Optional.empty());
-        assertThrows(InvalidParameter.class, () -> personService.addStatement(MOCK_PERSON_ID_1, MOCK_STATEMENT_CREATE_DTO_1));
+        assertThrows(InvalidParameter.class, () -> personService.addStatement(MOCK_PERSON_ID_1, statementCreateDto2));
         verify(personRepository, never().description("In any error case, save method shouldn't be called")).save(any());
     }
 }

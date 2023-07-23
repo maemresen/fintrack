@@ -14,4 +14,5 @@ public interface PersonService {
     List<PersonDto> findAll();
     PersonDto create(@Valid PersonCreateRequestDto personCreateRequestDto);
     PersonDto addStatement(@NotNull(message = "Person Id cannot be null") Long personId, @Valid StatementCreateDto statementCreateDto);
+    PersonDto removeStatement(@NotNull(message = "Person Id cannot be null") Long personId, @NotNull(message = "Statement Id cannot be null") Long statementId);
 }
