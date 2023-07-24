@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles({"test-h2"})
 class BudgetServiceTest {
 
     private static final Long MOCK_BUDGET_ID_1 = 1L;
@@ -163,7 +165,7 @@ class BudgetServiceTest {
     }
 
     @Test
-    void whenRemoveStatementShouldReturnBudgetWithStatements(){
+    void whenRemoveStatementShouldReturnBudgetWithStatements() {
         final StatementEntity statementEntity1 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_1);
         final StatementEntity statementEntity2 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_2);
 
