@@ -1,17 +1,21 @@
 package com.maemresen.fintrack.api.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class PersonDto {
+@EqualsAndHashCode
+public class BudgetCreateRequestDto {
 
-    private Long id;
+    @NotNull
+    private String name;
 }

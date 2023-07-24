@@ -14,11 +14,9 @@ jobs:
           distribution: 'adopt'
       - name: Execute mvn verify
         run: |
-          ./mvnw clean verify
-          mv fintrack-api/target/dependency-check-report.html fintrack-api/target/site/jacoco/  # Move the dependency-check-report.html to the jacoco directory
+          ./mvnw clean verify -PcodeCoverage
       - name: Upload fintrack-api coverage report
         uses: actions/upload-artifact@v2
         with:
           name: Fintrack API report
           path: fintrack-api/target/site/jacoco  # Change this path if your JaCoCo report is generated in a different location
-
