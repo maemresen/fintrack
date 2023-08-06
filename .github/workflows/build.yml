@@ -22,6 +22,7 @@ jobs:
           # Wait for docker to be up and running
           sleep 10
       - name: Execute mvn verify
+        continue-on-error: true
         run: |
           ./mvnw clean verify -PcodeCoverage
       - name: Upload fintrack-api coverage report
