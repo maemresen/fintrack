@@ -1,5 +1,5 @@
 
-package com.maemresen.fintrack.api.rest.budget;
+package com.maemresen.fintrack.api.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.maemresen.fintrack.api.base.AbstractBaseRestWithDbIT;
@@ -10,6 +10,8 @@ import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
 import com.maemresen.fintrack.api.util.RequestConfig;
 import com.maemresen.fintrack.api.util.StringHelper;
+import com.maemresen.fintrack.api.utils.constants.ExceptionType;
+import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +27,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext
@@ -38,6 +42,7 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     private static final String REMOVE_STATEMENT = BASE_URI + "/{budgetId}/statement/{statementId}";
 
     private static final Long TEST_BUDGET_1_ID = 1L;
+    private static final Long NON_EXISTING_BUDGET_1_ID = -1L;
     private static final Long TEST_STATEMENT_1_ID = 1L;
     private static final Long TEST_STATEMENT_2_ID = 2L;
 
@@ -138,8 +143,20 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
         var requestConfig = RequestConfig.delete(REMOVE_STATEMENT)
                 .variables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
                 .expectResponse(false)
-                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
         perform(requestConfig);
+    }
+
+    @Test
+    @Order(8)
+    void removeNonExistsStatementFromNonExistingBudget() throws Exception {
+        var requestConfig = RequestConfig.delete(REMOVE_STATEMENT)
+                .variables(List.of(NON_EXISTING_BUDGET_1_ID, TEST_STATEMENT_1_ID))
+                .expectResponse(false)
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .build();
+        ResultActions perform = perform(requestConfig);
+        perform.andExpect(header().string(HeaderConstants.ERROR_CODE_HEADER, ExceptionType.INVALID_PARAMETER.getCode()));
     }
 }

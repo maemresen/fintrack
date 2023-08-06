@@ -8,7 +8,7 @@ import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
-import com.maemresen.fintrack.api.exceptions.InvalidParameter;
+import com.maemresen.fintrack.api.exceptions.InvalidParameterException;
 import com.maemresen.fintrack.api.mapper.BudgetMapper;
 import com.maemresen.fintrack.api.mapper.StatementMapper;
 import com.maemresen.fintrack.api.repository.BudgetRepository;
@@ -160,7 +160,7 @@ class BudgetServiceTest {
                 MOCK_STATEMENT_DATE_2,
                 MOCK_STATEMENT_CATEGORY_2);
         when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.empty());
-        assertThrows(InvalidParameter.class, () -> budgetService.addStatement(MOCK_BUDGET_ID_1, statementCreateDto2));
+        assertThrows(InvalidParameterException.class, () -> budgetService.addStatement(MOCK_BUDGET_ID_1, statementCreateDto2));
         verify(budgetRepository, never().description("In any error case, save method shouldn't be called")).save(any());
     }
 
@@ -191,7 +191,7 @@ class BudgetServiceTest {
     void whenRemoveStatementWithNonExistingBudgetIdShouldThrowException() {
         when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidParameter.class, () -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
+        assertThrows(InvalidParameterException.class, () -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
 
         verify(budgetRepository, never().description("In any error case, save method shouldn't be called")).save(any());
     }

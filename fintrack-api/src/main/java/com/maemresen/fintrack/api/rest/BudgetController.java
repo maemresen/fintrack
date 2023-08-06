@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,11 +48,7 @@ public class BudgetController {
 
     @DeleteMapping("{budgetId}/statement/{statementId}")
     public ResponseEntity<Void> removeStatement(@PathVariable Long budgetId, @PathVariable Long statementId) {
-        try {
-            budgetService.removeStatement(budgetId, statementId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        budgetService.removeStatement(budgetId, statementId);
+        return ResponseEntity.ok().build();
     }
 }

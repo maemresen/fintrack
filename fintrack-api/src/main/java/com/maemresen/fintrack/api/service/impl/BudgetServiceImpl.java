@@ -6,7 +6,7 @@ import com.maemresen.fintrack.api.dto.BudgetDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
-import com.maemresen.fintrack.api.exceptions.InvalidParameter;
+import com.maemresen.fintrack.api.exceptions.InvalidParameterException;
 import com.maemresen.fintrack.api.mapper.BudgetMapper;
 import com.maemresen.fintrack.api.mapper.StatementMapper;
 import com.maemresen.fintrack.api.repository.BudgetRepository;
@@ -58,7 +58,7 @@ public class BudgetServiceImpl implements BudgetService {
     @Transactional
     @Override
     public BudgetDto addStatement(@NotNull(message = "Budget Id cannot be null") Long budgetId, @Valid StatementCreateDto statementCreateDto) {
-        BudgetEntity budgetEntity = budgetRepository.findById(budgetId).orElseThrow(() -> new InvalidParameter("Budget not found"));
+        BudgetEntity budgetEntity = budgetRepository.findById(budgetId).orElseThrow(() -> new InvalidParameterException("Budget not found"));
         StatementEntity statementEntity = statementMapper.mapToStatementEntity(statementCreateDto);
         Set<StatementEntity> statements = budgetEntity.getStatements();
         if(statements == null){
@@ -76,15 +76,15 @@ public class BudgetServiceImpl implements BudgetService {
     @Transactional
     @Override
     public BudgetDto removeStatement(@NotNull(message = "Budget Id cannot be null") Long budgetId, @NotNull(message = "Statement Id cannot be null") Long statementId) {
-        BudgetEntity budgetEntity = budgetRepository.findById(budgetId).orElseThrow(() -> new InvalidParameter("Budget not found"));
+        BudgetEntity budgetEntity = budgetRepository.findById(budgetId).orElseThrow(() -> new InvalidParameterException("Budget not found"));
 
         Set<StatementEntity> statements = budgetEntity.getStatements();
         if(statements == null){
-            throw new InvalidParameter("Statement not found");
+            throw new InvalidParameterException("Statement not found");
         }
 
         if(!statements.removeIf(statementEntity -> statementEntity.getId().equals(statementId))){
-            throw new InvalidParameter("Statement not found");
+            throw new InvalidParameterException("Statement not found");
         }
 
         return budgetMapper.mapToBudgetDto(budgetRepository.save(budgetEntity));
