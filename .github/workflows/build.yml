@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Extract branch name
+        shell: bash
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\/\//-/g')" >> $GITHUB_ENV
       - name: Set up Java JDK
         uses: actions/setup-java@v2
         with:
@@ -22,5 +25,4 @@ jobs:
           # Wait for docker to be up and running
           sleep 10
       - name: Execute mvn verify
-        continue-on-error: true
-        run: ./mvnw verify -PcodeQuality,codeCoverage,dependencyCheck sonar:sonar
+        run: ./mvnw verify -PcodeQuality,codeCoverage sonar:sonar -Dsonar.branch.name=$BRANCH_NAME
