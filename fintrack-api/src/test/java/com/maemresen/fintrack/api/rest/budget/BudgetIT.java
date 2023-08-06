@@ -8,18 +8,15 @@ import com.maemresen.fintrack.api.dto.BudgetDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
-import com.maemresen.fintrack.api.util.RequestBuilder;
-import com.maemresen.fintrack.api.util.RequestPerformer;
+import com.maemresen.fintrack.api.util.RequestConfig;
 import com.maemresen.fintrack.api.util.StringHelper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.servlet.ResultActions;
-import org.testcontainers.shaded.org.bouncycastle.cert.ocsp.Req;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,47 +42,20 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     private static final Long TEST_STATEMENT_2_ID = 2L;
 
     protected BudgetDto performSuccessfulFindByIdRequest(Long budgetId) throws Exception {
-
-        var request = RequestBuilder.withoutBody()
-                .method(HttpMethod.GET)
-                .uri(FIND_BY_ID)
-                .variables(List.of(budgetId))
-                .build();
-        var response = RequestPerformer.successful(mockMvc, request)
-                .build()
-                .perform()
-                .andReturn()
-                .getResponse();
-        return readResponse(response, new TypeReference<>() {
+        var requestConfig = RequestConfig.get(FIND_BY_ID).variables(List.of(budgetId)).build();
+        return performAndReturn(requestConfig, new TypeReference<>() {
         });
     }
 
     protected BudgetDto performSuccessfulCreateRequest(BudgetCreateRequestDto createRequestDto) throws Exception {
-        var request = RequestBuilder.withBody(objectMapper, createRequestDto)
-                .method(HttpMethod.POST)
-                .uri(CREATE)
-                .build();
-        var response = RequestPerformer.successful(mockMvc, request)
-                .build()
-                .perform()
-                .andReturn()
-                .getResponse();
-
-        return readResponse(response, new TypeReference<>() {
+        var requestConfig = RequestConfig.postWithBody(CREATE, createRequestDto).expectResponse(true).build();
+        return performAndReturn(requestConfig, new TypeReference<>() {
         });
     }
 
     protected List<BudgetDto> performSuccessfulFindAllRequest() throws Exception {
-        var request = RequestBuilder.withoutBody()
-                .method(HttpMethod.GET)
-                .uri(FIND_ALL)
-                .build();
-        var response = RequestPerformer.successful(mockMvc, request)
-                .build()
-                .perform()
-                .andReturn()
-                .getResponse();
-        return readResponse(response, new TypeReference<>() {
+        var requestConfig = RequestConfig.get(FIND_ALL).build();
+        return performAndReturn(requestConfig, new TypeReference<>() {
         });
     }
 
@@ -123,13 +93,12 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     @Test
     @Order(3)
     void createEmptyNameBudget() throws Exception {
-        var request = RequestBuilder.withBody(objectMapper, new BudgetCreateRequestDto(""))
-                .method(HttpMethod.POST)
-                .uri(CREATE)
+        var invalidCreateRequestDto = new BudgetCreateRequestDto("");
+        var requestConfig = RequestConfig.postWithBody(CREATE, invalidCreateRequestDto)
+                .expectResponse(false)
+                .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
-        RequestPerformer.badRequest(mockMvc, request)
-                .build()
-                .perform();
+        perform(requestConfig);
     }
 
     @Test
@@ -143,16 +112,10 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .date(LocalDateTime.now())
                 .build();
 
-        var request = RequestBuilder.withBody(objectMapper, body)
-                .method(HttpMethod.POST)
-                .uri(ADD_STATEMENT)
-                .variables(List.of(TEST_BUDGET_1_ID))
-                .build();
-        var response = RequestPerformer.successful(mockMvc, request)
-                .build()
-                .perform();
-        BudgetDto budgetDto = readResponse(response.andReturn().getResponse(), new TypeReference<>() {
+        var requestConfig = RequestConfig.postWithBody(ADD_STATEMENT, body).variables(List.of(TEST_BUDGET_1_ID)).build();
+        BudgetDto budgetDto = performAndReturn(requestConfig, new TypeReference<>() {
         });
+
         assertNotNull(budgetDto);
         assertEquals(TEST_BUDGET_1_ID, budgetDto.getId());
         assertTrue(CollectionUtils.isNotEmpty(budgetDto.getStatements()));
@@ -162,28 +125,21 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     @Test
     @Order(6)
     void removeStatement() throws Exception {
-        var request = RequestBuilder.withoutBody()
-                .method(HttpMethod.DELETE)
-                .uri(REMOVE_STATEMENT)
+        var requestConfig = RequestConfig.delete(REMOVE_STATEMENT)
                 .variables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
-                .build();
-        RequestPerformer.successful(mockMvc, request)
                 .expectResponse(false)
-                .build()
-                .perform();
+                .build();
+        perform(requestConfig);
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void removeNonExistsStatement() throws Exception {
-        var request = RequestBuilder.withoutBody()
-                .method(HttpMethod.DELETE)
-                .uri(REMOVE_STATEMENT)
+        var requestConfig = RequestConfig.delete(REMOVE_STATEMENT)
                 .variables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
-                .build();
-        RequestPerformer.error(mockMvc, request)
                 .expectResponse(false)
-                .build()
-                .perform();
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        perform(requestConfig);
     }
 }
