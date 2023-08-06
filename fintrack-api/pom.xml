@@ -202,6 +202,7 @@
                                 <exclude>**/mapper/**/*</exclude>
                                 <exclude>**/exceptions/**/*</exclude>
                                 <exclude>**/aspects/**/*</exclude>
+                                <exclude>**/constants/**/*</exclude>
                                 <exclude>**/FintrackApiApplication*</exclude>
                             </excludes>
                         </configuration>
