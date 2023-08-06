@@ -23,10 +23,4 @@ jobs:
           sleep 10
       - name: Execute mvn verify
         continue-on-error: true
-        run: |
-          ./mvnw clean verify -PcodeCoverage
-      - name: Upload fintrack-api coverage report
-        uses: actions/upload-artifact@v2
-        with:
-          name: Fintrack API report
-          path: fintrack-api/target/site/jacoco  # Change this path if your JaCoCo report is generated in a different location
+        run: ./mvnw verify -PcodeQuality,codeCoverage,dependencyCheck sonar:sonar

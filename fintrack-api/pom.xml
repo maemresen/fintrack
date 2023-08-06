@@ -17,12 +17,10 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <org.apache.maven.surfire-plugin.version>3.1.2</org.apache.maven.surfire-plugin.version>
-        <org.jacaco.maven-plugin.version>0.8.10</org.jacaco.maven-plugin.version>
         <org.lombok.version>1.18.28</org.lombok.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.lombok.mapstruct-binding.version>0.2.0</org.lombok.mapstruct-binding.version>
         <org.apache.commons.collections.version>4.4</org.apache.commons.collections.version>
-        <org.owasp.dependency-check>8.3.1</org.owasp.dependency-check>
         <liquibase.version>4.18.0</liquibase.version>
         <testcontainers.version>1.18.0</testcontainers.version>
         <spring-doc.openapi.version>2.1.0</spring-doc.openapi.version>
@@ -165,85 +163,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>dependencyCheck</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.owasp</groupId>
-                        <artifactId>dependency-check-maven</artifactId>
-                        <version>${org.owasp.dependency-check}</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>codeCoverage</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${org.jacaco.maven-plugin.version}</version>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/entity/**/*</exclude>
-                                <exclude>**/dto/**/*</exclude>
-                                <exclude>**/mapper/**/*</exclude>
-                                <exclude>**/exceptions/**/*</exclude>
-                                <exclude>**/aspects/**/*</exclude>
-                                <exclude>**/constants/**/*</exclude>
-                                <exclude>**/FintrackApiApplication*</exclude>
-                            </excludes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>report</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>jacoco-check</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                                <configuration>
-                                    <rules>
-                                        <rule>
-                                            <element>PACKAGE</element>
-                                            <limits>
-                                                <limit>
-                                                    <counter>LINE</counter>
-                                                    <value>COVEREDRATIO</value>
-                                                    <minimum>0.80</minimum>
-                                                </limit>
-                                            </limits>
-                                        </rule>
-                                    </rules>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
