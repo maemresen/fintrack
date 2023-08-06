@@ -38,7 +38,6 @@ public abstract class RequestBuilder {
     private HttpMethod method;
     private String uri;
     private List<Object> variables;
-    private String x;
 
     /**
      * Constructs a MockHttpServletRequestBuilder with the set configurations.

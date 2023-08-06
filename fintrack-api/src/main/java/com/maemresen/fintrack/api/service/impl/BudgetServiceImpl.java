@@ -79,8 +79,12 @@ public class BudgetServiceImpl implements BudgetService {
         BudgetEntity budgetEntity = budgetRepository.findById(budgetId).orElseThrow(() -> new InvalidParameter("Budget not found"));
 
         Set<StatementEntity> statements = budgetEntity.getStatements();
-        if (statements != null) {
-            statements.removeIf(statementEntity -> statementEntity.getId().equals(statementId));
+        if(statements == null){
+            throw new InvalidParameter("Statement not found");
+        }
+
+        if(!statements.removeIf(statementEntity -> statementEntity.getId().equals(statementId))){
+            throw new InvalidParameter("Statement not found");
         }
 
         return budgetMapper.mapToBudgetDto(budgetRepository.save(budgetEntity));

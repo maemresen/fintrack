@@ -9,6 +9,7 @@ import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
 import com.maemresen.fintrack.api.util.RequestBuilder;
+import com.maemresen.fintrack.api.util.RequestPerformer;
 import com.maemresen.fintrack.api.util.StringHelper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.MethodOrderer;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.ResultActions;
+import org.testcontainers.shaded.org.bouncycastle.cert.ocsp.Req;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,7 +51,9 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .uri(FIND_BY_ID)
                 .variables(List.of(budgetId))
                 .build();
-        var response = performSuccessfulApiCall(request)
+        var response = RequestPerformer.successful(mockMvc, request)
+                .build()
+                .perform()
                 .andReturn()
                 .getResponse();
         return readResponse(response, new TypeReference<>() {
@@ -61,7 +65,9 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .method(HttpMethod.POST)
                 .uri(CREATE)
                 .build();
-        var response = performSuccessfulApiCall(request)
+        var response = RequestPerformer.successful(mockMvc, request)
+                .build()
+                .perform()
                 .andReturn()
                 .getResponse();
 
@@ -74,7 +80,9 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .method(HttpMethod.GET)
                 .uri(FIND_ALL)
                 .build();
-        var response = performSuccessfulApiCall(request)
+        var response = RequestPerformer.successful(mockMvc, request)
+                .build()
+                .perform()
                 .andReturn()
                 .getResponse();
         return readResponse(response, new TypeReference<>() {
@@ -115,8 +123,13 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     @Test
     @Order(3)
     void createEmptyNameBudget() throws Exception {
-        var createRequest = httpRequestWihBody(HttpMethod.POST, CREATE, new BudgetCreateRequestDto(""));
-        performBadRequestApiCall(createRequest);
+        var request = RequestBuilder.withBody(objectMapper, new BudgetCreateRequestDto(""))
+                .method(HttpMethod.POST)
+                .uri(CREATE)
+                .build();
+        RequestPerformer.badRequest(mockMvc, request)
+                .build()
+                .perform();
     }
 
     @Test
@@ -130,8 +143,14 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .date(LocalDateTime.now())
                 .build();
 
-        var createRequest = httpRequestWihBody(HttpMethod.POST, ADD_STATEMENT, body, TEST_BUDGET_1_ID);
-        ResultActions response = performSuccessfulApiCall(createRequest);
+        var request = RequestBuilder.withBody(objectMapper, body)
+                .method(HttpMethod.POST)
+                .uri(ADD_STATEMENT)
+                .variables(List.of(TEST_BUDGET_1_ID))
+                .build();
+        var response = RequestPerformer.successful(mockMvc, request)
+                .build()
+                .perform();
         BudgetDto budgetDto = readResponse(response.andReturn().getResponse(), new TypeReference<>() {
         });
         assertNotNull(budgetDto);
@@ -143,7 +162,28 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     @Test
     @Order(6)
     void removeStatement() throws Exception {
-        var removeStatementRequest = httpRequest(HttpMethod.DELETE, REMOVE_STATEMENT, TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID);
-        performSuccessfulApiCall(removeStatementRequest, false);
+        var request = RequestBuilder.withoutBody()
+                .method(HttpMethod.DELETE)
+                .uri(REMOVE_STATEMENT)
+                .variables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
+                .build();
+        RequestPerformer.successful(mockMvc, request)
+                .expectResponse(false)
+                .build()
+                .perform();
+    }
+
+    @Test
+    @Order(6)
+    void removeNonExistsStatement() throws Exception {
+        var request = RequestBuilder.withoutBody()
+                .method(HttpMethod.DELETE)
+                .uri(REMOVE_STATEMENT)
+                .variables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
+                .build();
+        RequestPerformer.error(mockMvc, request)
+                .expectResponse(false)
+                .build()
+                .perform();
     }
 }
