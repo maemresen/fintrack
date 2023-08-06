@@ -46,6 +46,13 @@ public class ServiceException extends RuntimeException {
 		this.data = data;
 	}
 
+
+	protected ServiceException(String message, ExceptionType exceptionType, Object data) {
+		super(message);
+		this.exceptionType = exceptionType;
+		this.data = data;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s:data=%s", exceptionType, data);

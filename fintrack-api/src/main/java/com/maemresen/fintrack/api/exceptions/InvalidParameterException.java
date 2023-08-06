@@ -18,4 +18,8 @@ public class InvalidParameterException extends ServiceException {
     public InvalidParameterException(Throwable cause, Object data) {
         super(cause, ExceptionType.INVALID_PARAMETER, data);
     }
+
+    public InvalidParameterException(String message, Object data) {
+        super(message, ExceptionType.INVALID_PARAMETER, data);
+    }
 }

@@ -43,7 +43,7 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     private static final String REMOVE_STATEMENT = BASE_URI + "/{budgetId}/statement/{statementId}";
 
     private static final Long TEST_BUDGET_1_ID = 1L;
-    private static final Long NON_EXISTING_BUDGET_1_ID = -1L;
+    private static final Long NON_EXISTING_BUDGET_1_ID = 100L;
     private static final Long TEST_STATEMENT_1_ID = 1L;
     private static final Long TEST_STATEMENT_2_ID = 2L;
 
@@ -80,6 +80,19 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
         assertNotNull(budgetDto);
         assertEquals(TEST_BUDGET_1_ID, budgetDto.getId());
     }
+
+
+    @Test
+    @Order(0)
+    void findByIdNotFound() throws Exception {
+        RequestConfig requestConfig = RequestConfig.error(FIND_BY_ID, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.GET)
+                .requestVariables(List.of(NON_EXISTING_BUDGET_1_ID))
+                .expectResponseBody(false)
+                .build();
+        perform(requestConfig);
+    }
+
 
     @Test
     @Order(1)

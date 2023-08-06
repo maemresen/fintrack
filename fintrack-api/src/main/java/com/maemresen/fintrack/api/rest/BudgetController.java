@@ -3,6 +3,7 @@ package com.maemresen.fintrack.api.rest;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
+import com.maemresen.fintrack.api.exceptions.NotFoundException;
 import com.maemresen.fintrack.api.service.BudgetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class BudgetController {
     public ResponseEntity<BudgetDto> findById(@PathVariable Long budgetId) {
         return budgetService.findById(budgetId)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new NotFoundException("Budget not found", budgetId));
     }
 
     @GetMapping
