@@ -1,14 +1,16 @@
 package com.maemresen.fintrack.api.aspects;
 
-import com.maemresen.fintrack.api.exceptions.BusinessException;
-import com.maemresen.fintrack.api.exceptions.InvalidParameter;
+import com.maemresen.fintrack.api.exceptions.InvalidParameterException;
 import com.maemresen.fintrack.api.exceptions.ServiceException;
+import com.maemresen.fintrack.api.exceptions.UnexpectedException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Aspect
 @Component
 public class BusinessMethodAspect {
@@ -20,14 +22,17 @@ public class BusinessMethodAspect {
 
     @AfterThrowing(pointcut = "businessMethod()", throwing = "throwable")
     public void afterThrowingException(Throwable throwable) throws Throwable {
-        if (throwable instanceof BusinessException) {
+        if (throwable instanceof ServiceException) {
             throw throwable;
         }
 
         if (throwable instanceof ConstraintViolationException constraintViolationException) {
-            throw new InvalidParameter(constraintViolationException.getMessage(), constraintViolationException);
+            throw new InvalidParameterException(constraintViolationException.getMessage(), constraintViolationException);
         }
 
-        throw new ServiceException(throwable.getMessage(), throwable);
+        log.warn("{} exception is not allowed to thrown by service, Converting into ServiceException", throwable.getClass());
+        throw new UnexpectedException(throwable);
     }
 }
+
+

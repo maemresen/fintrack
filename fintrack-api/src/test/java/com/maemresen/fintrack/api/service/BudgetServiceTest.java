@@ -8,7 +8,8 @@ import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
-import com.maemresen.fintrack.api.exceptions.InvalidParameter;
+import com.maemresen.fintrack.api.exceptions.InvalidParameterException;
+import com.maemresen.fintrack.api.exceptions.NotFoundException;
 import com.maemresen.fintrack.api.mapper.BudgetMapper;
 import com.maemresen.fintrack.api.mapper.StatementMapper;
 import com.maemresen.fintrack.api.repository.BudgetRepository;
@@ -160,7 +161,7 @@ class BudgetServiceTest {
                 MOCK_STATEMENT_DATE_2,
                 MOCK_STATEMENT_CATEGORY_2);
         when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.empty());
-        assertThrows(InvalidParameter.class, () -> budgetService.addStatement(MOCK_BUDGET_ID_1, statementCreateDto2));
+        assertThrows(NotFoundException.class, () -> budgetService.addStatement(MOCK_BUDGET_ID_1, statementCreateDto2));
         verify(budgetRepository, never().description("In any error case, save method shouldn't be called")).save(any());
     }
 
@@ -191,7 +192,7 @@ class BudgetServiceTest {
     void whenRemoveStatementWithNonExistingBudgetIdShouldThrowException() {
         when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.empty());
 
-        assertThrows(InvalidParameter.class, () -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
+        assertThrows(NotFoundException.class, () -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
 
         verify(budgetRepository, never().description("In any error case, save method shouldn't be called")).save(any());
     }
@@ -206,12 +207,6 @@ class BudgetServiceTest {
         when(budgetRepository.save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(MOCK_BUDGET_ID_1, statementEntity1))).thenReturn(existingBudgetEntityWithStatement1);
         when(budgetMapper.mapToBudgetDto(existingBudgetEntityWithStatement1)).thenReturn(budgetDtoWithStatement1);
 
-        BudgetDto savedBudget = assertDoesNotThrow(() -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
-
-        verify(budgetRepository, times(1).description("Existing Budget that statement will be removed must be get once from repository")).findById(MOCK_BUDGET_ID_1);
-        assertTrue(existingBudgetEntityWithStatement1.getStatements().contains(statementEntity1), "Statement must be removed from Budget entity");
-        verify(budgetRepository, times(1).description("Updated Budget entity must be saved")).save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(MOCK_BUDGET_ID_1, statementEntity1));
-        assertNotNull(savedBudget, "Saved Budget must be returned");
-        assertEquals(budgetDtoWithStatement1, savedBudget, "Saved Budget must be mapped to BudgetDto and returned");
+        assertThrows(NotFoundException.class, () -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
     }
 }

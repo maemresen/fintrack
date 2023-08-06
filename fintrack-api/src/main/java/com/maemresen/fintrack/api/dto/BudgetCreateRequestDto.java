@@ -1,6 +1,6 @@
 package com.maemresen.fintrack.api.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -16,6 +16,6 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class BudgetCreateRequestDto {
 
-    @NotNull
+    @NotBlank
     private String name;
 }
