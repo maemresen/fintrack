@@ -22,6 +22,7 @@ public enum ExceptionType {
     // COMMON
     UNEXPECTED(ExceptionType.COMMON, "001", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_PARAMETER(ExceptionType.COMMON, "002", HttpStatus.BAD_REQUEST),
+    NOT_FOUND(ExceptionType.COMMON, "002", HttpStatus.NOT_FOUND),
 
     // AUTH
     ;

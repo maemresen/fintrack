@@ -1,6 +1,6 @@
 package com.maemresen.fintrack.api.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,92 +20,72 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Getter(AccessLevel.PUBLIC)
 public class RequestConfig {
 
-    private HttpMethod method;
-    private String uri;
-    private List<Object> variables;
-    private boolean bodyExists;
-    private Object body;
-    private boolean expectResponse;
-    private HttpStatus httpStatus;
-    
-    public static WithoutBodyBuilder get(@NotBlank String uri) {
-        return withoutBody(uri, HttpMethod.GET);
+    private HttpMethod requestMethod;
+    private String requestUri;
+    private List<Object> requestVariables;
+    private Object requestBody;
+    private boolean expectResponseBody;
+    private HttpStatus responseHttpStatus;
+    private ExceptionType responseExceptionType;
+
+    public static DefaultBuilder success(@NotBlank String uri) {
+        return new Builder().requestUri(uri).responseExceptionType(null);
     }
 
-    public static WithoutBodyBuilder delete(@NotBlank String uri) {
-        return withoutBody(uri, HttpMethod.DELETE);
-    }
-
-    public static WithoutBodyBuilder post(@NotBlank String uri) {
-        return withoutBody(uri, HttpMethod.PATCH);
-    }
-
-    public static WithoutBodyBuilder put(@NotBlank String uri) {
-        return withoutBody(uri, HttpMethod.PUT);
-    }
-
-    private static WithoutBodyBuilder withoutBody(String uri, HttpMethod httpMethod) {
-        return new Builder().uri(uri).method(httpMethod).bodyExists(false);
-    }
-
-    public static WithBodyBuilder postWithBody(@NotBlank String uri, Object body) throws JsonProcessingException {
-        return withBody(uri, HttpMethod.POST, body);
-    }
-
-    public static WithBodyBuilder putWithBody(@NotBlank String uri, Object body) throws JsonProcessingException {
-        return withBody(uri, HttpMethod.PUT, body);
-    }
-
-    private static WithBodyBuilder withBody(String uri, HttpMethod httpMethod, Object body) throws JsonProcessingException {
-        return new Builder().uri(uri).method(httpMethod).bodyExists(true).body(body);
+    public static ErrorBuilder error(@NotBlank String uri, @NotBlank ExceptionType exceptionType) {
+        return new Builder().requestUri(uri)
+                .responseExceptionType(exceptionType)
+                .responseHttpStatus(exceptionType.getHttpStatus())
+                .expectResponseBody(false);
     }
 
     public interface BaseBuilder {
         RequestConfig build() throws Exception;
     }
 
+    public interface DefaultBuilder extends BaseBuilder {
+        DefaultBuilder requestMethod(HttpMethod method);
 
-    public interface WithoutBodyBuilder extends BaseBuilder {
+        DefaultBuilder requestVariables(List<Object> variables);
 
-        WithoutBodyBuilder variables(List<Object> variables);
+        DefaultBuilder requestBody(Object body);
 
-        WithoutBodyBuilder expectResponse(boolean expectResponse);
-
-        WithoutBodyBuilder httpStatus(HttpStatus httpStatus);
+        DefaultBuilder expectResponseBody(boolean expectResponse);
     }
 
-    public interface WithBodyBuilder extends BaseBuilder {
-        WithBodyBuilder variables(List<Object> variables);
+    public interface ErrorBuilder extends BaseBuilder {
+        ErrorBuilder requestMethod(HttpMethod method);
 
-        WithBodyBuilder expectResponse(boolean expectResponse);
+        ErrorBuilder requestVariables(List<Object> variables);
 
-        WithBodyBuilder httpStatus(HttpStatus httpStatus);
+        ErrorBuilder requestBody(Object body);
+
+        DefaultBuilder expectResponseBody(boolean expectResponse);;
     }
-
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     @Accessors(fluent = true, chain = true)
     @Setter
-    public static class Builder implements WithBodyBuilder, WithoutBodyBuilder {
-        private String uri;
-        private HttpMethod method;
-        private List<Object> variables = Collections.emptyList();
-        private boolean bodyExists;
-        private Object body = null;
-        private boolean expectResponse = true;
-        private HttpStatus httpStatus = HttpStatus.OK;
-
+    public static class Builder implements DefaultBuilder, ErrorBuilder {
+        private String requestUri;
+        private HttpMethod requestMethod;
+        private List<Object> requestVariables = Collections.emptyList();
+        private Object requestBody = null;
+        private boolean expectResponseBody = true;
+        private HttpStatus responseHttpStatus = HttpStatus.OK;
+        private ExceptionType responseExceptionType = null;
 
         @Override
         public RequestConfig build() {
             return new RequestConfig()
-                    .setMethod(method)
-                    .setUri(uri)
-                    .setVariables(variables)
-                    .setBodyExists(bodyExists)
-                    .setBody(body)
-                    .setExpectResponse(expectResponse)
-                    .setHttpStatus(httpStatus);
+                    .setRequestUri(requestUri)
+                    .setRequestMethod(requestMethod)
+                    .setRequestBody(requestBody)
+                    .setRequestVariables(requestVariables)
+                    .setRequestBody(requestBody)
+                    .setExpectResponseBody(expectResponseBody)
+                    .setResponseHttpStatus(responseHttpStatus)
+                    .setResponseExceptionType(responseExceptionType);
         }
     }
 }

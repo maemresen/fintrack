@@ -17,6 +17,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.ResultActions;
@@ -46,20 +47,28 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     private static final Long TEST_STATEMENT_1_ID = 1L;
     private static final Long TEST_STATEMENT_2_ID = 2L;
 
-    protected BudgetDto performSuccessfulFindByIdRequest(Long budgetId) throws Exception {
-        var requestConfig = RequestConfig.get(FIND_BY_ID).variables(List.of(budgetId)).build();
+    private BudgetDto performSuccessfulFindByIdRequest(Long budgetId) throws Exception {
+        var requestConfig = RequestConfig.success(FIND_BY_ID)
+                .requestMethod(HttpMethod.GET)
+                .requestVariables(List.of(budgetId)).build();
         return performAndReturn(requestConfig, new TypeReference<>() {
         });
     }
 
-    protected BudgetDto performSuccessfulCreateRequest(BudgetCreateRequestDto createRequestDto) throws Exception {
-        var requestConfig = RequestConfig.postWithBody(CREATE, createRequestDto).expectResponse(true).build();
+    private BudgetDto performSuccessfulCreateRequest(BudgetCreateRequestDto createRequestDto) throws Exception {
+        var requestConfig = RequestConfig.success(CREATE)
+                .requestMethod(HttpMethod.POST)
+                .requestBody(createRequestDto)
+                .expectResponseBody(true)
+                .build();
         return performAndReturn(requestConfig, new TypeReference<>() {
         });
     }
 
-    protected List<BudgetDto> performSuccessfulFindAllRequest() throws Exception {
-        var requestConfig = RequestConfig.get(FIND_ALL).build();
+    private List<BudgetDto> performSuccessfulFindAllRequest() throws Exception {
+        var requestConfig = RequestConfig.success(FIND_ALL)
+                .requestMethod(HttpMethod.GET)
+                .build();
         return performAndReturn(requestConfig, new TypeReference<>() {
         });
     }
@@ -99,9 +108,10 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     @Order(3)
     void createEmptyNameBudget() throws Exception {
         var invalidCreateRequestDto = new BudgetCreateRequestDto("");
-        var requestConfig = RequestConfig.postWithBody(CREATE, invalidCreateRequestDto)
-                .expectResponse(false)
-                .httpStatus(HttpStatus.BAD_REQUEST)
+        var requestConfig = RequestConfig.error(CREATE, ExceptionType.INVALID_PARAMETER)
+                .requestMethod(HttpMethod.POST)
+                .requestBody(invalidCreateRequestDto)
+                .expectResponseBody(false)
                 .build();
         perform(requestConfig);
     }
@@ -117,7 +127,11 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .date(LocalDateTime.now())
                 .build();
 
-        var requestConfig = RequestConfig.postWithBody(ADD_STATEMENT, body).variables(List.of(TEST_BUDGET_1_ID)).build();
+        var requestConfig = RequestConfig.success(ADD_STATEMENT)
+                .requestMethod(HttpMethod.POST)
+                .requestBody(body)
+                .requestVariables(List.of(TEST_BUDGET_1_ID))
+                .build();
         BudgetDto budgetDto = performAndReturn(requestConfig, new TypeReference<>() {
         });
 
@@ -130,9 +144,10 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     @Test
     @Order(6)
     void removeStatement() throws Exception {
-        var requestConfig = RequestConfig.delete(REMOVE_STATEMENT)
-                .variables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
-                .expectResponse(false)
+        var requestConfig = RequestConfig.success(REMOVE_STATEMENT)
+                .requestMethod(HttpMethod.DELETE)
+                .requestVariables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
+                .expectResponseBody(false)
                 .build();
         perform(requestConfig);
     }
@@ -140,10 +155,9 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     @Test
     @Order(7)
     void removeNonExistsStatement() throws Exception {
-        var requestConfig = RequestConfig.delete(REMOVE_STATEMENT)
-                .variables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
-                .expectResponse(false)
-                .httpStatus(HttpStatus.BAD_REQUEST)
+        var requestConfig = RequestConfig.error(REMOVE_STATEMENT, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.DELETE)
+                .requestVariables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
                 .build();
         perform(requestConfig);
     }
@@ -151,12 +165,11 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     @Test
     @Order(8)
     void removeNonExistsStatementFromNonExistingBudget() throws Exception {
-        var requestConfig = RequestConfig.delete(REMOVE_STATEMENT)
-                .variables(List.of(NON_EXISTING_BUDGET_1_ID, TEST_STATEMENT_1_ID))
-                .expectResponse(false)
-                .httpStatus(HttpStatus.BAD_REQUEST)
+        var requestConfig = RequestConfig.error(REMOVE_STATEMENT, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.DELETE)
+                .requestVariables(List.of(NON_EXISTING_BUDGET_1_ID, TEST_STATEMENT_1_ID))
+                .expectResponseBody(false)
                 .build();
-        ResultActions perform = perform(requestConfig);
-        perform.andExpect(header().string(HeaderConstants.ERROR_CODE_HEADER, ExceptionType.INVALID_PARAMETER.getCode()));
+        perform(requestConfig);
     }
 }
