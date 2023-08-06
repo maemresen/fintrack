@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class ServiceException extends RuntimeException {
 	private final ExceptionType exceptionType;
-	private final Object data;
+	private final transient Object data;
 
 	protected ServiceException(String message, ExceptionType exceptionType) {
 		super(message);
