@@ -57,10 +57,9 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     }
 
     protected BudgetDto performSuccessfulCreateRequest(BudgetCreateRequestDto createRequestDto) throws Exception {
-        var request = RequestBuilder.withBody(objectMapper)
+        var request = RequestBuilder.withBody(objectMapper, createRequestDto)
                 .method(HttpMethod.POST)
                 .uri(CREATE)
-                .body(createRequestDto)
                 .build();
         var response = performSuccessfulApiCall(request)
                 .andReturn()
@@ -71,7 +70,10 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
     }
 
     protected List<BudgetDto> performSuccessfulFindAllRequest() throws Exception {
-        var request = httpRequest(HttpMethod.GET, FIND_ALL);
+        var request = RequestBuilder.withoutBody()
+                .method(HttpMethod.GET)
+                .uri(FIND_ALL)
+                .build();
         var response = performSuccessfulApiCall(request)
                 .andReturn()
                 .getResponse();
