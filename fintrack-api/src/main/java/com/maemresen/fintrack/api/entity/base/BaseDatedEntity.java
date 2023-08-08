@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
-public class BaseDatedEntity extends BaseEntity{
+public class BaseDatedEntity extends BaseEntity {
 
     @Column(nullable = false)
     private LocalDateTime createdDate;

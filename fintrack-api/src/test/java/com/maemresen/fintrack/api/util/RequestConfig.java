@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import java.util.Collections;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
-
 @Accessors(chain = true)
 @Setter(AccessLevel.PRIVATE)
 @Getter(AccessLevel.PUBLIC)
@@ -60,7 +58,8 @@ public class RequestConfig {
 
         ErrorBuilder requestBody(Object body);
 
-        DefaultBuilder expectResponseBody(boolean expectResponse);;
+        DefaultBuilder expectResponseBody(boolean expectResponse);
+
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

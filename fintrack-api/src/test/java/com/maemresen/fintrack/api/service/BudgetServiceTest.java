@@ -8,7 +8,6 @@ import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
-import com.maemresen.fintrack.api.exceptions.InvalidParameterException;
 import com.maemresen.fintrack.api.exceptions.NotFoundException;
 import com.maemresen.fintrack.api.mapper.BudgetMapper;
 import com.maemresen.fintrack.api.mapper.StatementMapper;

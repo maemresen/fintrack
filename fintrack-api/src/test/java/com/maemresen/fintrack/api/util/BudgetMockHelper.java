@@ -52,13 +52,13 @@ public class BudgetMockHelper {
     }
 
 
-    public static BudgetEntity getBudgetEntityIdAndStatementsArgumentMatcher(Long id, StatementEntity...statements) {
+    public static BudgetEntity getBudgetEntityIdAndStatementsArgumentMatcher(Long id, StatementEntity... statements) {
         return argThat(arg -> {
-            if(!arg.getId().equals(id)){
+            if (!arg.getId().equals(id)) {
                 return false;
             }
 
-            if(statements == null){
+            if (statements == null) {
                 return arg.getStatements() == null;
             }
 

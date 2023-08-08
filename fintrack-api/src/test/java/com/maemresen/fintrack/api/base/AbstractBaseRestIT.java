@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maemresen.fintrack.api.FintrackApiApplication;
 import com.maemresen.fintrack.api.config.TestJacksonConfig;
 import com.maemresen.fintrack.api.util.RequestConfig;
-import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -46,7 +45,7 @@ public abstract class AbstractBaseRestIT {
         var requestBuilder = request(requestConfig.getRequestMethod(), requestConfig.getRequestUri(), requestConfig.getRequestVariables().toArray())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
-        if(requestConfig.getRequestBody() != null){
+        if (requestConfig.getRequestBody() != null) {
             requestBuilder.content(objectMapper.writeValueAsString(requestConfig.getRequestBody()));
         }
 
@@ -62,7 +61,7 @@ public abstract class AbstractBaseRestIT {
         }
 
         var responseExceptionType = requestConfig.getResponseExceptionType();
-        if(responseExceptionType != null){
+        if (responseExceptionType != null) {
             resultActions.andExpect(header().string(HeaderConstants.ERROR_CODE_HEADER, responseExceptionType.getCode()));
         }
 
