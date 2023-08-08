@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "budget")
+@FieldNameConstants
 public class BudgetEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;

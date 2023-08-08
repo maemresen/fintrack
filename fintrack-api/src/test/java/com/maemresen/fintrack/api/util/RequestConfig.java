@@ -33,8 +33,7 @@ public class RequestConfig {
     public static ErrorBuilder error(@NotBlank String uri, @NotBlank ExceptionType exceptionType) {
         return new Builder().requestUri(uri)
                 .responseExceptionType(exceptionType)
-                .responseHttpStatus(exceptionType.getHttpStatus())
-                .expectResponseBody(false);
+                .responseHttpStatus(exceptionType.getHttpStatus());
     }
 
     public interface BaseBuilder {

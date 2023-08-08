@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 
 
@@ -19,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @EqualsAndHashCode
 @MappedSuperclass
+@FieldNameConstants
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
