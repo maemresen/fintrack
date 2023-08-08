@@ -3,7 +3,7 @@ package com.maemresen.fintrack.api.service.impl;
 import com.maemresen.fintrack.api.aspects.annotations.BusinessMethod;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
-import com.maemresen.fintrack.api.dto.EntityFieldErrorDto;
+import com.maemresen.fintrack.api.dto.FieldErrorDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
@@ -30,6 +30,9 @@ import java.util.Set;
 @Validated
 @Service
 public class BudgetServiceImpl implements BudgetService {
+
+    public static final String BUDGET_NOT_FOUND = "Budget not found";
+    public static final String STATEMENT_NOT_FOUND = "Statement not found";
 
     private final BudgetRepository budgetRepository;
     private final BudgetMapper budgetMapper;
@@ -61,7 +64,10 @@ public class BudgetServiceImpl implements BudgetService {
     @Transactional
     @Override
     public BudgetDto addStatement(@NotNull(message = "Budget Id cannot be null") Long budgetId, @Valid StatementCreateDto statementCreateDto) {
-        BudgetEntity budgetEntity = budgetRepository.findById(budgetId).orElseThrow(() -> new NotFoundException("Budget not found", budgetId));
+        BudgetEntity budgetEntity = budgetRepository.findById(budgetId)
+                .orElseThrow(() -> new NotFoundException(BUDGET_NOT_FOUND, List.of(
+                        FieldErrorDto.withFieldClass(BudgetEntity.class, BaseEntity.Fields.id, BUDGET_NOT_FOUND, budgetId)
+                )));
         StatementEntity statementEntity = statementMapper.mapToStatementEntity(statementCreateDto);
         Set<StatementEntity> statements = budgetEntity.getStatements();
         if (statements == null) {
@@ -80,22 +86,15 @@ public class BudgetServiceImpl implements BudgetService {
     @Override
     public BudgetDto removeStatement(@NotNull(message = "Budget Id cannot be null") Long budgetId, @NotNull(message = "Statement Id cannot be null") Long statementId) {
         BudgetEntity budgetEntity = budgetRepository.findById(budgetId)
-                .orElseThrow(() -> new NotFoundException("Budget not found", EntityFieldErrorDto.builder()
-                        .fieldClass(BudgetEntity.class.getName())
-                        .field(BaseEntity.Fields.id)
-                        .message("Budget not found")
-                        .rejectedValue(budgetId)
-                        .build()
-                ));
+                .orElseThrow(() -> new NotFoundException(BUDGET_NOT_FOUND, List.of(
+                        FieldErrorDto.withFieldClass(BudgetEntity.class, BaseEntity.Fields.id, BUDGET_NOT_FOUND, budgetId)
+                )));
 
         Set<StatementEntity> statements = budgetEntity.getStatements();
         if (!CollectionUtils.emptyIfNull(statements).removeIf(statementEntity -> statementEntity.getId().equals(statementId))) {
-            throw new NotFoundException("Statement not found", EntityFieldErrorDto.builder()
-                    .fieldClass(StatementEntity.class.getName())
-                    .field(BaseEntity.Fields.id)
-                    .message("Statement not found")
-                    .rejectedValue(statementId)
-                    .build());
+            throw new NotFoundException(STATEMENT_NOT_FOUND, List.of(
+                    FieldErrorDto.withFieldClass(StatementEntity.class, BaseEntity.Fields.id, STATEMENT_NOT_FOUND, budgetId)
+            ));
         }
 
         return budgetMapper.mapToBudgetDto(budgetRepository.save(budgetEntity));

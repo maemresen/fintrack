@@ -4,9 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.maemresen.fintrack.api.base.AbstractBaseRestWithDbIT;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
-import com.maemresen.fintrack.api.dto.EntityFieldErrorDto;
 import com.maemresen.fintrack.api.dto.ErrorDto;
-import com.maemresen.fintrack.api.dto.FieldValidationErrorDto;
+import com.maemresen.fintrack.api.dto.FieldErrorDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
@@ -26,10 +25,12 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext
@@ -128,7 +129,7 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .requestBody(invalidCreateRequestDto)
                 .expectResponseBody(true)
                 .build();
-        ErrorDto<List<FieldValidationErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
+        ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
         });
 
         assertNotNull(responseBody);
@@ -137,7 +138,7 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
         assertTrue(CollectionUtils.isNotEmpty(fieldValidationErrors));
 
         var fieldValidationError = fieldValidationErrors.get(0);
-        assertEquals(BudgetEntity.Fields.name, fieldValidationError.getField());
+        assertEquals(BudgetCreateRequestDto.Fields.name, fieldValidationError.getField());
     }
 
     @Test
@@ -165,6 +166,38 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
         assertTrue(budgetDto.getStatements().stream().anyMatch(statementDto -> statementDto.getAmount().equals(expenseAmount)));
     }
 
+
+    @Test
+    @Order(4)
+    void addIncomeStatementToNonExistingBudget() throws Exception {
+        var expenseAmount = 100D;
+        StatementCreateDto body = StatementCreateDto.builder()
+                .amount(expenseAmount)
+                .currency(Currency.EUR)
+                .type(StatementType.EXPENSE)
+                .date(LocalDateTime.now())
+                .build();
+
+        var requestConfig = RequestConfig.error(ADD_STATEMENT, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.POST)
+                .requestBody(body)
+                .requestVariables(List.of(NON_EXISTING_BUDGET_1_ID))
+                .build();
+        ErrorDto<List<FieldErrorDto>> fieldErrorDtoErrorDto = performAndReturn(requestConfig, new TypeReference<>() {
+        });
+
+        assertNotNull(fieldErrorDtoErrorDto);
+        Optional<FieldErrorDto> optionalFieldErrorDto = CollectionUtils.emptyIfNull(fieldErrorDtoErrorDto.getData()).stream()
+                .filter(fieldErrorDto -> fieldErrorDto.getFieldClass().equals(BudgetEntity.class.getName()))
+                .filter(fieldErrorDto -> fieldErrorDto.getField().equals(BaseEntity.Fields.id))
+                .filter(fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(NON_EXISTING_BUDGET_1_ID))
+                .findFirst();
+
+        if (optionalFieldErrorDto.isEmpty()) {
+            fail("Budget field error not found");
+        }
+    }
+
     @Test
     @Order(6)
     void removeStatement() throws Exception {
@@ -184,7 +217,7 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .requestVariables(List.of(TEST_BUDGET_1_ID, TEST_STATEMENT_1_ID))
                 .build();
 
-        ErrorDto<List<EntityFieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
+        ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
         });
 
         assertNotNull(responseBody);
@@ -193,8 +226,8 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
         assertTrue(CollectionUtils.isNotEmpty(data));
 
         var statementIdFieldError = data.stream()
-                .filter(entityFieldErrorDto -> entityFieldErrorDto.getFieldClass().equals(StatementEntity.class.getName()))
-                .filter(entityFieldErrorDto -> entityFieldErrorDto.getField().equals(BaseEntity.Fields.id))
+                .filter(fieldErrorDto -> fieldErrorDto.getFieldClass().equals(StatementEntity.class.getName()))
+                .filter(fieldErrorDto -> fieldErrorDto.getField().equals(BaseEntity.Fields.id))
                 .findFirst();
         assertTrue(statementIdFieldError.isPresent(), "Statement id field error not found");
     }
@@ -207,7 +240,7 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
                 .requestVariables(List.of(NON_EXISTING_BUDGET_1_ID, TEST_STATEMENT_1_ID))
                 .build();
 
-        ErrorDto<List<EntityFieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
+        ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
         });
 
         assertNotNull(responseBody);
@@ -216,8 +249,8 @@ class BudgetIT extends AbstractBaseRestWithDbIT {
         assertTrue(CollectionUtils.isNotEmpty(data));
 
         var budgetIdFieldError = data.stream()
-                .filter(entityFieldErrorDto -> entityFieldErrorDto.getFieldClass().equals(BudgetEntity.class.getName()))
-                .filter(entityFieldErrorDto -> entityFieldErrorDto.getField().equals(BaseEntity.Fields.id))
+                .filter(fieldErrorDto -> fieldErrorDto.getFieldClass().equals(BudgetEntity.class.getName()))
+                .filter(fieldErrorDto -> fieldErrorDto.getField().equals(BaseEntity.Fields.id))
                 .findFirst();
         assertTrue(budgetIdFieldError.isPresent(), "Budget id field error not found");
     }

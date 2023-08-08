@@ -1,7 +1,7 @@
 package com.maemresen.fintrack.api.config;
 
 import com.maemresen.fintrack.api.dto.ErrorDto;
-import com.maemresen.fintrack.api.dto.FieldValidationErrorDto;
+import com.maemresen.fintrack.api.dto.FieldErrorDto;
 import com.maemresen.fintrack.api.exceptions.InvalidParameterException;
 import com.maemresen.fintrack.api.exceptions.NotFoundException;
 import com.maemresen.fintrack.api.exceptions.ServiceException;
@@ -9,12 +9,12 @@ import com.maemresen.fintrack.api.exceptions.UnexpectedException;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,8 +22,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 @Slf4j
 @RestControllerAdvice
@@ -53,14 +51,13 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return getResponseEntity(serviceException);
     }
 
-    private List<FieldValidationErrorDto> getFieldValidationErrors(MethodArgumentNotValidException methodArgumentNotValidException) {
-        return methodArgumentNotValidException.getFieldErrors().stream()
-                .map((Function<? super FieldError, FieldValidationErrorDto>) fieldError -> FieldValidationErrorDto.builder()
-                        .field(fieldError.getField())
-                        .message(Optional.ofNullable(fieldError.getDefaultMessage()).orElse(""))
-                        .rejectedValue(Optional.ofNullable(fieldError.getRejectedValue()).orElse(""))
-                        .build())
-                .toList();
+    private List<FieldErrorDto> getFieldValidationErrors(MethodArgumentNotValidException methodArgumentNotValidException) {
+        return CollectionUtils.emptyIfNull(methodArgumentNotValidException.getFieldErrors()).stream().map(fieldError -> {
+            var field = fieldError.getField();
+            var message = fieldError.getDefaultMessage();
+            var rejectedValue = fieldError.getRejectedValue();
+            return FieldErrorDto.withField(field, message, rejectedValue);
+        }).toList();
     }
 
     private ResponseEntity<Object> getResponseEntity(ServiceException serviceException) {
