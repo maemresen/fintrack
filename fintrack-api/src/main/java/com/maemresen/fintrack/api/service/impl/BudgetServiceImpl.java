@@ -61,7 +61,7 @@ public class BudgetServiceImpl implements BudgetService {
         BudgetEntity budgetEntity = budgetRepository.findById(budgetId).orElseThrow(() -> new NotFoundException("Budget not found", budgetId));
         StatementEntity statementEntity = statementMapper.mapToStatementEntity(statementCreateDto);
         Set<StatementEntity> statements = budgetEntity.getStatements();
-        if(statements == null){
+        if (statements == null) {
             statements = new HashSet<>();
             budgetEntity.setStatements(statements);
         }
@@ -79,11 +79,11 @@ public class BudgetServiceImpl implements BudgetService {
         BudgetEntity budgetEntity = budgetRepository.findById(budgetId).orElseThrow(() -> new NotFoundException("Budget not found", budgetId));
 
         Set<StatementEntity> statements = budgetEntity.getStatements();
-        if(statements == null){
+        if (statements == null) {
             throw new NotFoundException("Statement not found", statementId);
         }
 
-        if(!statements.removeIf(statementEntity -> statementEntity.getId().equals(statementId))){
+        if (!statements.removeIf(statementEntity -> statementEntity.getId().equals(statementId))) {
             throw new NotFoundException("Statement not found", statementId);
         }
 

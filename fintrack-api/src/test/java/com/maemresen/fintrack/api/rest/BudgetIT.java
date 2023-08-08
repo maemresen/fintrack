@@ -1,4 +1,3 @@
-
 package com.maemresen.fintrack.api.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -11,16 +10,13 @@ import com.maemresen.fintrack.api.entity.enums.StatementType;
 import com.maemresen.fintrack.api.util.RequestConfig;
 import com.maemresen.fintrack.api.util.StringHelper;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
-import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +24,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext

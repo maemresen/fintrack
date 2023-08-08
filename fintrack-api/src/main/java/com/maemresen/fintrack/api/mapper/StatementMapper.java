@@ -10,5 +10,5 @@ import org.mapstruct.MappingConstants;
 public interface StatementMapper {
     StatementDto mapToStatementDto(StatementEntity statementEntity);
 
-    StatementEntity  mapToStatementEntity(StatementCreateDto statementCreateDto);
+    StatementEntity mapToStatementEntity(StatementCreateDto statementCreateDto);
 }
