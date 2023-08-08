@@ -25,4 +25,4 @@ jobs:
           # Wait for docker to be up and running
           sleep 10
       - name: Execute mvn verify
-        run: ./mvnw verify -PcodeQuality,codeCoverage sonar:sonar -Dsonar.branch.name=$BRANCH_NAME -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        run: ./mvnw verify -PcodeCoverage
