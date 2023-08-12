@@ -53,6 +53,8 @@ public abstract class AbstractBaseRestIT {
 
         if (requestConfig.isExpectResponseBody()) {
             resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+        } else {
+            resultActions.andExpect(MockMvcResultMatchers.content().string(""));
         }
 
         var httpStatus = Optional.ofNullable(requestConfig.getResponseHttpStatus());

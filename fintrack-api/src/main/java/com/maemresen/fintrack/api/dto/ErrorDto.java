@@ -1,5 +1,6 @@
 package com.maemresen.fintrack.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +13,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ErrorDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ErrorDto<T> {
+
     private String message;
-    private Object data;
+    private T data;
     private StackTraceElement[] stackTrace;
 }

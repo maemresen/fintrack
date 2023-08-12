@@ -19,3 +19,9 @@ spring:
     enabled: true
     change-log: classpath:liquibase/changelog.xml
     contexts: ${spring.profiles.active}
+
+app:
+  logging:
+    exceptions:
+      stack-track:
+        enabled: false
