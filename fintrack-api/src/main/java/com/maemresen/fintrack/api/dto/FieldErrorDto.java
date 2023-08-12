@@ -1,5 +1,6 @@
 package com.maemresen.fintrack.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -16,6 +17,7 @@ import lombok.experimental.FieldNameConstants;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Function;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -39,25 +41,40 @@ public class FieldErrorDto {
         return new FieldErrorDto(null, field, message, rejectedValue);
     }
 
+    @JsonIgnore
     public String getStringRejectedValue() {
-        return rejectedValue == null ? null : rejectedValue.toString();
+        return this.getOptionalRejectedValueAsString().orElse(null);
     }
 
+    @JsonIgnore
     public Integer getIntRejectedValue() {
-        return rejectedValue == null ? null : Integer.parseInt(rejectedValue.toString());
+        return this.getRejectedValueAs(Integer::parseInt);
     }
 
+    @JsonIgnore
     public Long getLongRejectedValue() {
-        return rejectedValue == null ? null : Long.parseLong(rejectedValue.toString());
+        return this.getRejectedValueAs(Long::parseLong);
     }
 
+    @JsonIgnore
     public Double getDoubleRejectedValue() {
-        return rejectedValue == null ? null : Double.parseDouble(rejectedValue.toString());
+        return this.getRejectedValueAs(Double::parseDouble);
     }
 
+    @JsonIgnore
     public Boolean getBooleanRejectedValue() {
-        return rejectedValue == null ? null : Boolean.parseBoolean(rejectedValue.toString());
+        return this.getRejectedValueAs(Boolean::parseBoolean);
     }
+
+    private <T> T getRejectedValueAs(Function<String, T> mapper) {
+        return this.getOptionalRejectedValueAsString().map(mapper).orElse(null);
+    }
+
+    private Optional<String> getOptionalRejectedValueAsString() {
+        return Optional.ofNullable(rejectedValue)
+            .map(Object::toString);
+    }
+
 
     public static class EntityFieldErrorDtoDeserializer extends JsonDeserializer<FieldErrorDto> {
         @Override

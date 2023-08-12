@@ -3,10 +3,12 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-
+    <!-- Changeset -->
     <changeSet id="v0.00-initial" author="SYSTEM">
         <sqlFile path="v0/v0.00-initial.sql" relativeToChangelogFile="true"/>
     </changeSet>
+
+    <!-- IT Data -->
     <changeSet id="it-v1" author="SYSTEM" context="it">
         <sqlFile path="it/data-v1.sql" relativeToChangelogFile="true"/>
     </changeSet>

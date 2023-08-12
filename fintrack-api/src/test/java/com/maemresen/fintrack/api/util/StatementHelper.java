@@ -10,18 +10,18 @@ import lombok.experimental.UtilityClass;
 import java.time.LocalDateTime;
 
 @UtilityClass
-public class StatementMockHelper {
-    public static StatementEntity createMockStatementEntityWithoutId() {
-        return createMockStatementEntityWithId(null);
+public class StatementHelper {
+    public static StatementEntity createStatementEntityWithoutId() {
+        return createStatementEntityWithId(null);
     }
 
-    public static StatementEntity createMockStatementEntityWithId(Long id) {
+    public static StatementEntity createStatementEntityWithId(Long id) {
         StatementEntity statementEntity = new StatementEntity();
         statementEntity.setId(id);
         return statementEntity;
     }
 
-    public static StatementDto createMockStatementDto(Long id) {
+    public static StatementDto createStatementDto(Long id) {
         StatementDto statementDto = new StatementDto();
         statementDto.setId(id);
         return statementDto;

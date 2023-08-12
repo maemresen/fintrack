@@ -14,9 +14,8 @@ import com.maemresen.fintrack.api.mapper.StatementMapper;
 import com.maemresen.fintrack.api.repository.BudgetRepository;
 import com.maemresen.fintrack.api.service.impl.BudgetServiceImpl;
 import com.maemresen.fintrack.api.util.BudgetMockHelper;
-import com.maemresen.fintrack.api.util.StatementMockHelper;
+import com.maemresen.fintrack.api.util.StatementHelper;
 import org.apache.commons.collections4.IterableUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,16 +43,19 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles({"test-h2"})
 class BudgetServiceTest {
 
-    private static final Long MOCK_BUDGET_ID_1 = 1L;
-    private static final String MOCK_BUDGET_NAME_1 = "Budget 1";
-    private static final Long MOCK_STATEMENT_ID_1 = 1L;
-    private static final Long MOCK_STATEMENT_ID_2 = 2L;
-    private static final String MOCK_STATEMENT_DESCRIPTION_2 = "Statement 2";
-    private static final Double MOCK_STATEMENT_AMOUNT_2 = 100.0;
-    private static final Currency MOCK_STATEMENT_CURRENCY_2 = Currency.TRY;
-    private static final StatementType MOCK_STATEMENT_TYPE_2 = StatementType.INCOME;
-    private static final LocalDateTime MOCK_STATEMENT_DATE_2 = LocalDateTime.now();
-    private static final String MOCK_STATEMENT_CATEGORY_2 = "Category 1";
+    private static final Long BUDGET_ID_1 = 1L;
+    private static final String BUDGET_NAME_1 = "Budget 1";
+    private static final Long STATEMENT_ID_1 = 1L;
+    private static final Long STATEMENT_ID_2 = 2L;
+    private static final String STATEMENT_DESCRIPTION_2 = "Statement 2";
+    private static final Double STATEMENT_AMOUNT_1 = 100.0;
+    private static final Double STATEMENT_AMOUNT_2 = 200.0;
+    private static final Double STATEMENT_AMOUNT_3 = 50.0;
+    private static final Currency STATEMENT_CURRENCY_2 = Currency.TRY;
+    private static final StatementType STATEMENT_TYPE_2 = StatementType.INCOME;
+    private static final LocalDateTime STATEMENT_DATE_2 = LocalDateTime.now();
+    private static final String STATEMENT_CATEGORY_2 = "Category 1";
+    private static final int MONTH_1 = Month.AUGUST.getValue();
 
     @MockBean
     private BudgetRepository budgetRepository;
@@ -66,29 +69,25 @@ class BudgetServiceTest {
     @Autowired
     private BudgetServiceImpl budgetService;
 
-    @BeforeEach
-    void init() {
-    }
-
     @Test
     void whenFindByIdShouldReturnBudget() {
-        final BudgetEntity existingBudgetEntity = BudgetMockHelper.createMockBudgetEntityWithId(MOCK_BUDGET_ID_1);
-        final BudgetDto budgetDto = BudgetMockHelper.createMockBudgetDtoWithId(MOCK_BUDGET_ID_1);
+        final BudgetEntity existingBudgetEntity = BudgetMockHelper.createMockBudgetEntityWithId(BUDGET_ID_1);
+        final BudgetDto budgetDto = BudgetMockHelper.createMockBudgetDtoWithId(BUDGET_ID_1);
 
-        when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.of(existingBudgetEntity));
+        when(budgetRepository.findById(BUDGET_ID_1)).thenReturn(Optional.of(existingBudgetEntity));
         when(budgetMapper.mapToBudgetDto(existingBudgetEntity)).thenReturn(budgetDto);
 
-        Optional<BudgetDto> foundBudget = assertDoesNotThrow(() -> budgetService.findById(MOCK_BUDGET_ID_1));
+        Optional<BudgetDto> foundBudget = assertDoesNotThrow(() -> budgetService.findById(BUDGET_ID_1));
 
-        verify(budgetRepository).findById(MOCK_BUDGET_ID_1);
+        verify(budgetRepository).findById(BUDGET_ID_1);
         assertTrue(foundBudget.isPresent());
         assertEquals(budgetDto, foundBudget.get());
     }
 
     @Test
     void whenFindAllShouldReturnBudgets() {
-        final BudgetEntity existingBudgetEntity = BudgetMockHelper.createMockBudgetEntityWithId(MOCK_BUDGET_ID_1);
-        final BudgetDto budgetDto = BudgetMockHelper.createMockBudgetDtoWithId(MOCK_BUDGET_ID_1);
+        final BudgetEntity existingBudgetEntity = BudgetMockHelper.createMockBudgetEntityWithId(BUDGET_ID_1);
+        final BudgetDto budgetDto = BudgetMockHelper.createMockBudgetDtoWithId(BUDGET_ID_1);
 
         List<BudgetEntity> mockBudgetEntities = List.of(existingBudgetEntity);
         when(budgetRepository.findAll()).thenReturn(mockBudgetEntities);
@@ -102,10 +101,10 @@ class BudgetServiceTest {
 
     @Test
     void whenSaveWithStatementsShouldReturnBudget() {
-        BudgetCreateRequestDto budgetCreateRequestDto = BudgetMockHelper.createMockBudgetCreateRequestDto(MOCK_BUDGET_NAME_1);
+        BudgetCreateRequestDto budgetCreateRequestDto = BudgetMockHelper.createMockBudgetCreateRequestDto(BUDGET_NAME_1);
         BudgetEntity budgetEntityWithoutId = BudgetMockHelper.createMockBudgetEntityWithoutId();
-        BudgetEntity budgetEntityWithId = BudgetMockHelper.createMockBudgetEntityWithId(MOCK_BUDGET_ID_1);
-        BudgetDto budgetDto = BudgetMockHelper.createMockBudgetDtoWithId(MOCK_BUDGET_ID_1);
+        BudgetEntity budgetEntityWithId = BudgetMockHelper.createMockBudgetEntityWithId(BUDGET_ID_1);
+        BudgetDto budgetDto = BudgetMockHelper.createMockBudgetDtoWithId(BUDGET_ID_1);
 
         when(budgetMapper.mapToBudgetEntity(budgetCreateRequestDto)).thenReturn(budgetEntityWithoutId);
         when(budgetRepository.save(budgetEntityWithoutId)).thenReturn(budgetEntityWithId);
@@ -120,92 +119,82 @@ class BudgetServiceTest {
 
     @Test
     void whenAddStatementShouldReturnBudgetWithStatements() {
-        final StatementCreateDto statementCreateDto2 = StatementMockHelper.createValidStatementCreateDto(MOCK_STATEMENT_DESCRIPTION_2,
-                MOCK_STATEMENT_AMOUNT_2,
-                MOCK_STATEMENT_CURRENCY_2,
-                MOCK_STATEMENT_TYPE_2,
-                MOCK_STATEMENT_DATE_2,
-                MOCK_STATEMENT_CATEGORY_2);
-        final StatementEntity statementEntity1 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_1);
-        final StatementEntity statementEntity2 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_2);
-        final StatementEntity statementEntity2WithoutId = StatementMockHelper.createMockStatementEntityWithoutId();
+        final StatementCreateDto statementCreateDto2 = StatementHelper.createValidStatementCreateDto(STATEMENT_DESCRIPTION_2, STATEMENT_AMOUNT_2, STATEMENT_CURRENCY_2, STATEMENT_TYPE_2, STATEMENT_DATE_2, STATEMENT_CATEGORY_2);
+        final StatementEntity statementEntity1 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_1);
+        final StatementEntity statementEntity2 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_2);
+        final StatementEntity statementEntity2WithoutId = StatementHelper.createStatementEntityWithoutId();
 
-        final BudgetEntity existingBudgetEntityWithStatement1 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(MOCK_BUDGET_ID_1, statementEntity1);
-        final BudgetEntity newBudgetEntityWithStatement1And2 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(MOCK_BUDGET_ID_1, statementEntity1, statementEntity2);
+        final BudgetEntity existingBudgetEntityWithStatement1 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(BUDGET_ID_1, statementEntity1);
+        final BudgetEntity newBudgetEntityWithStatement1And2 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(BUDGET_ID_1, statementEntity1, statementEntity2);
 
-        final StatementDto statementDto1 = StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_1);
-        final StatementDto statementDto2 = StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_2);
-        final BudgetDto budgetDtoWithStatement1And2 = BudgetMockHelper.createMockBudgetDtoWithIdAndStatements(MOCK_BUDGET_ID_1, statementDto1, statementDto2);
+        final StatementDto statementDto1 = StatementHelper.createStatementDto(STATEMENT_ID_1);
+        final StatementDto statementDto2 = StatementHelper.createStatementDto(STATEMENT_ID_2);
+        final BudgetDto budgetDtoWithStatement1And2 = BudgetMockHelper.createMockBudgetDtoWithIdAndStatements(BUDGET_ID_1, statementDto1, statementDto2);
 
-        when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.of(existingBudgetEntityWithStatement1));
+        when(budgetRepository.findById(BUDGET_ID_1)).thenReturn(Optional.of(existingBudgetEntityWithStatement1));
         when(statementMapper.mapToStatementEntity(statementCreateDto2)).thenReturn(statementEntity2WithoutId);
-        when(budgetRepository.save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(MOCK_BUDGET_ID_1, statementEntity1, statementEntity2WithoutId))).thenReturn(newBudgetEntityWithStatement1And2);
+        when(budgetRepository.save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(BUDGET_ID_1, statementEntity1, statementEntity2WithoutId))).thenReturn(newBudgetEntityWithStatement1And2);
         when(budgetMapper.mapToBudgetDto(newBudgetEntityWithStatement1And2)).thenReturn(budgetDtoWithStatement1And2);
 
-        BudgetDto savedBudget = assertDoesNotThrow(() -> budgetService.addStatement(MOCK_BUDGET_ID_1, statementCreateDto2));
+        BudgetDto savedBudget = assertDoesNotThrow(() -> budgetService.addStatement(BUDGET_ID_1, statementCreateDto2));
 
-        verify(budgetRepository, times(1).description("Existing Budget that statement will be added must be get once from repository")).findById(MOCK_BUDGET_ID_1);
+        verify(budgetRepository, times(1).description("Existing Budget that statement will be added must be get once from repository")).findById(BUDGET_ID_1);
         assertTrue(existingBudgetEntityWithStatement1.getStatements().contains(statementEntity2WithoutId), "Statement must be added to Budget entity");
-        verify(budgetRepository, times(1).description("Updated Budget entity must be saved")).save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(MOCK_BUDGET_ID_1, statementEntity1, statementEntity2WithoutId));
+        verify(budgetRepository, times(1).description("Updated Budget entity must be saved")).save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(BUDGET_ID_1, statementEntity1, statementEntity2WithoutId));
         assertNotNull(savedBudget, "Saved Budget must be returned");
         assertEquals(budgetDtoWithStatement1And2, savedBudget, "Saved Budget must be mapped to BudgetDto and returned");
     }
 
     @Test
     void whenAddStatementWithNonExistingBudgetIdShouldThrowException() {
-        final StatementCreateDto statementCreateDto2 = StatementMockHelper.createValidStatementCreateDto(MOCK_STATEMENT_DESCRIPTION_2,
-                MOCK_STATEMENT_AMOUNT_2,
-                MOCK_STATEMENT_CURRENCY_2,
-                MOCK_STATEMENT_TYPE_2,
-                MOCK_STATEMENT_DATE_2,
-                MOCK_STATEMENT_CATEGORY_2);
-        when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> budgetService.addStatement(MOCK_BUDGET_ID_1, statementCreateDto2));
+        final StatementCreateDto statementCreateDto2 = StatementHelper.createValidStatementCreateDto(STATEMENT_DESCRIPTION_2, STATEMENT_AMOUNT_2, STATEMENT_CURRENCY_2, STATEMENT_TYPE_2, STATEMENT_DATE_2, STATEMENT_CATEGORY_2);
+        when(budgetRepository.findById(BUDGET_ID_1)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> budgetService.addStatement(BUDGET_ID_1, statementCreateDto2));
         verify(budgetRepository, never().description("In any error case, save method shouldn't be called")).save(any());
     }
 
     @Test
     void whenRemoveStatementShouldReturnBudgetWithStatements() {
-        final StatementEntity statementEntity1 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_1);
-        final StatementEntity statementEntity2 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_2);
+        final StatementEntity statementEntity1 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_1);
+        final StatementEntity statementEntity2 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_2);
 
-        final BudgetEntity existingBudgetEntityWithStatement1And2 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(MOCK_BUDGET_ID_1, statementEntity1, statementEntity2);
-        final BudgetEntity newBudgetEntityWithStatement1 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(MOCK_BUDGET_ID_1, statementEntity1);
+        final BudgetEntity existingBudgetEntityWithStatement1And2 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(BUDGET_ID_1, statementEntity1, statementEntity2);
+        final BudgetEntity newBudgetEntityWithStatement1 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(BUDGET_ID_1, statementEntity1);
 
-        final BudgetDto budgetDtoWithStatement1 = BudgetMockHelper.createMockBudgetDtoWithIdAndStatements(MOCK_BUDGET_ID_1, StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_1));
+        final BudgetDto budgetDtoWithStatement1 = BudgetMockHelper.createMockBudgetDtoWithIdAndStatements(BUDGET_ID_1, StatementHelper.createStatementDto(STATEMENT_ID_1));
 
-        when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.of(existingBudgetEntityWithStatement1And2));
-        when(budgetRepository.save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(MOCK_BUDGET_ID_1, statementEntity1))).thenReturn(newBudgetEntityWithStatement1);
+        when(budgetRepository.findById(BUDGET_ID_1)).thenReturn(Optional.of(existingBudgetEntityWithStatement1And2));
+        when(budgetRepository.save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(BUDGET_ID_1, statementEntity1))).thenReturn(newBudgetEntityWithStatement1);
         when(budgetMapper.mapToBudgetDto(newBudgetEntityWithStatement1)).thenReturn(budgetDtoWithStatement1);
 
-        BudgetDto savedBudget = assertDoesNotThrow(() -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
+        BudgetDto savedBudget = assertDoesNotThrow(() -> budgetService.removeStatement(BUDGET_ID_1, STATEMENT_ID_2));
 
-        verify(budgetRepository, times(1).description("Existing Budget that statement will be removed must be get once from repository")).findById(MOCK_BUDGET_ID_1);
+        verify(budgetRepository, times(1).description("Existing Budget that statement will be removed must be get once from repository")).findById(BUDGET_ID_1);
         assertFalse(existingBudgetEntityWithStatement1And2.getStatements().contains(statementEntity2), "Statement must be removed from Budget entity");
-        verify(budgetRepository, times(1).description("Updated Budget entity must be saved")).save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(MOCK_BUDGET_ID_1, statementEntity1));
+        verify(budgetRepository, times(1).description("Updated Budget entity must be saved")).save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(BUDGET_ID_1, statementEntity1));
         assertNotNull(savedBudget, "Saved Budget must be returned");
         assertEquals(budgetDtoWithStatement1, savedBudget, "Saved Budget must be mapped to BudgetDto and returned");
     }
 
     @Test
     void whenRemoveStatementWithNonExistingBudgetIdShouldThrowException() {
-        when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.empty());
+        when(budgetRepository.findById(BUDGET_ID_1)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
+        assertThrows(NotFoundException.class, () -> budgetService.removeStatement(BUDGET_ID_1, STATEMENT_ID_2));
 
         verify(budgetRepository, never().description("In any error case, save method shouldn't be called")).save(any());
     }
 
     @Test
     void whenRemoveStatementWithNonExistingStatementIdShouldThrowException() {
-        final StatementEntity statementEntity1 = StatementMockHelper.createMockStatementEntityWithId(MOCK_STATEMENT_ID_1);
-        final BudgetEntity existingBudgetEntityWithStatement1 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(MOCK_BUDGET_ID_1, statementEntity1);
-        final BudgetDto budgetDtoWithStatement1 = BudgetMockHelper.createMockBudgetDtoWithIdAndStatements(MOCK_BUDGET_ID_1, StatementMockHelper.createMockStatementDto(MOCK_STATEMENT_ID_1));
+        final StatementEntity statementEntity1 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_1);
+        final BudgetEntity existingBudgetEntityWithStatement1 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(BUDGET_ID_1, statementEntity1);
+        final BudgetDto budgetDtoWithStatement1 = BudgetMockHelper.createMockBudgetDtoWithIdAndStatements(BUDGET_ID_1, StatementHelper.createStatementDto(STATEMENT_ID_1));
 
-        when(budgetRepository.findById(MOCK_BUDGET_ID_1)).thenReturn(Optional.of(existingBudgetEntityWithStatement1));
-        when(budgetRepository.save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(MOCK_BUDGET_ID_1, statementEntity1))).thenReturn(existingBudgetEntityWithStatement1);
+        when(budgetRepository.findById(BUDGET_ID_1)).thenReturn(Optional.of(existingBudgetEntityWithStatement1));
+        when(budgetRepository.save(BudgetMockHelper.getBudgetEntityIdAndStatementsArgumentMatcher(BUDGET_ID_1, statementEntity1))).thenReturn(existingBudgetEntityWithStatement1);
         when(budgetMapper.mapToBudgetDto(existingBudgetEntityWithStatement1)).thenReturn(budgetDtoWithStatement1);
 
-        assertThrows(NotFoundException.class, () -> budgetService.removeStatement(MOCK_BUDGET_ID_1, MOCK_STATEMENT_ID_2));
+        assertThrows(NotFoundException.class, () -> budgetService.removeStatement(BUDGET_ID_1, STATEMENT_ID_2));
     }
 }
