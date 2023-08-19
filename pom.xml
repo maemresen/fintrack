@@ -16,7 +16,6 @@
     </modules>
 
     <properties>
-        <profile.code-coverage.id>codeCoverage</profile.code-coverage.id>
         <org.jacaco.maven-plugin.version>0.8.10</org.jacaco.maven-plugin.version>
         <org.springframework.boot.version>3.1.2</org.springframework.boot.version>
         <maven.compiler.source>17</maven.compiler.source>
@@ -29,6 +28,7 @@
         <liquibase.version>4.18.0</liquibase.version>
         <testcontainers.version>1.18.0</testcontainers.version>
         <spring-doc.openapi.version>2.1.0</spring-doc.openapi.version>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
 
     <dependencyManagement>
@@ -84,58 +84,13 @@
                         </annotationProcessorPaths>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${org.apache.maven.surfire-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.1.2</version>
-                    <configuration>
-                        <includes>
-                            <include>**/*IT.java</include>
-                        </includes>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>integration-test</goal>
-                                <goal>verify</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
     <profiles>
         <profile>
-            <id>codeQuality</id>
-            <properties>
-                <sonar.organization>maemresen</sonar.organization>
-                <sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
-                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                <sonar.coverage.jacoco.xmlReportPaths>**/target/site/jacoco/jacoco.xml
-                </sonar.coverage.jacoco.xmlReportPaths>
-                <sonar.coverage.exclusions>
-                    **/entity/**/*,**/dto/**/*,**/mapper/**/*,**/exceptions/**/*,**/aspects/**/*,**/constants/**/*,**/FintrackApiApplication*,**/config/**/*
-                </sonar.coverage.exclusions>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonarsource.scanner.maven</groupId>
-                        <artifactId>sonar-maven-plugin</artifactId>
-                        <version>3.9.1.2184</version>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>${profile.code-coverage.id}</id>
+            <id>codeCoverage</id>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -145,15 +100,67 @@
                             <version>${org.jacaco.maven-plugin.version}</version>
                             <executions>
                                 <execution>
+                                    <id>prepare-agent</id>
                                     <goals>
                                         <goal>prepare-agent</goal>
                                     </goals>
                                 </execution>
                                 <execution>
                                     <id>report</id>
-                                    <phase>test</phase>
+                                    <phase>verify</phase>
                                     <goals>
                                         <goal>report</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>unitTest</id>
+            <properties>
+                <maven.test.skip>false</maven.test.skip>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <version>${org.apache.maven.surfire-plugin.version}</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>integrationTest</id>
+            <properties>
+                <maven.test.skip>false</maven.test.skip>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-failsafe-plugin</artifactId>
+                            <version>3.1.2</version>
+                            <configuration>
+                                <includes>
+                                    <include>**/*IT.java</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/*Test.java</exclude>
+                                </excludes>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>integration-test</goal>
+                                        <goal>verify</goal>
                                     </goals>
                                 </execution>
                             </executions>
