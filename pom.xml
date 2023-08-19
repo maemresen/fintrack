@@ -29,7 +29,7 @@
         <testcontainers.version>1.18.0</testcontainers.version>
         <spring-doc.openapi.version>2.1.0</spring-doc.openapi.version>
         <maven.test.skip>true</maven.test.skip>
-        <it.docker.host>tcp://fintrack.maemresen.comm:2375</it.docker.host>
+        <it.docker.host>unix:///var/run/docker.sock</it.docker.host>
         <it.docker.tlsVerify>0</it.docker.tlsVerify>
     </properties>
 
