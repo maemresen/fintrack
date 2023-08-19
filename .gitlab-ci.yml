@@ -1,0 +1,71 @@
+services:
+    - name: docker:dind
+      command: ["--tls=false"]
+
+variables:
+    MAVEN_IMAGE: "maven:3.9.3-amazoncorretto-17"
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+    PAGES_BRANCH: "main"
+
+stages:
+    - prepare
+    - build
+    - test
+    - quality
+
+cache:
+    paths:
+        - ~/.m2/repository
+
+prepare:
+    stage: prepare
+    script:
+        - echo "Preparing the environment..."
+        - export BRANCH_NAME=$(echo $CI_COMMIT_REF_NAME | sed 's/\/\//-/g')
+        - dockerd-entrypoint.sh &
+        - sleep 10
+
+maven_build:
+    image: $MAVEN_IMAGE
+    stage: build
+    script:
+        - mvn clean package
+
+unit_tests:
+    image: $MAVEN_IMAGE
+    stage: test
+    script:
+        - mvn verify -PunitTest,codeCoverage
+    artifacts:
+        paths:
+            - fintrack-api/target/site/jacoco/jacoco.xml
+
+
+coverage_report:
+    # Must be in a stage later than test-jdk11's stage.
+    # The `visualize` stage does not exist by default.
+    # Please define it first, or choose an existing stage like `deploy`.
+    stage: test
+    needs:
+        - unit_tests
+    image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+    script:
+        # convert report from jacoco to cobertura, using relative project path
+        - python /opt/cover2cover.py fintrack-api/target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/fintrack-api/src/main/java/ > cobertura.xml
+    artifacts:
+        reports:
+            coverage_report:
+                coverage_format: cobertura
+                path: cobertura.xml
+
+integration_tests:
+    image: $MAVEN_IMAGE
+    stage: test
+    only:
+        - main
+    needs:
+        - unit_tests
+    script:
+        - mvn verify -PintegrationTest
