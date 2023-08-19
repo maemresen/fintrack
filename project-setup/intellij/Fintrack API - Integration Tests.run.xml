@@ -45,15 +45,13 @@
           </option>
           <option name="goals">
             <list>
-              <option value="clean" />
               <option value="verify" />
+              <option value="-DskipUTs" />
             </list>
           </option>
           <option name="pomFileName" />
           <option name="profilesMap">
-            <map>
-              <entry key="integrationTest" value="true" />
-            </map>
+            <map />
           </option>
           <option name="projectsCmdOptionValues">
             <list />

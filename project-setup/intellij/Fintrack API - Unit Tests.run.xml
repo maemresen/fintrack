@@ -11,8 +11,7 @@
           </option>
           <option name="goals">
             <list>
-              <option value="clean" />
-              <option value="verify" />
+              <option value="test" />
             </list>
           </option>
           <option name="pomFileName" />

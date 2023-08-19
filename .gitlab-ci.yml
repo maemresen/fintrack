@@ -1,22 +1,19 @@
-# Define Docker-in-Docker service for building and testing Docker images
-services:
-    - name: docker:dind
-      command: ["--tls=false"]
-
 # Set global variables used throughout the pipeline
 variables:
     MAVEN_IMAGE: "maven:3.9.3-amazoncorretto-17"
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_TLS_CERTDIR: ""
+    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
 
 # Define the stages that make up the pipeline
 stages:
     - build
     - test
-    - quality
 
 # Configure caching to speed up Maven builds by reusing dependencies
 cache:
     paths:
-        - ~/.m2/repository
+        - .m2/repository
 
 # Stage for building the Maven project
 maven_build:
@@ -24,16 +21,22 @@ maven_build:
     stage: build
     script:
         - mvn clean package
+    artifacts:
+        paths:
+            - fintrack-api/target/  # Share the entire target folder
 
 # Stage for running unit tests and generating code coverage report
 unit_tests:
     image: $MAVEN_IMAGE
     stage: test
     script:
-        - mvn verify -PunitTest,codeCoverage
+        - mvn test
     artifacts:
+        when: always
         paths:
-            - fintrack-api/target/site/jacoco/jacoco.xml
+            - fintrack-api/target/  # Share the entire target folder
+        reports:
+            junit: fintrack-api/target/surefire-reports/TEST-*.xml
 
 # Stage for converting Jacoco code coverage report to Cobertura format
 coverage_report:
@@ -55,9 +58,11 @@ coverage_report:
 integration_tests:
     image: $MAVEN_IMAGE
     stage: test
-    only:
-        - main
+    services:
+        - docker:20.10.16-dind
+#    only:
+#        - main
     needs:
         - unit_tests
     script:
-        - mvn verify -PintegrationTest
+        - mvn verify -DskipUTs -Dtest.integration.docker.host=$DOCKER_HOST
