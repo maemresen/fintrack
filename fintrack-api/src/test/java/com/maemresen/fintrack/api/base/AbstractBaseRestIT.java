@@ -6,6 +6,7 @@ import com.maemresen.fintrack.api.FintrackApiApplication;
 import com.maemresen.fintrack.api.config.TestJacksonConfig;
 import com.maemresen.fintrack.api.util.RequestConfig;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
+import org.junit.BeforeClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;

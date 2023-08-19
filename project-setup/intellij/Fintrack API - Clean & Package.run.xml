@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Fintrack API - Verify" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="Fintrack API - Clean &amp; Package" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -12,7 +12,7 @@
           <option name="goals">
             <list>
               <option value="clean" />
-              <option value="verify" />
+              <option value="package" />
             </list>
           </option>
           <option name="pomFileName" />
