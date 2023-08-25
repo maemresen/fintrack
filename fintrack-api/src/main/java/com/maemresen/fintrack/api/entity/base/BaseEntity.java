@@ -12,7 +12,6 @@ import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
@@ -25,5 +24,4 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 }

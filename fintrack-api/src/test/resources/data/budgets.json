@@ -1,0 +1,75 @@
+[
+    {
+        "name": "Budget for Edit Test",
+        "statements": []
+    },
+    {
+        "name": "Budget for Statement Addition (No Initial Statements)",
+        "statements": []
+    },
+    {
+        "name": "Budget for Statement Addition (Multiple Initial Statements)",
+        "statements": [
+            {
+                "createdDate": "2023-08-06T00:21:46.000Z",
+                "updatedDate": "2023-08-06T00:21:48.000Z",
+                "description": "Test Expense Aug 2023",
+                "amount": 100,
+                "currency": "EUR",
+                "type": "EXPENSE",
+                "date": "2023-08-06T00:22:11.000Z",
+                "category": null
+            },
+            {
+                "createdDate": "2023-09-06T00:21:46.000Z",
+                "updatedDate": "2023-09-06T00:21:48.000Z",
+                "description": "Test Income Sep 2023",
+                "amount": 150,
+                "currency": "EUR",
+                "type": "INCOME",
+                "date": "2023-09-06T00:22:11.000Z",
+                "category": null
+            }
+        ]
+    },
+    {
+        "name": "Budget for Single Statement Remove Test",
+        "statements": [
+            {
+                "createdDate": "2023-10-06T00:21:46.000Z",
+                "updatedDate": "2023-10-06T00:21:48.000Z",
+                "description": "Test Expense Oct 2023",
+                "amount": 250,
+                "currency": "EUR",
+                "type": "EXPENSE",
+                "date": "2023-10-06T00:22:11.000Z",
+                "category": null
+            }
+        ]
+    },
+    {
+        "name": "Budget for Multiple Statements Remove Test",
+        "statements": [
+            {
+                "createdDate": "2023-11-06T00:21:46.000Z",
+                "updatedDate": "2023-11-06T00:21:48.000Z",
+                "description": "Test Expense Nov 2023",
+                "amount": 300,
+                "currency": "EUR",
+                "type": "EXPENSE",
+                "date": "2023-11-06T00:22:11.000Z",
+                "category": null
+            },
+            {
+                "createdDate": "2023-11-07T00:21:46.000Z",
+                "updatedDate": "2023-11-07T00:21:48.000Z",
+                "description": "Test Income Nov 2023",
+                "amount": 350,
+                "currency": "EUR",
+                "type": "INCOME",
+                "date": "2023-11-07T00:22:11.000Z",
+                "category": null
+            }
+        ]
+    }
+]

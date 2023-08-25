@@ -9,6 +9,8 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.SetUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.argThat;
@@ -29,7 +31,7 @@ public class BudgetMockHelper {
         BudgetEntity budgetEntity = createMockBudgetEntityWithId(id);
 
         if (statements != null) {
-            budgetEntity.setStatements(SetUtils.hashSet(statements));
+            budgetEntity.setStatements(new ArrayList<>(List.of(statements)));
         }
         return budgetEntity;
     }
