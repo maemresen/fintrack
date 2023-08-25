@@ -2,11 +2,10 @@ package com.maemresen.fintrack.api.base;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maemresen.fintrack.api.FintrackApiApplication;
-import com.maemresen.fintrack.api.config.TestJacksonConfig;
+import com.maemresen.fintrack.api.config.RestIntegrationTestConfig;
 import com.maemresen.fintrack.api.util.RequestConfig;
+import com.maemresen.fintrack.api.FintrackApiApplication;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
-import org.junit.BeforeClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = FintrackApiApplication.class)
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = TestJacksonConfig.class)
+@ContextConfiguration(classes = RestIntegrationTestConfig.class)
 @ActiveProfiles({"it"})
 public abstract class AbstractBaseRestIT {
 

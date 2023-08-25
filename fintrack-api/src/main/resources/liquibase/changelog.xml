@@ -7,9 +7,4 @@
     <changeSet id="v0.00" author="SYSTEM">
         <sqlFile path="v0/v0.00-initial.sql" relativeToChangelogFile="true"/>
     </changeSet>
-
-    <!-- IT Data -->
-    <changeSet id="integration-test-data" author="SYSTEM" context="it">
-        <sqlFile path="it-data.sql" relativeToChangelogFile="true"/>
-    </changeSet>
 </databaseChangeLog>

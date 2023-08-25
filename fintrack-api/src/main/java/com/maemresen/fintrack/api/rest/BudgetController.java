@@ -1,10 +1,11 @@
 package com.maemresen.fintrack.api.rest;
 
+import com.maemresen.fintrack.api.exceptions.NotFoundException;
+import com.maemresen.fintrack.api.service.BudgetService;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
-import com.maemresen.fintrack.api.exceptions.NotFoundException;
-import com.maemresen.fintrack.api.service.BudgetService;
+import com.maemresen.fintrack.api.utils.constants.UriConstant;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,34 +21,34 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("budget")
+@RequestMapping(UriConstant.Budget.BASE_URI)
 public class BudgetController {
 
     private final BudgetService budgetService;
 
-    @GetMapping("{budgetId}")
+    @GetMapping(UriConstant.Budget.FIND_BY_ID)
     public ResponseEntity<BudgetDto> findById(@PathVariable Long budgetId) {
         return budgetService.findById(budgetId)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new NotFoundException("Budget not found", budgetId));
     }
 
-    @GetMapping
+    @GetMapping(UriConstant.Budget.FIND_ALL)
     public ResponseEntity<List<BudgetDto>> findAll() {
         return ResponseEntity.ok(budgetService.findAll());
     }
 
-    @PostMapping
+    @PostMapping(UriConstant.Budget.CREATE)
     public ResponseEntity<BudgetDto> create(@RequestBody @Valid BudgetCreateRequestDto createRequestDto) {
         return ResponseEntity.ok(budgetService.create(createRequestDto));
     }
 
-    @PostMapping("{budgetId}/statement")
+    @PostMapping(UriConstant.Budget.ADD_STATEMENT)
     public ResponseEntity<BudgetDto> addStatement(@PathVariable Long budgetId, @RequestBody @Valid StatementCreateDto statementCreateDto) {
         return ResponseEntity.ok(budgetService.addStatement(budgetId, statementCreateDto));
     }
 
-    @DeleteMapping("{budgetId}/statement/{statementId}")
+    @DeleteMapping(UriConstant.Budget.REMOVE_STATEMENT)
     public ResponseEntity<Void> removeStatement(@PathVariable Long budgetId, @PathVariable Long statementId) {
         budgetService.removeStatement(budgetId, statementId);
         return ResponseEntity.ok().build();
