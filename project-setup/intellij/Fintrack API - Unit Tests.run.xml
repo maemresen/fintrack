@@ -30,4 +30,17 @@
     </MavenSettings>
     <method v="2" />
   </configuration>
+  <configuration default="false" name="Fintrack API - Unit Tests" type="JUnit" factoryName="JUnit">
+    <module name="fintrack-api" />
+    <option name="PACKAGE_NAME" value="com.maemresen.fintrack.api" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="pattern" />
+    <patterns>
+      <pattern testClass=".*Test$" />
+    </patterns>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
 </component>
