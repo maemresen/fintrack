@@ -16,6 +16,7 @@ import com.maemresen.fintrack.api.service.impl.BudgetServiceImpl;
 import com.maemresen.fintrack.api.util.BudgetMockHelper;
 import com.maemresen.fintrack.api.util.StatementHelper;
 import org.apache.commons.collections4.IterableUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,14 +48,11 @@ class BudgetServiceTest {
     private static final Long STATEMENT_ID_1 = 1L;
     private static final Long STATEMENT_ID_2 = 2L;
     private static final String STATEMENT_DESCRIPTION_2 = "Statement 2";
-    private static final Double STATEMENT_AMOUNT_1 = 100.0;
     private static final Double STATEMENT_AMOUNT_2 = 200.0;
-    private static final Double STATEMENT_AMOUNT_3 = 50.0;
     private static final Currency STATEMENT_CURRENCY_2 = Currency.TRY;
     private static final StatementType STATEMENT_TYPE_2 = StatementType.INCOME;
     private static final LocalDateTime STATEMENT_DATE_2 = LocalDateTime.now();
     private static final String STATEMENT_CATEGORY_2 = "Category 1";
-    private static final int MONTH_1 = Month.AUGUST.getValue();
 
     @MockBean
     private BudgetRepository budgetRepository;
@@ -70,7 +67,8 @@ class BudgetServiceTest {
     private BudgetServiceImpl budgetService;
 
     @Test
-    void whenFindByIdShouldReturnBudget() {
+    @DisplayName("Given an existing budget ID, when searching by this ID, then the correct budget should be returned.")
+    void givenExistingBudgetId_whenFindById_thenReturnBudget() {
         final BudgetEntity existingBudgetEntity = BudgetMockHelper.createMockBudgetEntityWithId(BUDGET_ID_1);
         final BudgetDto budgetDto = BudgetMockHelper.createMockBudgetDtoWithId(BUDGET_ID_1);
 
@@ -85,7 +83,8 @@ class BudgetServiceTest {
     }
 
     @Test
-    void whenFindAllShouldReturnBudgets() {
+    @DisplayName("Given all budgets exist, when fetching all, then the expected budgets should be returned.")
+    void givenBudgetsExist_whenFindAll_thenReturnBudgets() {
         final BudgetEntity existingBudgetEntity = BudgetMockHelper.createMockBudgetEntityWithId(BUDGET_ID_1);
         final BudgetDto budgetDto = BudgetMockHelper.createMockBudgetDtoWithId(BUDGET_ID_1);
 
@@ -100,7 +99,8 @@ class BudgetServiceTest {
     }
 
     @Test
-    void whenSaveWithStatementsShouldReturnBudget() {
+    @DisplayName("Given a budget with statements, when saving, then the saved budget should be returned.")
+    void givenBudgetWithStatements_whenSave_thenReturnBudget() {
         BudgetCreateRequestDto budgetCreateRequestDto = BudgetMockHelper.createMockBudgetCreateRequestDto(BUDGET_NAME_1);
         BudgetEntity budgetEntityWithoutId = BudgetMockHelper.createMockBudgetEntityWithoutId();
         BudgetEntity budgetEntityWithId = BudgetMockHelper.createMockBudgetEntityWithId(BUDGET_ID_1);
@@ -118,7 +118,8 @@ class BudgetServiceTest {
     }
 
     @Test
-    void whenAddStatementShouldReturnBudgetWithStatements() {
+    @DisplayName("Given a budget and a statement, when adding the statement, then the budget with the new statements should be returned.")
+    void givenBudgetAndStatement_whenAddStatement_thenReturnBudgetWithStatements() {
         final StatementCreateDto statementCreateDto2 = StatementHelper.createValidStatementCreateDto(STATEMENT_DESCRIPTION_2, STATEMENT_AMOUNT_2, STATEMENT_CURRENCY_2, STATEMENT_TYPE_2, STATEMENT_DATE_2, STATEMENT_CATEGORY_2);
         final StatementEntity statementEntity1 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_1);
         final StatementEntity statementEntity2 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_2);
@@ -146,7 +147,8 @@ class BudgetServiceTest {
     }
 
     @Test
-    void whenAddStatementWithNonExistingBudgetIdShouldThrowException() {
+    @DisplayName("Given a non-existing budget ID, when trying to add a statement, then an exception should be thrown.")
+    void givenNonExistingBudgetId_whenAddStatement_thenThrowException() {
         final StatementCreateDto statementCreateDto2 = StatementHelper.createValidStatementCreateDto(STATEMENT_DESCRIPTION_2, STATEMENT_AMOUNT_2, STATEMENT_CURRENCY_2, STATEMENT_TYPE_2, STATEMENT_DATE_2, STATEMENT_CATEGORY_2);
         when(budgetRepository.findById(BUDGET_ID_1)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> budgetService.addStatement(BUDGET_ID_1, statementCreateDto2));
@@ -154,7 +156,8 @@ class BudgetServiceTest {
     }
 
     @Test
-    void whenRemoveStatementShouldReturnBudgetWithStatements() {
+    @DisplayName("Given a budget and an existing statement, when removing the statement, then the budget without the removed statement should be returned.")
+    void givenBudgetAndExistingStatement_whenRemoveStatement_thenReturnBudgetWithStatements() {
         final StatementEntity statementEntity1 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_1);
         final StatementEntity statementEntity2 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_2);
 
@@ -177,7 +180,8 @@ class BudgetServiceTest {
     }
 
     @Test
-    void whenRemoveStatementWithNonExistingBudgetIdShouldThrowException() {
+    @DisplayName("Given a non-existing budget ID, when trying to remove a statement, then an exception should be thrown.")
+    void givenNonExistingBudgetId_whenRemoveStatement_thenThrowException() {
         when(budgetRepository.findById(BUDGET_ID_1)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> budgetService.removeStatement(BUDGET_ID_1, STATEMENT_ID_2));
@@ -186,7 +190,8 @@ class BudgetServiceTest {
     }
 
     @Test
-    void whenRemoveStatementWithNonExistingStatementIdShouldThrowException() {
+    @DisplayName("Given a non-existing statement ID, when trying to remove a statement, then an exception should be thrown.")
+    void givenNonExistingStatementId_whenRemoveStatement_thenThrowException() {
         final StatementEntity statementEntity1 = StatementHelper.createStatementEntityWithId(STATEMENT_ID_1);
         final BudgetEntity existingBudgetEntityWithStatement1 = BudgetMockHelper.createMockBudgetEntityWithIdAndStatements(BUDGET_ID_1, statementEntity1);
         final BudgetDto budgetDtoWithStatement1 = BudgetMockHelper.createMockBudgetDtoWithIdAndStatements(BUDGET_ID_1, StatementHelper.createStatementDto(STATEMENT_ID_1));

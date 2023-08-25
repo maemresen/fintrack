@@ -13,21 +13,21 @@ import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 @Entity(name = "budget")
 @FieldNameConstants
+@EqualsAndHashCode(callSuper = true)
 public class BudgetEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "budget", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<StatementEntity> statements = new HashSet<>();
+    private List<StatementEntity> statements = new ArrayList<>();
 }

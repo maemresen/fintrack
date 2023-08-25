@@ -1,5 +1,8 @@
 package com.maemresen.fintrack.api.service.impl;
 
+import com.maemresen.fintrack.api.exceptions.NotFoundException;
+import com.maemresen.fintrack.api.repository.BudgetRepository;
+import com.maemresen.fintrack.api.service.BudgetService;
 import com.maemresen.fintrack.api.aspects.annotations.BusinessMethod;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
@@ -8,11 +11,8 @@ import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.base.BaseEntity;
-import com.maemresen.fintrack.api.exceptions.NotFoundException;
 import com.maemresen.fintrack.api.mapper.BudgetMapper;
 import com.maemresen.fintrack.api.mapper.StatementMapper;
-import com.maemresen.fintrack.api.repository.BudgetRepository;
-import com.maemresen.fintrack.api.service.BudgetService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -21,10 +21,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Validated
@@ -69,9 +68,9 @@ public class BudgetServiceImpl implements BudgetService {
                         FieldErrorDto.withFieldClass(BudgetEntity.class, BaseEntity.Fields.id, BUDGET_NOT_FOUND, budgetId)
                 )));
         StatementEntity statementEntity = statementMapper.mapToStatementEntity(statementCreateDto);
-        Set<StatementEntity> statements = budgetEntity.getStatements();
+        var statements = budgetEntity.getStatements();
         if (statements == null) {
-            statements = new HashSet<>();
+            statements = new ArrayList<>();
             budgetEntity.setStatements(statements);
         }
 
@@ -90,10 +89,10 @@ public class BudgetServiceImpl implements BudgetService {
                         FieldErrorDto.withFieldClass(BudgetEntity.class, BaseEntity.Fields.id, BUDGET_NOT_FOUND, budgetId)
                 )));
 
-        Set<StatementEntity> statements = budgetEntity.getStatements();
+        var statements = budgetEntity.getStatements();
         if (!CollectionUtils.emptyIfNull(statements).removeIf(statementEntity -> statementEntity.getId().equals(statementId))) {
             throw new NotFoundException(STATEMENT_NOT_FOUND, List.of(
-                    FieldErrorDto.withFieldClass(StatementEntity.class, BaseEntity.Fields.id, STATEMENT_NOT_FOUND, budgetId)
+                    FieldErrorDto.withFieldClass(StatementEntity.class, BaseEntity.Fields.id, STATEMENT_NOT_FOUND, statementId)
             ));
         }
 

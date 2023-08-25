@@ -57,7 +57,7 @@ public class RequestConfig {
 
         ErrorBuilder requestBody(Object body);
 
-        DefaultBuilder expectResponseBody(boolean expectResponse);
+        ErrorBuilder expectResponseBody(boolean expectResponse);
 
     }
 
