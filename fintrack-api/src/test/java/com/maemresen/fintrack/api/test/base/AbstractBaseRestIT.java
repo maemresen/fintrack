@@ -2,11 +2,10 @@ package com.maemresen.fintrack.api.test.base;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maemresen.fintrack.api.FintrackApiApplication;
 import com.maemresen.fintrack.api.test.config.RestIntegrationTestConfig;
 import com.maemresen.fintrack.api.test.util.RequestConfig;
-import com.maemresen.fintrack.api.FintrackApiApplication;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -30,14 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"it"})
 public abstract class AbstractBaseRestIT {
 
-    @Autowired
-    protected MockMvc mockMvc;
+    protected abstract MockMvc getMockMvc();
 
-    @Autowired
-    protected ObjectMapper objectMapper; // Inject the custom ObjectMapper
+    protected abstract ObjectMapper getObjectMapper();
 
     protected <T> T readResponse(MockHttpServletResponse response, TypeReference<T> typeReference) throws IOException {
-        return objectMapper.readValue(response.getContentAsString(), typeReference);
+        return getObjectMapper().readValue(response.getContentAsString(), typeReference);
     }
 
     public ResultActions perform(RequestConfig requestConfig) throws Exception {
@@ -46,10 +43,10 @@ public abstract class AbstractBaseRestIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
         if (requestConfig.getRequestBody() != null) {
-            requestBuilder.content(objectMapper.writeValueAsString(requestConfig.getRequestBody()));
+            requestBuilder.content(getObjectMapper().writeValueAsString(requestConfig.getRequestBody()));
         }
 
-        ResultActions resultActions = mockMvc.perform(requestBuilder);
+        ResultActions resultActions = getMockMvc().perform(requestBuilder);
 
         var httpStatus = Optional.ofNullable(requestConfig.getResponseHttpStatus());
         if (httpStatus.isPresent()) {

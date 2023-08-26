@@ -2,19 +2,24 @@ package com.maemresen.fintrack.api.test.base;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 
-public abstract class BaseAbstractDataLoader<T, R> {
+@Slf4j
+public abstract class AbstractBaseDataLoader<T, R> {
 
     private final TypeReference<T> typeReference;
 
-    public BaseAbstractDataLoader() {
+    public AbstractBaseDataLoader() {
         this.typeReference = getTypeReference();
     }
 
     public R load(String dataJson, ApplicationContext applicationContext) throws Exception {
         final var objectMapper = applicationContext.getBean(ObjectMapper.class);
+
+        log.info("Parsing data from: {}", dataJson);
         final var data = objectMapper.readValue(dataJson, this.typeReference);
+        log.info("Data parsed.");
         return loadData(applicationContext, data);
     }
 
