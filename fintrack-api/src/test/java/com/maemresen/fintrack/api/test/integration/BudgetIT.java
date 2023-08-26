@@ -18,6 +18,7 @@ import com.maemresen.fintrack.api.test.base.AbstractBaseRestIT;
 import com.maemresen.fintrack.api.test.extensions.DataLoaderExtension;
 import com.maemresen.fintrack.api.test.extensions.PostgreSQLExtension;
 import com.maemresen.fintrack.api.test.util.RequestConfig;
+import com.maemresen.fintrack.api.test.util.constant.BudgetItConstants;
 import com.maemresen.fintrack.api.test.util.data.loader.BudgetListDataLoader;
 import com.maemresen.fintrack.api.test.util.helper.BudgetITHelper;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
@@ -263,8 +264,8 @@ class BudgetIT extends AbstractBaseRestIT {
     class ReportIT {
 
         @Test
-        @DisplayName("Get Monthly Report For Years Between")
-        void getMonthlyReportForYearsBetween() throws Exception {
+        @DisplayName("Get Monthly Report For Years")
+        void getMonthlyReportForYears() throws Exception {
             var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseMonthlyReportForYear.BUDGET_INDEX);
             var requestConfig = RequestConfig.success(URI_MONTHLY_REPORT_FOR_YEAR)
                 .requestMethod(HttpMethod.GET)
@@ -320,6 +321,19 @@ class BudgetIT extends AbstractBaseRestIT {
                 BudgetEntity.class.getName(),
                 fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(nonExistingBudgetId));
         }
-    }
 
+        @Test
+        @DisplayName("Get Monthly Report Must be empty for non existing year")
+        void getMonthlyReportForNonExistingYear() throws Exception {
+            final var nonExistingYear = BudgetItConstants.UseCaseMonthlyReportForYear.YEAR + 1;
+            final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseMonthlyReportForYear.BUDGET_INDEX);
+            var requestConfig = RequestConfig.success(URI_MONTHLY_REPORT_FOR_YEAR)
+                .requestMethod(HttpMethod.GET)
+                .requestVariables(List.of(budgetId, nonExistingYear))
+                .build();
+            var yearlyReport = performAndReturn(requestConfig, new TypeReference<List<BudgetReportDto>>() {
+            });
+            assertTrue(CollectionUtils.isEmpty(yearlyReport), "Yearly report should be empty");
+        }
+    }
 }
