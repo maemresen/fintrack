@@ -19,7 +19,7 @@ public class ErrorCodeController {
 
     private final ErrorCodeService errorCodeService;
 
-    @GetMapping(UriConstant.ErrorCode.FIND_ALL)
+    @GetMapping(UriConstant.ErrorCode.FIND_ALL_URI)
     public ResponseEntity<List<ErrorCodeDto>> findAll() {
         return ResponseEntity.ok(errorCodeService.findAll());
     }
