@@ -1,11 +1,11 @@
-package com.maemresen.fintrack.api.test.util.container;
+package com.maemresen.fintrack.api.test.util.context;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @Slf4j
-public class PostgreSQLContainerManager extends ContainerManager {
+public class PostgreSQLContainerManager extends ContextInitializer {
 
     private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:15-alpine");
 

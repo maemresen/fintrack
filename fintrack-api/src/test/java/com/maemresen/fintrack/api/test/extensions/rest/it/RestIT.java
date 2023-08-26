@@ -1,14 +1,12 @@
-package com.maemresen.fintrack.api.test.extensions;
+package com.maemresen.fintrack.api.test.extensions.rest.it;
 
 import com.maemresen.fintrack.api.FintrackApiApplication;
-import com.maemresen.fintrack.api.test.base.AbstractBaseDataLoader;
-import com.maemresen.fintrack.api.test.config.RestIntegrationTestConfig;
-import com.maemresen.fintrack.api.test.util.container.ContainerManager;
+import com.maemresen.fintrack.api.test.config.IntegrationTestConfig;
+import com.maemresen.fintrack.api.test.util.context.ContextInitializer;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -21,15 +19,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = FintrackApiApplication.class)
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = RestIntegrationTestConfig.class)
+@ContextConfiguration(classes = IntegrationTestConfig.class)
 @ActiveProfiles({"it"})
 @ExtendWith(RestITExtension.class)
-@DirtiesContext
 public @interface RestIT {
-    String dataSourcePath();
-
-    Class<? extends AbstractBaseDataLoader<?, ?>> dataLoader();
-
     @AliasFor(annotation = ContextConfiguration.class, attribute = "initializers")
-    Class<? extends ContainerManager>[] contextInitializers() default {};
+    Class<? extends ContextInitializer>[] contextInitializer() default {};
+
+    @AliasFor(annotation = ActiveProfiles.class, attribute = "value")
+    String[] activeProfiles() default {"it"};
 }

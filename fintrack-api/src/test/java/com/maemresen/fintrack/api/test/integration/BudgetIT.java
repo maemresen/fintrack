@@ -15,16 +15,16 @@ import com.maemresen.fintrack.api.entity.base.BaseEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
 import com.maemresen.fintrack.api.test.base.AbstractBaseRestIT;
-import com.maemresen.fintrack.api.test.extensions.RestIT;
+import com.maemresen.fintrack.api.test.extensions.it.data.ITData;
+import com.maemresen.fintrack.api.test.extensions.rest.it.RestIT;
 import com.maemresen.fintrack.api.test.util.RequestConfig;
-import com.maemresen.fintrack.api.test.util.container.PostgreSQLContainerManager;
+import com.maemresen.fintrack.api.test.util.context.PostgreSQLContainerManager;
 import com.maemresen.fintrack.api.test.util.data.loader.BudgetListDataLoader;
 import com.maemresen.fintrack.api.test.util.helper.BudgetITHelper;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,10 +49,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Budget Use Cases IT")
-@RestIT(dataSourcePath = "data/budgets.json", dataLoader = BudgetListDataLoader.class, contextInitializers = PostgreSQLContainerManager.class)
+@RestIT(contextInitializer = PostgreSQLContainerManager.class)
+@ITData(dataSourcePath = "data/budgets.json", dataLoader = BudgetListDataLoader.class)
 class BudgetIT extends AbstractBaseRestIT {
 
     @Autowired
@@ -82,7 +81,7 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Budget Retrieval - Find By Id Not Found")
-    void findByIdNotFound(List<BudgetEntity> initialData) throws Exception {
+    void findByIdNotFound() throws Exception {
         final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(BudgetIT.this::performAndReturn);
         RequestConfig requestConfig = RequestConfig.error(URI_FIND_BY_ID, ExceptionType.NOT_FOUND)
             .requestMethod(HttpMethod.GET)
@@ -106,7 +105,7 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Create Budget - Create Success")
-    void createSuccess(List<BudgetEntity> initialData) throws Exception {
+    void createSuccess() throws Exception {
         String budgetName = BudgetITHelper.randomBudgetName();
         var requestConfig = RequestConfig.success(URI_CREATE)
             .requestMethod(HttpMethod.POST)
@@ -125,7 +124,7 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Create Budget - Create Empty Name Budget")
-    void createEmptyNameBudget(List<BudgetEntity> initialData) throws Exception {
+    void createEmptyNameBudget() throws Exception {
         var invalidCreateRequestDto = new BudgetCreateRequestDto("");
         var requestConfig = RequestConfig.error(URI_CREATE, ExceptionType.INVALID_PARAMETER)
             .requestMethod(HttpMethod.POST)
@@ -166,7 +165,7 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Statement Addition - Add Statement To Non Existing Budget")
-    void addStatementToNonExistingBudget(List<BudgetEntity> initialData) throws Exception {
+    void addStatementToNonExistingBudget() throws Exception {
         final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(BudgetIT.this::performAndReturn);
         StatementCreateDto body = StatementCreateDto.builder()
             .amount(STATEMENT_FOR_ADD_STATEMENT_AMOUNT)
@@ -232,7 +231,7 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Statement Removal - Remove Statement From Non Existing Budget")
-    void removeNonExistsStatementFromNonExistingBudget(List<BudgetEntity> initialData) throws Exception {
+    void removeNonExistsStatementFromNonExistingBudget() throws Exception {
         final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(BudgetIT.this::performAndReturn);
         final var nonExistingStatementId = BudgetITHelper.getNonExistingStatementId(BudgetIT.this::performAndReturn);
         var requestConfig = RequestConfig.error(URI_REMOVE_STATEMENT, ExceptionType.NOT_FOUND)
@@ -287,7 +286,7 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Report - Get Monthly Report For Non Existing Budget")
-    void getMonthlyReportForNonExistingBudget(List<BudgetEntity> initialData) throws Exception {
+    void getMonthlyReportForNonExistingBudget() throws Exception {
         final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(BudgetIT.this::performAndReturn);
         var requestConfig = RequestConfig.error(URI_MONTHLY_REPORT_FOR_YEAR, ExceptionType.NOT_FOUND)
             .requestMethod(HttpMethod.GET)

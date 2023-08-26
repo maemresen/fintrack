@@ -2,16 +2,10 @@ package com.maemresen.fintrack.api.test.base;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maemresen.fintrack.api.FintrackApiApplication;
-import com.maemresen.fintrack.api.test.config.RestIntegrationTestConfig;
 import com.maemresen.fintrack.api.test.util.RequestConfig;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -23,10 +17,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = FintrackApiApplication.class)
-@AutoConfigureMockMvc
-@ContextConfiguration(classes = RestIntegrationTestConfig.class)
-@ActiveProfiles({"it"})
 public abstract class AbstractBaseRestIT {
 
     protected abstract MockMvc getMockMvc();

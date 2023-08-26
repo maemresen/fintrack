@@ -4,10 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maemresen.fintrack.api.dto.ErrorCodeDto;
 import com.maemresen.fintrack.api.test.base.AbstractBaseRestIT;
-import com.maemresen.fintrack.api.test.extensions.RestIT;
+import com.maemresen.fintrack.api.test.extensions.rest.it.RestITWithoutDb;
 import com.maemresen.fintrack.api.test.util.RequestConfig;
-import com.maemresen.fintrack.api.test.util.container.PostgreSQLContainerManager;
-import com.maemresen.fintrack.api.test.util.data.loader.BudgetListDataLoader;
 import com.maemresen.fintrack.api.test.util.helper.ApiUriHelper;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import com.maemresen.fintrack.api.utils.constants.UriConstant;
@@ -22,11 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
-@RestIT(dataSourcePath = "data/budgets.json",
-    dataLoader = BudgetListDataLoader.class,
-    contextInitializers = PostgreSQLContainerManager.class
-)
+@RestITWithoutDb
 class ErrorCodeIT extends AbstractBaseRestIT {
 
     private static final String FIND_ALL = ApiUriHelper.mergeUri(UriConstant.ErrorCode.BASE_URI, UriConstant.ErrorCode.FIND_ALL_URI);
