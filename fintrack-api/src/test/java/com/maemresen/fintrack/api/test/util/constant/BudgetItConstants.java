@@ -1,5 +1,6 @@
 package com.maemresen.fintrack.api.test.util.constant;
 
+import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
 import com.maemresen.fintrack.api.test.util.helper.ApiUriHelper;
 import com.maemresen.fintrack.api.utils.constants.UriConstant;
@@ -43,33 +44,33 @@ public class BudgetItConstants {
 
     @UtilityClass
     public static final class MonthlyReportForYear {
-        public static final int BUDGET_INDEX = 5;
+        public static final int SINGLE_CURRENCY_BUDGET_INDEX = 5;
         public static final int YEAR = 2023;
 
-        public record Statement(int index, LocalDateTime date, double amount, StatementType type) {
+        public record Statement(int index, LocalDateTime date, Currency currency, double amount, StatementType type) {
         }
 
         // August Statements
-        public static final Statement STATEMENT_AUG_INCOME = new Statement(0, LocalDateTime.of(YEAR, 8, 6, 0, 22, 11), 500.0, StatementType.INCOME);
-        public static final Statement STATEMENT_AUG_EXPENSE_1 = new Statement(1, LocalDateTime.of(YEAR, 8, 7, 0, 22, 11), 600.0, StatementType.EXPENSE);
-        public static final Statement STATEMENT_AUG_EXPENSE_2 = new Statement(2, LocalDateTime.of(YEAR, 8, 8, 0, 22, 11), 200.0, StatementType.EXPENSE);
+        public static final Statement SINGLE_CURRENCY_STATEMENT_AUG_INCOME = new Statement(0, LocalDateTime.of(YEAR, 8, 6, 0, 22, 11), Currency.EUR, 500.0, StatementType.INCOME);
+        public static final Statement SINGLE_CURRENCY_STATEMENT_AUG_EXPENSE_1 = new Statement(1, LocalDateTime.of(YEAR, 8, 7, 0, 22, 11), Currency.EUR, 600.0, StatementType.EXPENSE);
+        public static final Statement SINGLE_CURRENCY_STATEMENT_AUG_EXPENSE_2 = new Statement(2, LocalDateTime.of(YEAR, 8, 8, 0, 22, 11), Currency.EUR, 200.0, StatementType.EXPENSE);
 
         // September Statements
-        public static final Statement STATEMENT_SEP_INCOME_1 = new Statement(3, LocalDateTime.of(YEAR, 9, 6, 0, 22, 11), 700.0, StatementType.INCOME);
-        public static final Statement STATEMENT_SEP_INCOME_2 = new Statement(4, LocalDateTime.of(YEAR, 9, 7, 0, 22, 11), 400.0, StatementType.INCOME);
-        public static final Statement STATEMENT_SEP_EXPENSE_1 = new Statement(5, LocalDateTime.of(YEAR, 9, 8, 0, 22, 11), 300.0, StatementType.EXPENSE);
-        public static final Statement STATEMENT_SEP_EXPENSE_2 = new Statement(6, LocalDateTime.of(YEAR, 9, 9, 0, 22, 11), 200.0, StatementType.EXPENSE);
-        public static final Statement STATEMENT_SEP_EXPENSE_3 = new Statement(7, LocalDateTime.of(YEAR, 9, 10, 0, 22, 11), 100.0, StatementType.EXPENSE);
+        public static final Statement SINGLE_CURRENCY_STATEMENT_SEP_INCOME_1 = new Statement(3, LocalDateTime.of(YEAR, 9, 6, 0, 22, 11), Currency.EUR, 700.0, StatementType.INCOME);
+        public static final Statement SINGLE_CURRENCY_STATEMENT_SEP_INCOME_2 = new Statement(4, LocalDateTime.of(YEAR, 9, 7, 0, 22, 11), Currency.EUR, 400.0, StatementType.INCOME);
+        public static final Statement SINGLE_CURRENCY_STATEMENT_SEP_EXPENSE_1 = new Statement(5, LocalDateTime.of(YEAR, 9, 8, 0, 22, 11), Currency.EUR, 300.0, StatementType.EXPENSE);
+        public static final Statement SINGLE_CURRENCY_STATEMENT_SEP_EXPENSE_2 = new Statement(6, LocalDateTime.of(YEAR, 9, 9, 0, 22, 11), Currency.EUR, 200.0, StatementType.EXPENSE);
+        public static final Statement SINGLE_CURRENCY_STATEMENT_SEP_EXPENSE_3 = new Statement(7, LocalDateTime.of(YEAR, 9, 10, 0, 22, 11), Currency.EUR, 100.0, StatementType.EXPENSE);
 
-        public static final List<Statement> STATEMENTS = List.of(
-            STATEMENT_AUG_INCOME,
-            STATEMENT_AUG_EXPENSE_1,
-            STATEMENT_AUG_EXPENSE_2,
-            STATEMENT_SEP_INCOME_1,
-            STATEMENT_SEP_INCOME_2,
-            STATEMENT_SEP_EXPENSE_1,
-            STATEMENT_SEP_EXPENSE_2,
-            STATEMENT_SEP_EXPENSE_3
+        public static final List<Statement> SINGLE_CURRENCY_STATEMENTS = List.of(
+            SINGLE_CURRENCY_STATEMENT_AUG_INCOME,
+            SINGLE_CURRENCY_STATEMENT_AUG_EXPENSE_1,
+            SINGLE_CURRENCY_STATEMENT_AUG_EXPENSE_2,
+            SINGLE_CURRENCY_STATEMENT_SEP_INCOME_1,
+            SINGLE_CURRENCY_STATEMENT_SEP_INCOME_2,
+            SINGLE_CURRENCY_STATEMENT_SEP_EXPENSE_1,
+            SINGLE_CURRENCY_STATEMENT_SEP_EXPENSE_2,
+            SINGLE_CURRENCY_STATEMENT_SEP_EXPENSE_3
         );
     }
 

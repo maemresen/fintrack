@@ -2,7 +2,7 @@ package com.maemresen.fintrack.api.service;
 
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
-import com.maemresen.fintrack.api.dto.BudgetReportDto;
+import com.maemresen.fintrack.api.dto.report.BudgetReportDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

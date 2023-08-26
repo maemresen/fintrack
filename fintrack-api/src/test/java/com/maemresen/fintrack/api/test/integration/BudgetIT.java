@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
-import com.maemresen.fintrack.api.dto.BudgetReportDto;
 import com.maemresen.fintrack.api.dto.ErrorDto;
 import com.maemresen.fintrack.api.dto.FieldErrorDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import com.maemresen.fintrack.api.dto.base.BaseDto;
+import com.maemresen.fintrack.api.dto.report.BudgetReportDto;
 import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.base.BaseEntity;
@@ -245,44 +245,25 @@ class BudgetIT extends AbstractBaseRestIT {
     }
 
     @Test
-    @DisplayName("UC: Report - Get Monthly Report For Years")
-    void getMonthlyReportForYears(List<BudgetEntity> initialData) throws Exception {
-        var budgetId = BudgetITHelper.getBudgetIdByIndex(initialData, MonthlyReportForYear.BUDGET_INDEX);
+    @DisplayName("UC: Report - Get Monthly Report For Years (Single Currency)")
+    void getMonthlyReportForYearsWithSingleCurrency(List<BudgetEntity> initialData) throws Exception {
+        var budgetId = BudgetITHelper.getBudgetIdByIndex(initialData, MonthlyReportForYear.SINGLE_CURRENCY_BUDGET_INDEX);
         var requestConfig = RequestConfig.success(URI_MONTHLY_REPORT_FOR_YEAR)
             .requestMethod(HttpMethod.GET)
             .requestVariables(List.of(budgetId, MonthlyReportForYear.YEAR))
             .build();
 
-        var expectedReportData = MonthlyReportForYear.STATEMENTS;
-
-        var expectedAugustSum = expectedReportData.stream()
-            .filter(statement -> statement.date().getMonth().equals(Month.AUGUST))
-            .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
-            .sum();
-        var expectedSeptemberSum = expectedReportData.stream()
-            .filter(statement -> statement.date().getMonth().equals(Month.SEPTEMBER))
-            .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
-            .sum();
+        var expectedReportData = MonthlyReportForYear.SINGLE_CURRENCY_STATEMENTS;
+        var expectedAugustSum = BudgetITHelper.calculateExpectedSum(expectedReportData, Month.AUGUST, Currency.EUR);
+        var expectedSeptemberSum = BudgetITHelper.calculateExpectedSum(expectedReportData, Month.SEPTEMBER, Currency.EUR);
 
         var yearlyReport = performAndReturn(requestConfig, new TypeReference<List<BudgetReportDto>>() {
         });
 
-        var optionalAugustSum = yearlyReport.stream()
-            .filter(report -> report.getMonth().equals(Month.AUGUST))
-            .findFirst();
-        assertTrue(optionalAugustSum.isPresent(), "August sum should be present");
-
-        BudgetReportDto augustReportDto = optionalAugustSum.get();
-        assertEquals(expectedAugustSum, augustReportDto.getSum());
-
-        var optionalSeptemberSum = yearlyReport.stream()
-            .filter(report -> report.getMonth().equals(Month.SEPTEMBER))
-            .findFirst();
-        assertTrue(optionalSeptemberSum.isPresent(), "September sum should be present");
-
-        BudgetReportDto septemberBudgetReportDto = optionalSeptemberSum.get();
-        assertEquals(expectedSeptemberSum, septemberBudgetReportDto.getSum());
+        BudgetITHelper.assertSummaryMatchForMonthAndCurrencyByYearlyReport(yearlyReport, Month.AUGUST, Currency.EUR, expectedAugustSum);
+        BudgetITHelper.assertSummaryMatchForMonthAndCurrencyByYearlyReport(yearlyReport, Month.SEPTEMBER, Currency.EUR, expectedSeptemberSum);
     }
+
 
     @Test
     @DisplayName("UC: Report - Get Monthly Report For Non Existing Budget")
@@ -307,7 +288,7 @@ class BudgetIT extends AbstractBaseRestIT {
     @DisplayName("UC: Report - Get Monthly Report Must be empty for non existing year")
     void getMonthlyReportForNonExistingYear(List<BudgetEntity> initialData) throws Exception {
         final var nonExistingYear = MonthlyReportForYear.YEAR + 1;
-        final var budgetId = BudgetITHelper.getBudgetIdByIndex(initialData, MonthlyReportForYear.BUDGET_INDEX);
+        final var budgetId = BudgetITHelper.getBudgetIdByIndex(initialData, MonthlyReportForYear.SINGLE_CURRENCY_BUDGET_INDEX);
         var requestConfig = RequestConfig.success(URI_MONTHLY_REPORT_FOR_YEAR)
             .requestMethod(HttpMethod.GET)
             .requestVariables(List.of(budgetId, nonExistingYear))

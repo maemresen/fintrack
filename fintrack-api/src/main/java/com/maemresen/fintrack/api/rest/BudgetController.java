@@ -1,6 +1,6 @@
 package com.maemresen.fintrack.api.rest;
 
-import com.maemresen.fintrack.api.dto.BudgetReportDto;
+import com.maemresen.fintrack.api.dto.report.BudgetReportDto;
 import com.maemresen.fintrack.api.exceptions.NotFoundException;
 import com.maemresen.fintrack.api.service.BudgetService;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;

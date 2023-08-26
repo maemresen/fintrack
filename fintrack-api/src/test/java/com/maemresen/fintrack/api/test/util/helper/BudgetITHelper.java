@@ -5,6 +5,7 @@ import com.maemresen.fintrack.api.dto.BudgetDto;
 import com.maemresen.fintrack.api.dto.FieldErrorDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
 import com.maemresen.fintrack.api.dto.base.BaseDto;
+import com.maemresen.fintrack.api.dto.report.BudgetReportDto;
 import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
@@ -17,6 +18,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpMethod;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -136,4 +138,33 @@ public class BudgetITHelper {
         assertNotNull(budgetDto);
         return budgetDto;
     }
+
+    public static double calculateExpectedSum(List<BudgetItConstants.MonthlyReportForYear.Statement> statements, Month month, Currency currency) {
+        return statements.stream()
+            .filter(statement -> statement.date().getMonth().equals(month) && statement.currency().equals(currency))
+            .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
+            .sum();
+    }
+
+    public static void assertSummaryMatchForMonthAndCurrencyByYearlyReport(List<BudgetReportDto> yearlyReport, Month month, Currency currency, double expectedSummary) {
+        var optionalMonthSum = yearlyReport.stream()
+            .filter(report -> report.getMonth().equals(month))
+            .findFirst();
+        assertTrue(optionalMonthSum.isPresent(), month + " sum should be present");
+
+        var monthReportDto = optionalMonthSum.get();
+        var monthReportCurrencySums = monthReportDto.getSums();
+
+        assertEquals(1, monthReportCurrencySums.size());
+
+        var monthCurrencySumOptional = monthReportCurrencySums.stream()
+            .filter(summary -> summary.getCurrency().equals(currency))
+            .findFirst();
+
+        assertTrue(monthCurrencySumOptional.isPresent(), month + " " + currency + " sum should be present");
+        var monthCurrencySum = monthCurrencySumOptional.get();
+
+        assertEquals(expectedSummary, monthCurrencySum.getSum());
+    }
+
 }

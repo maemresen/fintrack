@@ -3,9 +3,10 @@ package com.maemresen.fintrack.api.service.impl;
 import com.maemresen.fintrack.api.aspects.annotations.BusinessMethod;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
-import com.maemresen.fintrack.api.dto.BudgetReportDto;
 import com.maemresen.fintrack.api.dto.FieldErrorDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
+import com.maemresen.fintrack.api.dto.report.BudgetReportDto;
+import com.maemresen.fintrack.api.dto.report.BudgetReportSumDto;
 import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.base.BaseEntity;
@@ -122,12 +123,50 @@ public class BudgetServiceImpl implements BudgetService {
             return List.of();
         }
 
-        return statements.stream()
+        var statementsByMonthMap = statements.stream()
             .collect(Collectors.groupingBy(
                 statementEntity -> statementEntity.getDate().getMonth(),
-                Collectors.summingDouble(statementEntity -> statementEntity.getIsIncome() ? statementEntity.getAmount() : -statementEntity.getAmount())
-            )).entrySet().stream()
-            .map(entry -> new BudgetReportDto(entry.getKey(), entry.getValue()))
-            .toList();
+                Collectors.toList()
+            ));
+
+        var result = new ArrayList<BudgetReportDto>(statementsByMonthMap.size());
+
+        statementsByMonthMap.forEach((month, statementsByMonth) -> {
+            var statementsByCurrencyMap = statementsByMonth.stream()
+                .collect(Collectors.groupingBy(
+                    StatementEntity::getCurrency,
+                    Collectors.toList()
+                ));
+
+            var budgetReportSummaryDtos = new ArrayList<BudgetReportSumDto>(statementsByCurrencyMap.size());
+            statementsByCurrencyMap.forEach((currency, statementsByCurrency) -> {
+                var totalIncome = statementsByCurrency.stream()
+                    .filter(StatementEntity::getIsIncome)
+                    .mapToDouble(StatementEntity::getAmount)
+                    .sum();
+                var totalExpense = statementsByCurrency.stream()
+                    .filter(statementEntity -> !statementEntity.getIsIncome())
+                    .mapToDouble(StatementEntity::getAmount)
+                    .sum();
+                var budgetReportSummaryDto = BudgetReportSumDto.builder()
+                    .income(totalIncome)
+                    .expense(totalExpense)
+                    .currency(currency)
+                    .sum(totalIncome - totalExpense)
+                    .statements(statementsByCurrency.stream()
+                        .map(statementMapper::mapToStatementDto)
+                        .toList())
+                    .build();
+                budgetReportSummaryDtos.add(budgetReportSummaryDto);
+            });
+
+            var budgetReportDto = BudgetReportDto.builder()
+                .month(month)
+                .sums(budgetReportSummaryDtos)
+                .build();
+            result.add(budgetReportDto);
+        });
+
+        return result;
     }
 }

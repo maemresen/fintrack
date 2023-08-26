@@ -1,6 +1,8 @@
-package com.maemresen.fintrack.api.dto;
+package com.maemresen.fintrack.api.dto.report;
 
 
+import com.maemresen.fintrack.api.dto.StatementDto;
+import com.maemresen.fintrack.api.entity.enums.Currency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 
-import java.time.Month;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -18,7 +20,10 @@ import java.time.Month;
 @Setter
 @EqualsAndHashCode
 @FieldNameConstants
-public class BudgetReportDto {
-    private Month month;
+public class BudgetReportSumDto {
+    private Double income;
+    private Double expense;
     private Double sum;
+    private Currency currency;
+    private List<StatementDto> statements;
 }
