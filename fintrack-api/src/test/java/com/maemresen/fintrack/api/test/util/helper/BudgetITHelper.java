@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @UtilityClass
-public class BudgetIntegrationTestHelper {
+public class BudgetITHelper {
     public static String randomBudgetName() {
         return StringHelper.randomString("Budget");
     }
@@ -110,7 +110,7 @@ public class BudgetIntegrationTestHelper {
                                                  Double amount,
                                                  PerformAndReturn<BudgetDto> getBudgetByIdPerformer,
                                                  PerformAndReturn<BudgetDto> addStatementPerformer) throws Exception {
-        final var initialStatementCount = BudgetIntegrationTestHelper.getBudgetById(budgetId, getBudgetByIdPerformer)
+        final var initialStatementCount = BudgetITHelper.getBudgetById(budgetId, getBudgetByIdPerformer)
             .getStatements()
             .size();
 
@@ -132,7 +132,7 @@ public class BudgetIntegrationTestHelper {
             .expectResponseBody(false)
             .build();
         performer.perform(requestConfig);
-        var budgetDto = BudgetIntegrationTestHelper.getBudgetById(budgetId, budgetByIdPerformer);
+        var budgetDto = BudgetITHelper.getBudgetById(budgetId, budgetByIdPerformer);
         assertNotNull(budgetDto);
         return budgetDto;
     }

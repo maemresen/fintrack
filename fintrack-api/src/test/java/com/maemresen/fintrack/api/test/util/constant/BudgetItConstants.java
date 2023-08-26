@@ -12,20 +12,29 @@ public class BudgetItConstants {
     public static final String URI_ADD_STATEMENT = ApiUriHelper.mergeUri(UriConstant.Budget.BASE_URI, UriConstant.Budget.ADD_STATEMENT);
     public static final String URI_REMOVE_STATEMENT = ApiUriHelper.mergeUri(UriConstant.Budget.BASE_URI, UriConstant.Budget.REMOVE_STATEMENT);
 
-    public static final int BUDGET_FOR_EDIT_TEST = 0;
+    @UtilityClass
+    public static final class UseCaseEditBudget {
+        public static final int BUDGET_INDEX = 0;
+    }
 
-    public static final int BUDGET_FOR_STATEMENT_ADDITION_NO_INITIAL_STATEMENTS = 1;
+    @UtilityClass
+    public static final class UseCaseAddStatement {
+        public static final int NO_INITIAL_STATEMENTS_BUDGET_INDEX = 1;
 
-    public static final int BUDGET_FOR_STATEMENT_ADDITION_MULTIPLE_INITIAL_STATEMENTS = 2;
-    public static final int BUDGET_FOR_STATEMENT_ADDITION_MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1 = 0;
-    public static final int BUDGET_FOR_STATEMENT_ADDITION_MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2 = 1;
+        public static final int MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX = 2;
+        public static final int MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX = 0;
+        public static final int MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX = 1;
+    }
 
-    public static final int BUDGET_FOR_SINGLE_STATEMENT_REMOVE = 3;
-    public static final int BUDGET_FOR_SINGLE_STATEMENT_REMOVE_STATEMENT_1 = 0;
+    @UtilityClass
+    public static final class UseCaseRemoveStatement {
+        public static final int SINGLE_INITIAL_STATEMENT_BUDGET_INDEX = 3;
+        public static final int SINGLE_INITIAL_STATEMENT_STATEMENT_INDEX = 0;
 
-    public static final int BUDGET_FOR_MULTIPLE_STATEMENTS_REMOVE = 4;
-    public static final int BUDGET_FOR_MULTIPLE_STATEMENTS_REMOVE_STATEMENT_1 = 0;
-    public static final int BUDGET_FOR_MULTIPLE_STATEMENTS_REMOVE_STATEMENT_2 = 1;
+        public static final int MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX = 4;
+        public static final int MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX = 0;
+        public static final int MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX = 1;
+    }
 
     public static final Double STATEMENT_FOR_ADD_STATEMENT_AMOUNT = 100D;
 }

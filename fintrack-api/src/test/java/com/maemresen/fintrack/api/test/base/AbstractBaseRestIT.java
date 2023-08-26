@@ -51,12 +51,6 @@ public abstract class AbstractBaseRestIT {
 
         ResultActions resultActions = mockMvc.perform(requestBuilder);
 
-        if (requestConfig.isExpectResponseBody()) {
-            resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-        } else {
-            resultActions.andExpect(MockMvcResultMatchers.content().string(""));
-        }
-
         var httpStatus = Optional.ofNullable(requestConfig.getResponseHttpStatus());
         if (httpStatus.isPresent()) {
             resultActions.andExpect(status().is(httpStatus.get().value()));
@@ -65,6 +59,12 @@ public abstract class AbstractBaseRestIT {
         var responseExceptionType = requestConfig.getResponseExceptionType();
         if (responseExceptionType != null) {
             resultActions.andExpect(header().string(HeaderConstants.ERROR_CODE_HEADER, responseExceptionType.getCode()));
+        }
+
+        if (requestConfig.isExpectResponseBody()) {
+            resultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+        } else {
+            resultActions.andExpect(MockMvcResultMatchers.content().string(""));
         }
 
         return resultActions;

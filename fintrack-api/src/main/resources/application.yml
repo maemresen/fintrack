@@ -10,8 +10,9 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
+      hibernate:
       ddl-auto: validate
+      show-sql: true
   sql:
     init:
       mode: never
@@ -23,5 +24,5 @@ spring:
 app:
   logging:
     exceptions:
-      stack-track:
+      stack-trace:
         enabled: false
