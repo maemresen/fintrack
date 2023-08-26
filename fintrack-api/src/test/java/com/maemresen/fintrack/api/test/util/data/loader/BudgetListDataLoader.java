@@ -1,8 +1,8 @@
-package com.maemresen.fintrack.api.util.data.loader;
+package com.maemresen.fintrack.api.test.util.data.loader;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.maemresen.fintrack.api.base.BaseAbstractDataLoader;
+import com.maemresen.fintrack.api.test.base.BaseAbstractDataLoader;
 import com.maemresen.fintrack.api.entity.BudgetEntity;
 import com.maemresen.fintrack.api.repository.BudgetRepository;
 import lombok.extern.slf4j.Slf4j;

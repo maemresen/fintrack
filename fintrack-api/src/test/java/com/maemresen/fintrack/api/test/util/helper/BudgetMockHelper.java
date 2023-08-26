@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.api.util;
+package com.maemresen.fintrack.api.test.util.helper;
 
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;

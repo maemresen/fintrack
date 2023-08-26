@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.api.base;
+package com.maemresen.fintrack.api.test.base;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

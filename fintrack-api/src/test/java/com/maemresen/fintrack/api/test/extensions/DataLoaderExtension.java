@@ -1,6 +1,6 @@
-package com.maemresen.fintrack.api.extensions;
+package com.maemresen.fintrack.api.test.extensions;
 
-import com.maemresen.fintrack.api.annotations.DataSource;
+import com.maemresen.fintrack.api.test.annotations.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;

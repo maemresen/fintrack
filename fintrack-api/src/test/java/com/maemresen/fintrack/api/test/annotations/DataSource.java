@@ -1,6 +1,6 @@
-package com.maemresen.fintrack.api.annotations;
+package com.maemresen.fintrack.api.test.annotations;
 
-import com.maemresen.fintrack.api.base.BaseAbstractDataLoader;
+import com.maemresen.fintrack.api.test.base.BaseAbstractDataLoader;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.api.util;
+package com.maemresen.fintrack.api.test.util.helper;
 
 import lombok.experimental.UtilityClass;
 

@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.api.util;
+package com.maemresen.fintrack.api.test.util;
 
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import jakarta.validation.constraints.NotBlank;

@@ -1,9 +1,9 @@
-package com.maemresen.fintrack.api.base;
+package com.maemresen.fintrack.api.test.base;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maemresen.fintrack.api.config.RestIntegrationTestConfig;
-import com.maemresen.fintrack.api.util.RequestConfig;
+import com.maemresen.fintrack.api.test.config.RestIntegrationTestConfig;
+import com.maemresen.fintrack.api.test.util.RequestConfig;
 import com.maemresen.fintrack.api.FintrackApiApplication;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
 import org.springframework.beans.factory.annotation.Autowired;

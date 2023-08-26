@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.api.base;
+package com.maemresen.fintrack.api.test.base;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

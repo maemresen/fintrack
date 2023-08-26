@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.api.util;
+package com.maemresen.fintrack.api.test.util.helper;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @UtilityClass
-public class ApiUriUtil {
+public class ApiUriHelper {
     public static String mergeUri(String baseUri, String uri) {
         return "/" + Stream.of(baseUri, uri)
             .filter(StringUtils::isNotBlank)
