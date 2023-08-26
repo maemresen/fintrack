@@ -23,7 +23,10 @@ import com.maemresen.fintrack.api.test.util.helper.BudgetITHelper;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.HttpMethod;
 
@@ -47,6 +50,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DisplayName("Budget Use Cases IT")
 @ExtendWith(PostgreSQLExtension.class)
 @ExtendWith(DataLoaderExtension.class)
 @DataSource(value = "data/budgets.json", loader = BudgetListDataLoader.class)
@@ -59,223 +64,262 @@ class BudgetIT extends AbstractBaseRestIT {
         INITIAL_BUDGETS = budgets;
     }
 
-    @Test
-    void findById() throws Exception {
-        final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseEditBudget.BUDGET_INDEX);
-        BudgetDto budgetDto = BudgetITHelper.getBudgetById(budgetId, this::performAndReturn);
-        assertNotNull(budgetDto);
-        assertEquals(budgetId, budgetDto.getId());
+    @Nested
+    @DisplayName("UC: Budget Retrieval")
+    class BudgetRetrievalIT {
+        @Test
+        @DisplayName("Find By Id")
+        void findById() throws Exception {
+            final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseEditBudget.BUDGET_INDEX);
+            BudgetDto budgetDto = BudgetITHelper.getBudgetById(budgetId, BudgetIT.this::performAndReturn);
+            assertNotNull(budgetDto);
+            assertEquals(budgetId, budgetDto.getId());
+        }
+
+        @Test
+        @DisplayName("Find By Id Not Found")
+        void findByIdNotFound() throws Exception {
+            final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(BudgetIT.this::performAndReturn);
+            RequestConfig requestConfig = RequestConfig.error(URI_FIND_BY_ID, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.GET)
+                .requestVariables(List.of(nonExistingBudgetId))
+                .build();
+
+            ErrorDto<Long> errorDto = performAndReturn(requestConfig, new TypeReference<>() {
+            });
+            assertNotNull(errorDto);
+            assertEquals(nonExistingBudgetId, errorDto.getData());
+        }
+
+        @Test
+        @DisplayName("Find All")
+        void findAll() throws Exception {
+            final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseEditBudget.BUDGET_INDEX);
+            var budgetDtos = BudgetITHelper.getBudgets(BudgetIT.this::performAndReturn);
+            assertTrue(CollectionUtils.isNotEmpty(budgetDtos));
+            assertTrue(budgetDtos.stream().map(BudgetDto::getId).anyMatch(budgetId::equals));
+        }
+
     }
 
-    @Test
-    void findByIdNotFound() throws Exception {
-        final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(this::performAndReturn);
-        RequestConfig requestConfig = RequestConfig.error(URI_FIND_BY_ID, ExceptionType.NOT_FOUND)
-            .requestMethod(HttpMethod.GET)
-            .requestVariables(List.of(nonExistingBudgetId))
-            .build();
+    @Nested
+    @DisplayName("UC: Create Budget")
+    class CreateBudgetIT {
 
-        ErrorDto<Long> errorDto = performAndReturn(requestConfig, new TypeReference<>() {
-        });
-        assertNotNull(errorDto);
-        assertEquals(nonExistingBudgetId, errorDto.getData());
+        @Test
+        @DisplayName("Create Success")
+        void createSuccess() throws Exception {
+            String budgetName = BudgetITHelper.randomBudgetName();
+            var requestConfig = RequestConfig.success(URI_CREATE)
+                .requestMethod(HttpMethod.POST)
+                .requestBody(new BudgetCreateRequestDto(budgetName))
+                .build();
+            var createdBudgetDto = performAndReturn(requestConfig, new TypeReference<BudgetDto>() {
+            });
+            assertNotNull(createdBudgetDto);
+            assertNotNull(createdBudgetDto.getId());
+            assertEquals(budgetName, createdBudgetDto.getName());
+
+            var budgetDtos = BudgetITHelper.getBudgets(BudgetIT.this::performAndReturn);
+            assertTrue(CollectionUtils.isNotEmpty(budgetDtos));
+            assertTrue(budgetDtos.stream().map(BudgetDto::getId).anyMatch(createdBudgetDto.getId()::equals));
+        }
+
+        @Test
+        @DisplayName("Create Empty Name Budget")
+        void createEmptyNameBudget() throws Exception {
+            var invalidCreateRequestDto = new BudgetCreateRequestDto("");
+            var requestConfig = RequestConfig.error(URI_CREATE, ExceptionType.INVALID_PARAMETER)
+                .requestMethod(HttpMethod.POST)
+                .requestBody(invalidCreateRequestDto)
+                .expectResponseBody(true)
+                .build();
+            ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
+            });
+
+            BudgetITHelper.assertFieldErrorPresent(responseBody.getData(), BudgetCreateRequestDto.Fields.name, null, null);
+        }
     }
 
-    @Test
-    void findAll() throws Exception {
-        final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseEditBudget.BUDGET_INDEX);
-        var budgetDtos = BudgetITHelper.getBudgets(this::performAndReturn);
-        assertTrue(CollectionUtils.isNotEmpty(budgetDtos));
-        assertTrue(budgetDtos.stream().map(BudgetDto::getId).anyMatch(budgetId::equals));
+    @Nested
+    @DisplayName("UC: Statement Addition")
+    class StatementAdditionIT {
+
+        @Test
+        @DisplayName("Add Statement To Budget")
+        void addStatementToBudgetWithoutInitialStatements() throws Exception {
+            final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseAddStatement.NO_INITIAL_STATEMENTS_BUDGET_INDEX);
+            BudgetITHelper.addStatementToBudget(budgetId, STATEMENT_FOR_ADD_STATEMENT_AMOUNT, BudgetIT.this::performAndReturn, BudgetIT.this::performAndReturn);
+        }
+
+        @Test
+        @DisplayName("Add Statement To Budget With Initial Statements")
+        void addStatementToBudgetWithInitialStatements() throws Exception {
+            final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
+            var budgetDto = BudgetITHelper.addStatementToBudget(budgetId, STATEMENT_FOR_ADD_STATEMENT_AMOUNT, BudgetIT.this::performAndReturn, BudgetIT.this::performAndReturn);
+
+            var statementIds = budgetDto.getStatements().stream()
+                .map(BaseDto::getId)
+                .collect(Collectors.toSet());
+
+            final var statementId1 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS,
+                UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX,
+                UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX);
+            final var statementId2 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS,
+                UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX,
+                UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX);
+            assertTrue(CollectionUtils.containsAll(statementIds, Set.of(statementId1, statementId2)));
+        }
+
+        @Test
+        @DisplayName("Add Statement To Non Existing Budget")
+        void addStatementToNonExistingBudget() throws Exception {
+            final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(BudgetIT.this::performAndReturn);
+            StatementCreateDto body = StatementCreateDto.builder()
+                .amount(STATEMENT_FOR_ADD_STATEMENT_AMOUNT)
+                .currency(Currency.EUR)
+                .type(StatementType.EXPENSE)
+                .date(LocalDateTime.now())
+                .build();
+
+            var requestConfig = RequestConfig.error(URI_ADD_STATEMENT, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.POST)
+                .requestBody(body)
+                .requestVariables(List.of(nonExistingBudgetId))
+                .build();
+            ErrorDto<List<FieldErrorDto>> fieldErrorDtoErrorDto = performAndReturn(requestConfig, new TypeReference<>() {
+            });
+
+            BudgetITHelper.assertFieldErrorPresent(fieldErrorDtoErrorDto.getData(),
+                BaseEntity.Fields.id,
+                BudgetEntity.class.getName(),
+                fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(nonExistingBudgetId));
+        }
     }
 
+    @Nested
+    @DisplayName("UC: Statement Removal")
+    class StatementRemovalIT {
 
-    @Test
-    void createSuccess() throws Exception {
-        String budgetName = BudgetITHelper.randomBudgetName();
-        var requestConfig = RequestConfig.success(URI_CREATE)
-            .requestMethod(HttpMethod.POST)
-            .requestBody(new BudgetCreateRequestDto(budgetName))
-            .build();
-        var createdBudgetDto = performAndReturn(requestConfig, new TypeReference<BudgetDto>() {
-        });
-        assertNotNull(createdBudgetDto);
-        assertNotNull(createdBudgetDto.getId());
-        assertEquals(budgetName, createdBudgetDto.getName());
+        @Test
+        @DisplayName("Remove Statement With Single Init Statement")
+        void removeStatementWithSingleInitStatement() throws Exception {
+            final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.SINGLE_INITIAL_STATEMENT_BUDGET_INDEX);
+            final var statementId1 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.SINGLE_INITIAL_STATEMENT_BUDGET_INDEX, UseCaseRemoveStatement.SINGLE_INITIAL_STATEMENT_STATEMENT_INDEX);
+            var budgetDto = BudgetITHelper.removeStatementFromBudget(budgetId, statementId1, BudgetIT.this::perform, BudgetIT.this::performAndReturn);
+            assertTrue(CollectionUtils.isEmpty(budgetDto.getStatements()));
+        }
 
-        var budgetDtos = BudgetITHelper.getBudgets(this::performAndReturn);
-        assertTrue(CollectionUtils.isNotEmpty(budgetDtos));
-        assertTrue(budgetDtos.stream().map(BudgetDto::getId).anyMatch(createdBudgetDto.getId()::equals));
+        @Test
+        @DisplayName("Remove Statement With Multiple Init Statements")
+        void removeStatementWithMultipleInitStatements() throws Exception {
+            final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
+            final var statementId1 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX);
+            final var statementId2 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX);
+            var budgetDto = BudgetITHelper.removeStatementFromBudget(budgetId, statementId1, BudgetIT.this::perform, BudgetIT.this::performAndReturn);
+            var remainingStatementIds = budgetDto.getStatements().stream()
+                .map(BaseDto::getId)
+                .collect(Collectors.toSet());
+            assertTrue(CollectionUtils.containsAll(remainingStatementIds, Set.of(statementId2)));
+        }
+
+        @Test
+        @DisplayName("Remove Non Exists Statement")
+        void removeNonExistsStatement() throws Exception {
+            final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
+            final var nonExistingStatementId = BudgetITHelper.getNonExistingStatementId(BudgetIT.this::performAndReturn);
+            var requestConfig = RequestConfig.error(URI_REMOVE_STATEMENT, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.DELETE)
+                .requestVariables(List.of(budgetId, nonExistingStatementId))
+                .build();
+
+            ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
+            });
+
+            BudgetITHelper.assertFieldErrorPresent(responseBody.getData(),
+                BaseEntity.Fields.id,
+                StatementEntity.class.getName(),
+                fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(nonExistingStatementId));
+        }
+
+        @Test
+        @DisplayName("Remove Statement From Non Existing Budget")
+        void removeNonExistsStatementFromNonExistingBudget() throws Exception {
+            final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(BudgetIT.this::performAndReturn);
+            final var nonExistingStatementId = BudgetITHelper.getNonExistingStatementId(BudgetIT.this::performAndReturn);
+            var requestConfig = RequestConfig.error(URI_REMOVE_STATEMENT, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.DELETE)
+                .requestVariables(List.of(nonExistingBudgetId, nonExistingStatementId))
+                .build();
+
+            ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
+            });
+            BudgetITHelper.assertFieldErrorPresent(responseBody.getData(), BaseEntity.Fields.id, BudgetEntity.class.getName());
+        }
     }
 
-    @Test
-    void createEmptyNameBudget() throws Exception {
-        var invalidCreateRequestDto = new BudgetCreateRequestDto("");
-        var requestConfig = RequestConfig.error(URI_CREATE, ExceptionType.INVALID_PARAMETER)
-            .requestMethod(HttpMethod.POST)
-            .requestBody(invalidCreateRequestDto)
-            .expectResponseBody(true)
-            .build();
-        ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
-        });
+    @Nested
+    @DisplayName("UC: Report")
+    class ReportIT {
 
-        BudgetITHelper.assertFieldErrorPresent(responseBody.getData(), BudgetCreateRequestDto.Fields.name, null, null);
+        @Test
+        @DisplayName("Get Monthly Report For Years Between")
+        void getMonthlyReportForYearsBetween() throws Exception {
+            var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseMonthlyReportForYear.BUDGET_INDEX);
+            var requestConfig = RequestConfig.success(URI_MONTHLY_REPORT_FOR_YEAR)
+                .requestMethod(HttpMethod.GET)
+                .requestVariables(List.of(budgetId, UseCaseMonthlyReportForYear.YEAR))
+                .build();
+
+            var expectedReportData = UseCaseMonthlyReportForYear.STATEMENTS;
+
+            var expectedAugustSum = expectedReportData.stream()
+                .filter(statement -> statement.date().getMonth().equals(Month.AUGUST))
+                .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
+                .sum();
+            var expectedSeptemberSum = expectedReportData.stream()
+                .filter(statement -> statement.date().getMonth().equals(Month.SEPTEMBER))
+                .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
+                .sum();
+
+            var yearlyReport = performAndReturn(requestConfig, new TypeReference<List<BudgetReportDto>>() {
+            });
+
+            var optionalAugustSum = yearlyReport.stream()
+                .filter(report -> report.getMonth().equals(Month.AUGUST))
+                .findFirst();
+            assertTrue(optionalAugustSum.isPresent(), "August sum should be present");
+
+            BudgetReportDto augustReportDto = optionalAugustSum.get();
+            assertEquals(expectedAugustSum, augustReportDto.getSum());
+
+            var optionalSeptemberSum = yearlyReport.stream()
+                .filter(report -> report.getMonth().equals(Month.SEPTEMBER))
+                .findFirst();
+            assertTrue(optionalSeptemberSum.isPresent(), "September sum should be present");
+
+            BudgetReportDto septemberBudgetReportDto = optionalSeptemberSum.get();
+            assertEquals(expectedSeptemberSum, septemberBudgetReportDto.getSum());
+        }
+
+        @Test
+        @DisplayName("Get Monthly Report For Non Existing Budget")
+        void getMonthlyReportForNonExistingBudget() throws Exception {
+            final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(BudgetIT.this::performAndReturn);
+            var requestConfig = RequestConfig.error(URI_MONTHLY_REPORT_FOR_YEAR, ExceptionType.NOT_FOUND)
+                .requestMethod(HttpMethod.GET)
+                .requestVariables(List.of(nonExistingBudgetId, UseCaseMonthlyReportForYear.YEAR))
+                .build();
+
+            var errorDto = performAndReturn(requestConfig, new TypeReference<ErrorDto<List<FieldErrorDto>>>() {
+            });
+
+            var fieldErrorDtos = errorDto.getData();
+            BudgetITHelper.assertFieldErrorPresent(fieldErrorDtos,
+                BaseEntity.Fields.id,
+                BudgetEntity.class.getName(),
+                fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(nonExistingBudgetId));
+        }
     }
 
-    @Test
-    void addStatementToBudgetWithoutInitialStatements() throws Exception {
-        final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseAddStatement.NO_INITIAL_STATEMENTS_BUDGET_INDEX);
-        BudgetITHelper.addStatementToBudget(budgetId, STATEMENT_FOR_ADD_STATEMENT_AMOUNT, this::performAndReturn, this::performAndReturn);
-    }
-
-    @Test
-    void addStatementToBudgetWithInitialStatements() throws Exception {
-        final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
-        var budgetDto = BudgetITHelper.addStatementToBudget(budgetId, STATEMENT_FOR_ADD_STATEMENT_AMOUNT, this::performAndReturn, this::performAndReturn);
-
-        var statementIds = budgetDto.getStatements().stream()
-            .map(BaseDto::getId)
-            .collect(Collectors.toSet());
-
-        final var statementId1 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS,
-            UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX,
-            UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX);
-        final var statementId2 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS,
-            UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX,
-            UseCaseAddStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX);
-        assertTrue(CollectionUtils.containsAll(statementIds, Set.of(statementId1, statementId2)));
-    }
-
-    @Test
-    void addStatementToNonExistingBudget() throws Exception {
-        final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(this::performAndReturn);
-        StatementCreateDto body = StatementCreateDto.builder()
-            .amount(STATEMENT_FOR_ADD_STATEMENT_AMOUNT)
-            .currency(Currency.EUR)
-            .type(StatementType.EXPENSE)
-            .date(LocalDateTime.now())
-            .build();
-
-        var requestConfig = RequestConfig.error(URI_ADD_STATEMENT, ExceptionType.NOT_FOUND)
-            .requestMethod(HttpMethod.POST)
-            .requestBody(body)
-            .requestVariables(List.of(nonExistingBudgetId))
-            .build();
-        ErrorDto<List<FieldErrorDto>> fieldErrorDtoErrorDto = performAndReturn(requestConfig, new TypeReference<>() {
-        });
-
-        BudgetITHelper.assertFieldErrorPresent(fieldErrorDtoErrorDto.getData(),
-            BaseEntity.Fields.id,
-            BudgetEntity.class.getName(),
-            fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(nonExistingBudgetId));
-    }
-
-    @Test
-    void removeStatementWithSingleInitStatement() throws Exception {
-        final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.SINGLE_INITIAL_STATEMENT_BUDGET_INDEX);
-        final var statementId1 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.SINGLE_INITIAL_STATEMENT_BUDGET_INDEX, UseCaseRemoveStatement.SINGLE_INITIAL_STATEMENT_STATEMENT_INDEX);
-        var budgetDto = BudgetITHelper.removeStatementFromBudget(budgetId, statementId1, this::perform, this::performAndReturn);
-        assertTrue(CollectionUtils.isEmpty(budgetDto.getStatements()));
-    }
-
-    @Test
-    void removeStatementWithMultipleInitStatements() throws Exception {
-        final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
-        final var statementId1 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX);
-        final var statementId2 = BudgetITHelper.getStatementIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX);
-        var budgetDto = BudgetITHelper.removeStatementFromBudget(budgetId, statementId1, this::perform, this::performAndReturn);
-        var remainingStatementIds = budgetDto.getStatements().stream()
-            .map(BaseDto::getId)
-            .collect(Collectors.toSet());
-        assertTrue(CollectionUtils.containsAll(remainingStatementIds, Set.of(statementId2)));
-    }
-
-    @Test
-    void removeNonExistsStatement() throws Exception {
-        final var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseRemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
-        final var nonExistingStatementId = BudgetITHelper.getNonExistingStatementId(this::performAndReturn);
-        var requestConfig = RequestConfig.error(URI_REMOVE_STATEMENT, ExceptionType.NOT_FOUND)
-            .requestMethod(HttpMethod.DELETE)
-            .requestVariables(List.of(budgetId, nonExistingStatementId))
-            .build();
-
-        ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
-        });
-
-        BudgetITHelper.assertFieldErrorPresent(responseBody.getData(),
-            BaseEntity.Fields.id,
-            StatementEntity.class.getName(),
-            fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(nonExistingStatementId));
-    }
-
-    @Test
-    void removeNonExistsStatementFromNonExistingBudget() throws Exception {
-        final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(this::performAndReturn);
-        final var nonExistingStatementId = BudgetITHelper.getNonExistingStatementId(this::performAndReturn);
-        var requestConfig = RequestConfig.error(URI_REMOVE_STATEMENT, ExceptionType.NOT_FOUND)
-            .requestMethod(HttpMethod.DELETE)
-            .requestVariables(List.of(nonExistingBudgetId, nonExistingStatementId))
-            .build();
-
-        ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
-        });
-        BudgetITHelper.assertFieldErrorPresent(responseBody.getData(), BaseEntity.Fields.id, BudgetEntity.class.getName());
-    }
-
-    @Test
-    void getMonthlyReportForYearsBetween() throws Exception {
-        var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseMonthlyReportForYear.BUDGET_INDEX);
-        var requestConfig = RequestConfig.success(URI_MONTHLY_REPORT_FOR_YEAR)
-            .requestMethod(HttpMethod.GET)
-            .requestVariables(List.of(budgetId, UseCaseMonthlyReportForYear.YEAR))
-            .build();
-
-        var expectedReportData = UseCaseMonthlyReportForYear.STATEMENTS;
-
-        var expectedAugustSum = expectedReportData.stream()
-            .filter(statement -> statement.date().getMonth().equals(Month.AUGUST))
-            .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
-            .sum();
-        var expectedSeptemberSum = expectedReportData.stream()
-            .filter(statement -> statement.date().getMonth().equals(Month.SEPTEMBER))
-            .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
-            .sum();
-
-        var yearlyReport = performAndReturn(requestConfig, new TypeReference<List<BudgetReportDto>>() {
-        });
-
-        var optionalAugustSum = yearlyReport.stream()
-            .filter(report -> report.getMonth().equals(Month.AUGUST))
-            .findFirst();
-        assertTrue(optionalAugustSum.isPresent(), "August sum should be present");
-
-        BudgetReportDto augustReportDto = optionalAugustSum.get();
-        assertEquals(expectedAugustSum, augustReportDto.getSum());
-
-        var optionalSeptemberSum = yearlyReport.stream()
-            .filter(report -> report.getMonth().equals(Month.SEPTEMBER))
-            .findFirst();
-        assertTrue(optionalSeptemberSum.isPresent(), "September sum should be present");
-
-        BudgetReportDto septemberBudgetReportDto = optionalSeptemberSum.get();
-        assertEquals(expectedSeptemberSum, septemberBudgetReportDto.getSum());
-    }
-
-    @Test
-    void getMonthlyReportForNonExistingBudget() throws Exception {
-        final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(this::performAndReturn);
-        var requestConfig = RequestConfig.error(URI_MONTHLY_REPORT_FOR_YEAR, ExceptionType.NOT_FOUND)
-            .requestMethod(HttpMethod.GET)
-            .requestVariables(List.of(nonExistingBudgetId, UseCaseMonthlyReportForYear.YEAR))
-            .build();
-
-        var errorDto = performAndReturn(requestConfig, new TypeReference<ErrorDto<List<FieldErrorDto>>>() {
-        });
-
-        var fieldErrorDtos = errorDto.getData();
-        BudgetITHelper.assertFieldErrorPresent(fieldErrorDtos,
-            BaseEntity.Fields.id,
-            BudgetEntity.class.getName(),
-            fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(nonExistingBudgetId));
-    }
 }
