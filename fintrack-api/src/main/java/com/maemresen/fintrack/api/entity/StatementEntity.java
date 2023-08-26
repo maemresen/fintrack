@@ -51,4 +51,8 @@ public class StatementEntity extends BaseDatedEntity {
     @ManyToOne
     @JoinColumn(name = "budget_id", nullable = false)
     private BudgetEntity budget;
+
+    public boolean getIsIncome() {
+        return this.type == StatementType.INCOME;
+    }
 }
