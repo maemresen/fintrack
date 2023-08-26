@@ -3,6 +3,7 @@ package com.maemresen.fintrack.api.test.integration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
+import com.maemresen.fintrack.api.dto.BudgetReportDto;
 import com.maemresen.fintrack.api.dto.ErrorDto;
 import com.maemresen.fintrack.api.dto.FieldErrorDto;
 import com.maemresen.fintrack.api.dto.StatementCreateDto;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.HttpMethod;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,9 +37,11 @@ import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.ST
 import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.URI_ADD_STATEMENT;
 import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.URI_CREATE;
 import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.URI_FIND_BY_ID;
+import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.URI_MONTHLY_REPORT_FOR_YEAR;
 import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.URI_REMOVE_STATEMENT;
 import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.UseCaseAddStatement;
 import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.UseCaseEditBudget;
+import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.UseCaseMonthlyReportForYear;
 import static com.maemresen.fintrack.api.test.util.constant.BudgetItConstants.UseCaseRemoveStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -216,5 +220,62 @@ class BudgetIT extends AbstractBaseRestIT {
         ErrorDto<List<FieldErrorDto>> responseBody = performAndReturn(requestConfig, new TypeReference<>() {
         });
         BudgetITHelper.assertFieldErrorPresent(responseBody.getData(), BaseEntity.Fields.id, BudgetEntity.class.getName());
+    }
+
+    @Test
+    void getMonthlyReportForYearsBetween() throws Exception {
+        var budgetId = BudgetITHelper.getBudgetIdByIndex(INITIAL_BUDGETS, UseCaseMonthlyReportForYear.BUDGET_INDEX);
+        var requestConfig = RequestConfig.success(URI_MONTHLY_REPORT_FOR_YEAR)
+            .requestMethod(HttpMethod.GET)
+            .requestVariables(List.of(budgetId, UseCaseMonthlyReportForYear.YEAR))
+            .build();
+
+        var expectedReportData = UseCaseMonthlyReportForYear.STATEMENTS;
+
+        var expectedAugustSum = expectedReportData.stream()
+            .filter(statement -> statement.date().getMonth().equals(Month.AUGUST))
+            .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
+            .sum();
+        var expectedSeptemberSum = expectedReportData.stream()
+            .filter(statement -> statement.date().getMonth().equals(Month.SEPTEMBER))
+            .mapToDouble(statement -> statement.amount() * (statement.type() == StatementType.INCOME ? 1 : -1))
+            .sum();
+
+        var yearlyReport = performAndReturn(requestConfig, new TypeReference<List<BudgetReportDto>>() {
+        });
+
+        var optionalAugustSum = yearlyReport.stream()
+            .filter(report -> report.getMonth().equals(Month.AUGUST))
+            .findFirst();
+        assertTrue(optionalAugustSum.isPresent(), "August sum should be present");
+
+        BudgetReportDto augustReportDto = optionalAugustSum.get();
+        assertEquals(expectedAugustSum, augustReportDto.getSum());
+
+        var optionalSeptemberSum = yearlyReport.stream()
+            .filter(report -> report.getMonth().equals(Month.SEPTEMBER))
+            .findFirst();
+        assertTrue(optionalSeptemberSum.isPresent(), "September sum should be present");
+
+        BudgetReportDto septemberBudgetReportDto = optionalSeptemberSum.get();
+        assertEquals(expectedSeptemberSum, septemberBudgetReportDto.getSum());
+    }
+
+    @Test
+    void getMonthlyReportForNonExistingBudget() throws Exception {
+        final var nonExistingBudgetId = BudgetITHelper.getNonExistingBudgetId(this::performAndReturn);
+        var requestConfig = RequestConfig.error(URI_MONTHLY_REPORT_FOR_YEAR, ExceptionType.NOT_FOUND)
+            .requestMethod(HttpMethod.GET)
+            .requestVariables(List.of(nonExistingBudgetId, UseCaseMonthlyReportForYear.YEAR))
+            .build();
+
+        var errorDto = performAndReturn(requestConfig, new TypeReference<ErrorDto<List<FieldErrorDto>>>() {
+        });
+
+        var fieldErrorDtos = errorDto.getData();
+        BudgetITHelper.assertFieldErrorPresent(fieldErrorDtos,
+            BaseEntity.Fields.id,
+            BudgetEntity.class.getName(),
+            fieldErrorDto -> fieldErrorDto.getLongRejectedValue().equals(nonExistingBudgetId));
     }
 }

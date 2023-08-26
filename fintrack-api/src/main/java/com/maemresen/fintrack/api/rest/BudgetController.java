@@ -1,5 +1,6 @@
 package com.maemresen.fintrack.api.rest;
 
+import com.maemresen.fintrack.api.dto.BudgetReportDto;
 import com.maemresen.fintrack.api.exceptions.NotFoundException;
 import com.maemresen.fintrack.api.service.BudgetService;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
@@ -52,5 +53,10 @@ public class BudgetController {
     public ResponseEntity<Void> removeStatement(@PathVariable Long budgetId, @PathVariable Long statementId) {
         budgetService.removeStatement(budgetId, statementId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(UriConstant.Budget.MONTHLY_REPORT_FOR_YEAR)
+    public ResponseEntity<List<BudgetReportDto>> monthlyReportForYear(@PathVariable Long budgetId, @PathVariable int year) {
+        return ResponseEntity.ok(budgetService.monthlyReportForYear(budgetId, year));
     }
 }

@@ -14,5 +14,6 @@ public class UriConstant {
         public static final String FIND_ALL = BLANK_URI;
         public static final String ADD_STATEMENT = "{budgetId}/statement";
         public static final String REMOVE_STATEMENT = "{budgetId}/statement/{statementId}";
+        public static final String MONTHLY_REPORT_FOR_YEAR = "{budgetId}/report/{year}";
     }
 }
