@@ -16,4 +16,10 @@ public class UriConstant {
         public static final String REMOVE_STATEMENT = "{budgetId}/statement/{statementId}";
         public static final String MONTHLY_REPORT_FOR_YEAR = "{budgetId}/report/{year}";
     }
+
+    @UtilityClass
+    public static final class ErrorCode {
+        public static final String BASE_URI = "error-code";
+        public static final String FIND_ALL = BLANK_URI;
+    }
 }
