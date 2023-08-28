@@ -13,6 +13,7 @@ import com.maemresen.fintrack.api.mapper.BudgetMapper;
 import com.maemresen.fintrack.api.mapper.StatementMapper;
 import com.maemresen.fintrack.api.repository.BudgetRepository;
 import com.maemresen.fintrack.api.service.impl.BudgetServiceImpl;
+import com.maemresen.fintrack.api.test.base.AbstractBaseServiceTest;
 import com.maemresen.fintrack.api.test.util.helper.BudgetMockHelper;
 import com.maemresen.fintrack.api.test.util.helper.StatementHelper;
 import org.apache.commons.collections4.IterableUtils;
@@ -21,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,8 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@ActiveProfiles({"test-h2"})
-class BudgetServiceTest {
+class BudgetServiceTest extends AbstractBaseServiceTest {
 
     private static final Long BUDGET_ID_1 = 1L;
     private static final String BUDGET_NAME_1 = "Budget 1";

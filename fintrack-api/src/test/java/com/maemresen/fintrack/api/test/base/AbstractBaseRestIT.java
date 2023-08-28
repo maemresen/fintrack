@@ -2,10 +2,16 @@ package com.maemresen.fintrack.api.test.base;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maemresen.fintrack.api.FintrackApiApplication;
+import com.maemresen.fintrack.api.test.config.IntegrationTestConfig;
 import com.maemresen.fintrack.api.test.util.RequestConfig;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -17,14 +23,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = FintrackApiApplication.class)
+@ContextConfiguration(classes = IntegrationTestConfig.class)
+@AutoConfigureMockMvc
 public abstract class AbstractBaseRestIT {
 
-    protected abstract MockMvc getMockMvc();
+    @Autowired
+    private MockMvc mockMvc;
 
-    protected abstract ObjectMapper getObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     protected <T> T readResponse(MockHttpServletResponse response, TypeReference<T> typeReference) throws IOException {
-        return getObjectMapper().readValue(response.getContentAsString(), typeReference);
+        return objectMapper.readValue(response.getContentAsString(), typeReference);
     }
 
     public ResultActions perform(RequestConfig requestConfig) throws Exception {
@@ -33,10 +44,10 @@ public abstract class AbstractBaseRestIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
         if (requestConfig.getRequestBody() != null) {
-            requestBuilder.content(getObjectMapper().writeValueAsString(requestConfig.getRequestBody()));
+            requestBuilder.content(objectMapper.writeValueAsString(requestConfig.getRequestBody()));
         }
 
-        ResultActions resultActions = getMockMvc().perform(requestBuilder);
+        ResultActions resultActions = mockMvc.perform(requestBuilder);
 
         var httpStatus = Optional.ofNullable(requestConfig.getResponseHttpStatus());
         if (httpStatus.isPresent()) {

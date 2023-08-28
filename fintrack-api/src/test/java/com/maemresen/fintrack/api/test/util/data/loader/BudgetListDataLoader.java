@@ -14,10 +14,9 @@ import java.util.List;
 @Slf4j
 public class BudgetListDataLoader extends AbstractBaseDataLoader<List<BudgetEntity>, List<BudgetEntity>> {
 
-    @Override
-    protected TypeReference<List<BudgetEntity>> getTypeReference() {
-        return new TypeReference<>() {
-        };
+    public BudgetListDataLoader() {
+        super(new TypeReference<>() {
+        });
     }
 
     @Transactional

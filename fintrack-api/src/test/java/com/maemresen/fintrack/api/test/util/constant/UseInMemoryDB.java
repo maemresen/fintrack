@@ -1,4 +1,6 @@
-package com.maemresen.fintrack.api.test.extensions.rest.it;
+package com.maemresen.fintrack.api.test.util.constant;
+
+import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@RestIT(activeProfiles = {"it", "test-h2"})
-public @interface RestITWithoutDb {
+@ActiveProfiles({"test-h2"})
+public @interface UseInMemoryDB {
 }

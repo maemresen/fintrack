@@ -1,7 +1,6 @@
 package com.maemresen.fintrack.api.test.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
 import com.maemresen.fintrack.api.dto.ErrorDto;
@@ -16,18 +15,18 @@ import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
 import com.maemresen.fintrack.api.test.base.AbstractBaseRestIT;
 import com.maemresen.fintrack.api.test.extensions.it.data.ITData;
-import com.maemresen.fintrack.api.test.extensions.rest.it.RestIT;
 import com.maemresen.fintrack.api.test.util.RequestConfig;
-import com.maemresen.fintrack.api.test.util.context.PostgreSQLContainerManager;
 import com.maemresen.fintrack.api.test.util.data.loader.BudgetListDataLoader;
 import com.maemresen.fintrack.api.test.util.helper.BudgetITHelper;
+import com.maemresen.fintrack.api.test.util.helper.ContainerFactory;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -50,25 +49,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Budget Use Cases IT")
-@RestIT(contextInitializer = PostgreSQLContainerManager.class)
+@Testcontainers
 @ITData(dataSourcePath = "data/budgets.json", dataLoader = BudgetListDataLoader.class)
 class BudgetIT extends AbstractBaseRestIT {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Override
-    public MockMvc getMockMvc() {
-        return mockMvc;
-    }
-
-    @Override
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
+    @Container
+    static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = ContainerFactory.createPostgreSQLContainer();
 
     @Test
     @DisplayName("UC: Budget Retrieval - Find By Id")
