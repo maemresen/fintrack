@@ -27,14 +27,14 @@ public class ITDataExtension implements BeforeAllCallback, ParameterResolver {
         var applicationContext = SpringExtension.getApplicationContext(extensionContext);
         log.info("Spring context initialized.");
 
-        log.info("Looking for {} ...", ITData.class.getSimpleName());
+        log.info("Looking for {} ...", ITDataSource.class.getSimpleName());
         var requiredTestClass = extensionContext.getRequiredTestClass();
-        var itData = AnnotatedElementUtils.findMergedAnnotation(requiredTestClass, ITData.class);
+        var itData = AnnotatedElementUtils.findMergedAnnotation(requiredTestClass, ITDataSource.class);
         if (itData == null) {
-            log.info("{} restIT not found.", ITData.class.getSimpleName());
-            throw new IllegalStateException("Missing " + ITData.class.getSimpleName() + " restIT.");
+            log.info("{} restIT not found.", ITDataSource.class.getSimpleName());
+            throw new IllegalStateException("Missing " + ITDataSource.class.getSimpleName() + " restIT.");
         }
-        log.info("{} restIT found: {}", ITData.class.getSimpleName(), itData);
+        log.info("{} restIT found: {}", ITDataSource.class.getSimpleName(), itData);
         extensionContext.getStore(ExtensionContext.Namespace.GLOBAL).put(IT_DATA_ANNOTATION_KEY, itData);
 
         log.info("Looking data source...");

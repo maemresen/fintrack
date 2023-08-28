@@ -1,13 +1,13 @@
 package com.maemresen.fintrack.api.test.util.helper;
 
-import com.maemresen.fintrack.api.test.util.container.SpringBootPostgreSQLContainer;
 import lombok.experimental.UtilityClass;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 @UtilityClass
 public class ContainerFactory {
 
-    public static SpringBootPostgreSQLContainer createPostgreSQLContainer() {
-        try (SpringBootPostgreSQLContainer container = new SpringBootPostgreSQLContainer("postgres:13.3")) {
+    public static PostgreSQLContainer<?> createPostgreSQLContainer() {
+        try (var container = new PostgreSQLContainer<>("postgres:13.3")) {
             container.withDatabaseName("integration-tests-db");
             container.withUsername("sa");
             container.withPassword("sa");

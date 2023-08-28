@@ -13,20 +13,16 @@ import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.base.BaseEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
-import com.maemresen.fintrack.api.test.base.AbstractBaseRestIT;
-import com.maemresen.fintrack.api.test.extensions.it.data.ITData;
+import com.maemresen.fintrack.api.test.base.AbstractBaseRestWithDatabaseIT;
+import com.maemresen.fintrack.api.test.extensions.it.data.ITDataSource;
 import com.maemresen.fintrack.api.test.util.RequestConfig;
 import com.maemresen.fintrack.api.test.util.data.loader.BudgetListDataLoader;
 import com.maemresen.fintrack.api.test.util.helper.BudgetITHelper;
-import com.maemresen.fintrack.api.test.util.helper.ContainerFactory;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -49,12 +45,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Budget Use Cases IT")
-@Testcontainers
-@ITData(dataSourcePath = "data/budgets.json", dataLoader = BudgetListDataLoader.class)
-class BudgetIT extends AbstractBaseRestIT {
-
-    @Container
-    static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = ContainerFactory.createPostgreSQLContainer();
+@ITDataSource(dataSourcePath = "data/budgets.json", dataLoader = BudgetListDataLoader.class)
+class BudgetIT extends AbstractBaseRestWithDatabaseIT {
 
     @Test
     @DisplayName("UC: Budget Retrieval - Find By Id")
