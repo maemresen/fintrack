@@ -23,8 +23,8 @@ public class Performer {
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
 
-    private <T> T readResponse(MockHttpServletResponse response, TypeReference<T> typeReference) throws IOException {
-        return objectMapper.readValue(response.getContentAsString(), typeReference);
+    public  <T> T readResponse(ResultActions resultActions, TypeReference<T> typeReference) throws IOException {
+        return objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), typeReference);
     }
 
     public ResultActions perform(RequestConfig requestConfig) throws Exception {
@@ -57,7 +57,6 @@ public class Performer {
     }
 
     public <T> T get(RequestConfig requestConfig, TypeReference<T> typeReference) throws Exception {
-        var resultActions = perform(requestConfig);
-        return readResponse(resultActions.andReturn().getResponse(), typeReference);
+        return readResponse(perform(requestConfig), typeReference);
     }
 }
