@@ -11,8 +11,22 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(DataExtension.class)
-public @interface DataSource {
-    String path();
+public @interface Data {
+    Source[] sources() default {};
 
-    Class<? extends AbstractBaseDataLoader<?, ?>> loader();
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Source {
+        String name();
+
+        String path();
+
+        Class<? extends AbstractBaseDataLoader<?, ?>> loader();
+    }
+
+    @Target(ElementType.PARAMETER)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Name {
+        String value();
+    }
 }

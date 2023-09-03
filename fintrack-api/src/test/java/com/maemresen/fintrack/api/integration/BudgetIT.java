@@ -1,7 +1,7 @@
 package com.maemresen.fintrack.api.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.maemresen.fintrack.api.base.AbstractBaseRestIT;
+import com.maemresen.fintrack.api.base.AbstractBaseWithContainersIT;
 import com.maemresen.fintrack.api.dto.BudgetCreateRequestDto;
 import com.maemresen.fintrack.api.dto.BudgetDto;
 import com.maemresen.fintrack.api.dto.ErrorDto;
@@ -14,25 +14,21 @@ import com.maemresen.fintrack.api.entity.StatementEntity;
 import com.maemresen.fintrack.api.entity.base.BaseEntity;
 import com.maemresen.fintrack.api.entity.enums.Currency;
 import com.maemresen.fintrack.api.entity.enums.StatementType;
-import com.maemresen.fintrack.api.util.data.loader.DataSource;
 import com.maemresen.fintrack.api.util.RequestConfig;
 import com.maemresen.fintrack.api.util.constant.BudgetItConstants;
+import com.maemresen.fintrack.api.util.constant.RestApiIT;
 import com.maemresen.fintrack.api.util.data.loader.BudgetListDataLoader;
-import com.maemresen.fintrack.api.util.helper.ContainerFactory;
+import com.maemresen.fintrack.api.util.data.loader.Data;
 import com.maemresen.fintrack.api.util.performer.BudgetRestItService;
 import com.maemresen.fintrack.api.util.performer.Performer;
 import com.maemresen.fintrack.api.utils.constants.ExceptionType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -44,32 +40,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Testcontainers
 @DisplayName("Budget Use Cases IT")
-@DataSource(path = "data/budgets.json", loader = BudgetListDataLoader.class)
-class BudgetIT extends AbstractBaseRestIT {
+@RestApiIT
+class BudgetIT extends AbstractBaseWithContainersIT {
+
+    static List<BudgetEntity> BUDGETS;
 
     @Autowired
-    private Performer performer;
+    protected Performer performer;
 
     @Autowired
     private BudgetRestItService budgetRestItService;
 
-    @Container
-    protected static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = ContainerFactory.createPostgreSQLContainer();
-
-    @DynamicPropertySource
-    static void overrideProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
-        registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
-        registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);
+    @BeforeAll
+    static void initAll(@Data.Name(BUDGET_DATA) List<BudgetEntity> budgets) {
+        BUDGETS = budgets;
     }
-
 
     @Test
     @DisplayName("UC: Budget Retrieval - Find By Id")
-    void findById(List<BudgetEntity> initialData) throws Exception {
-        final var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.EditBudget.BUDGET_INDEX);
+    void findById() throws Exception {
+        final var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.EditBudget.BUDGET_INDEX);
         BudgetDto budgetDto = budgetRestItService.getBudgetById(budgetId);
         assertNotNull(budgetDto);
         assertEquals(budgetId, budgetDto.getId());
@@ -92,8 +83,8 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Budget Retrieval - Find All")
-    void findAll(List<BudgetEntity> initialData) throws Exception {
-        final var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.EditBudget.BUDGET_INDEX);
+    void findAll() throws Exception {
+        final var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.EditBudget.BUDGET_INDEX);
         var budgetDtos = budgetRestItService.getBudgets();
         assertTrue(CollectionUtils.isNotEmpty(budgetDtos));
         assertTrue(budgetDtos.stream().map(BudgetDto::getId).anyMatch(budgetId::equals));
@@ -135,25 +126,25 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Statement Addition - Add Statement To Budget")
-    void addStatementToBudgetWithoutInitialStatements(List<BudgetEntity> initialData) throws Exception {
-        final var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.AddStatement.NO_INITIAL_STATEMENTS_BUDGET_INDEX);
+    void addStatementToBudgetWithoutInitialStatements() throws Exception {
+        final var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.AddStatement.NO_INITIAL_STATEMENTS_BUDGET_INDEX);
         budgetRestItService.addStatementToBudget(budgetId, BudgetItConstants.STATEMENT_FOR_ADD_STATEMENT_AMOUNT);
     }
 
     @Test
     @DisplayName("UC: Statement Addition - Add Statement To Budget With Initial Statements")
-    void addStatementToBudgetWithInitialStatements(List<BudgetEntity> initialData) throws Exception {
-        final var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.AddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
+    void addStatementToBudgetWithInitialStatements() throws Exception {
+        final var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.AddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
         var budgetDto = budgetRestItService.addStatementToBudget(budgetId, BudgetItConstants.STATEMENT_FOR_ADD_STATEMENT_AMOUNT);
 
         var statementIds = budgetDto.getStatements().stream()
             .map(BaseDto::getId)
             .collect(Collectors.toSet());
 
-        final var statementId1 = budgetRestItService.getStatementIdByIndex(initialData,
+        final var statementId1 = budgetRestItService.getStatementIdByIndex(BUDGETS,
             BudgetItConstants.AddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX,
             BudgetItConstants.AddStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX);
-        final var statementId2 = budgetRestItService.getStatementIdByIndex(initialData,
+        final var statementId2 = budgetRestItService.getStatementIdByIndex(BUDGETS,
             BudgetItConstants.AddStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX,
             BudgetItConstants.AddStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX);
         assertTrue(CollectionUtils.containsAll(statementIds, Set.of(statementId1, statementId2)));
@@ -186,19 +177,19 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Statement Removal - Remove Statement With Single Init Statement")
-    void removeStatementWithSingleInitStatement(List<BudgetEntity> initialData) throws Exception {
-        final var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.RemoveStatement.SINGLE_INITIAL_STATEMENT_BUDGET_INDEX);
-        final var statementId1 = budgetRestItService.getStatementIdByIndex(initialData, BudgetItConstants.RemoveStatement.SINGLE_INITIAL_STATEMENT_BUDGET_INDEX, BudgetItConstants.RemoveStatement.SINGLE_INITIAL_STATEMENT_STATEMENT_INDEX);
+    void removeStatementWithSingleInitStatement() throws Exception {
+        final var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.RemoveStatement.SINGLE_INITIAL_STATEMENT_BUDGET_INDEX);
+        final var statementId1 = budgetRestItService.getStatementIdByIndex(BUDGETS, BudgetItConstants.RemoveStatement.SINGLE_INITIAL_STATEMENT_BUDGET_INDEX, BudgetItConstants.RemoveStatement.SINGLE_INITIAL_STATEMENT_STATEMENT_INDEX);
         var budgetDto = budgetRestItService.removeStatementFromBudget(budgetId, statementId1);
         assertTrue(CollectionUtils.isEmpty(budgetDto.getStatements()));
     }
 
     @Test
     @DisplayName("UC: Statement Removal - Remove Statement With Multiple Init Statements")
-    void removeStatementWithMultipleInitStatements(List<BudgetEntity> initialData) throws Exception {
-        final var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
-        final var statementId1 = budgetRestItService.getStatementIdByIndex(initialData, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX);
-        final var statementId2 = budgetRestItService.getStatementIdByIndex(initialData, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX);
+    void removeStatementWithMultipleInitStatements() throws Exception {
+        final var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
+        final var statementId1 = budgetRestItService.getStatementIdByIndex(BUDGETS, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_1_INDEX);
+        final var statementId2 = budgetRestItService.getStatementIdByIndex(BUDGETS, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_STATEMENT_2_INDEX);
         var budgetDto = budgetRestItService.removeStatementFromBudget(budgetId, statementId1);
         var remainingStatementIds = budgetDto.getStatements().stream()
             .map(BaseDto::getId)
@@ -208,8 +199,8 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Statement Removal - Remove Non Exists Statement")
-    void removeNonExistsStatement(List<BudgetEntity> initialData) throws Exception {
-        final var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
+    void removeNonExistsStatement() throws Exception {
+        final var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.RemoveStatement.MULTIPLE_INITIAL_STATEMENTS_BUDGET_INDEX);
         final var nonExistingStatementId = budgetRestItService.getNonExistingStatementId();
         var requestConfig = RequestConfig.error(BudgetItConstants.URI_REMOVE_STATEMENT, ExceptionType.NOT_FOUND)
             .requestMethod(HttpMethod.DELETE)
@@ -242,8 +233,8 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Report - Get Monthly Report For Years (Single Currency)")
-    void getMonthlyReportForYearsWithSingleCurrency(List<BudgetEntity> initialData) throws Exception {
-        var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.MonthlyReportForYear.SINGLE_CURRENCY_BUDGET_INDEX);
+    void getMonthlyReportForYearsWithSingleCurrency() throws Exception {
+        var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.MonthlyReportForYear.SINGLE_CURRENCY_BUDGET_INDEX);
         var requestConfig = RequestConfig.success(BudgetItConstants.URI_MONTHLY_REPORT_FOR_YEAR)
             .requestMethod(HttpMethod.GET)
             .requestVariables(List.of(budgetId, BudgetItConstants.MonthlyReportForYear.YEAR))
@@ -282,9 +273,9 @@ class BudgetIT extends AbstractBaseRestIT {
 
     @Test
     @DisplayName("UC: Report - Get Monthly Report Must be empty for non existing year")
-    void getMonthlyReportForNonExistingYear(List<BudgetEntity> initialData) throws Exception {
+    void getMonthlyReportForNonExistingYear() throws Exception {
         final var nonExistingYear = BudgetItConstants.MonthlyReportForYear.YEAR + 1;
-        final var budgetId = budgetRestItService.getBudgetIdByIndex(initialData, BudgetItConstants.MonthlyReportForYear.SINGLE_CURRENCY_BUDGET_INDEX);
+        final var budgetId = budgetRestItService.getBudgetIdByIndex(BUDGETS, BudgetItConstants.MonthlyReportForYear.SINGLE_CURRENCY_BUDGET_INDEX);
         var requestConfig = RequestConfig.success(BudgetItConstants.URI_MONTHLY_REPORT_FOR_YEAR)
             .requestMethod(HttpMethod.GET)
             .requestVariables(List.of(budgetId, nonExistingYear))

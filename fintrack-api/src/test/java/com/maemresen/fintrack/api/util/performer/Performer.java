@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maemresen.fintrack.api.util.RequestConfig;
 import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;

@@ -1,9 +1,9 @@
 package com.maemresen.fintrack.api.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.maemresen.fintrack.api.base.AbstractBaseRestIT;
 import com.maemresen.fintrack.api.dto.ErrorCodeDto;
 import com.maemresen.fintrack.api.util.RequestConfig;
+import com.maemresen.fintrack.api.util.constant.RestApiIT;
 import com.maemresen.fintrack.api.util.constant.UseInMemoryDB;
 import com.maemresen.fintrack.api.util.helper.ApiUriHelper;
 import com.maemresen.fintrack.api.util.performer.Performer;
@@ -21,9 +21,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @UseInMemoryDB
-class ErrorCodeIT  extends AbstractBaseRestIT {
+@RestApiIT
+class ErrorCodeIT {
 
     private static final String FIND_ALL = ApiUriHelper.mergeUri(UriConstant.ErrorCode.BASE_URI, UriConstant.ErrorCode.FIND_ALL_URI);
+
+    @Autowired
+    private Performer performer;
 
     @Test
     void findAllErrorCodes() throws Exception {
