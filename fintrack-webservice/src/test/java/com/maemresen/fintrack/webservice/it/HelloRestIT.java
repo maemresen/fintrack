@@ -2,7 +2,6 @@ package com.maemresen.fintrack.webservice.it;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.maemresen.fintrack.webservice.util.helper.RequestConfig;
-import com.maemresen.fintrack.webservice.util.helper.RequestPerformer;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 
