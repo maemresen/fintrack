@@ -11,7 +11,12 @@
     </parent>
 
     <artifactId>fintrack-webservice</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>fintrack-webservice-api</module>
+        <module>fintrack-webservice-business</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -19,11 +24,6 @@
                 <groupId>com.maemresen</groupId>
                 <artifactId>fintrack-webservice-business</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.maemresen</groupId>
-                <artifactId>fintrack-webservice-persistence</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -79,7 +79,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -88,17 +87,14 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
