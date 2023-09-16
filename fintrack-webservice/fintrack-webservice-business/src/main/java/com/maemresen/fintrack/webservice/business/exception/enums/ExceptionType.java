@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.webservice.business.exception;
+package com.maemresen.fintrack.webservice.business.exception.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

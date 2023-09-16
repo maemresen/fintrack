@@ -4,7 +4,7 @@ import com.maemresen.fintrack.webservice.api.config.props.AppProps;
 import com.maemresen.fintrack.webservice.api.util.constant.HeaderConstants;
 import com.maemresen.fintrack.webservice.business.dto.ErrorDto;
 import com.maemresen.fintrack.webservice.business.dto.FieldErrorDto;
-import com.maemresen.fintrack.webservice.business.exception.ExceptionType;
+import com.maemresen.fintrack.webservice.business.exception.enums.ExceptionType;
 import com.maemresen.fintrack.webservice.business.exception.InvalidParameterException;
 import com.maemresen.fintrack.webservice.business.exception.NotFoundException;
 import com.maemresen.fintrack.webservice.business.exception.ServiceException;

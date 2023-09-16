@@ -1,0 +1,102 @@
+databaseChangeLog:
+    - changeSet:
+          id: create-sequences-1
+          author: SYSTEM
+          changes:
+              - createSequence:
+                    sequenceName: budget_id_seq
+                    startValue: 1
+                    incrementBy: 1
+                    cacheSize: 1
+              - createSequence:
+                    sequenceName: statement_id_seq
+                    startValue: 1
+                    incrementBy: 1
+                    cacheSize: 1
+
+    - changeSet:
+          id: create-table-budget
+          author: SYSTEM
+          changes:
+              - createTable:
+                    tableName: budget
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              defaultValueSequenceNext: budget_id_seq
+                              constraints:
+                                  nullable: false
+                                  primaryKey: true
+                                  primaryKeyName: pk_budget
+                        - column:
+                              name: name
+                              type: VARCHAR(255)
+                              constraints:
+                                  nullable: false
+
+    - changeSet:
+          id: create-table-statement
+          author: SYSTEM
+          changes:
+              - createTable:
+                    tableName: statement
+                    columns:
+                        - column:
+                              name: id
+                              type: BIGINT
+                              defaultValueSequenceNext: statement_id_seq
+                              constraints:
+                                  nullable: false
+                                  primaryKey: true
+                                  primaryKeyName: pk_statement
+                        - column:
+                              name: created_date
+                              type: TIMESTAMP
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: updated_date
+                              type: TIMESTAMP
+                        - column:
+                              name: description
+                              type: VARCHAR(255)
+                        - column:
+                              name: amount
+                              type: DOUBLE PRECISION
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: currency
+                              type: VARCHAR(255)
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: type
+                              type: VARCHAR(255)
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: date
+                              type: TIMESTAMP
+                              constraints:
+                                  nullable: false
+                        - column:
+                              name: category
+                              type: VARCHAR(255)
+                        - column:
+                              name: budget_id
+                              type: BIGINT
+                              constraints:
+                                  nullable: false
+
+    - changeSet:
+          id: add-fk-statement-budget
+          author: SYSTEM
+          changes:
+              - addForeignKeyConstraint:
+                    baseTableName: statement
+                    baseColumnNames: budget_id
+                    constraintName: FK_STATEMENT_ON_BUDGET
+                    referencedTableName: budget
+                    referencedColumnNames: id

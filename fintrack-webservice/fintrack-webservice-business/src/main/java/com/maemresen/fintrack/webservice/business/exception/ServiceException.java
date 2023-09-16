@@ -1,5 +1,6 @@
 package com.maemresen.fintrack.webservice.business.exception;
 
+import com.maemresen.fintrack.webservice.business.exception.enums.ExceptionType;
 import lombok.Getter;
 
 @Getter

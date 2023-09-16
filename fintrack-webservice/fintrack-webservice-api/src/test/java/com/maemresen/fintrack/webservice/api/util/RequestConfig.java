@@ -1,6 +1,6 @@
 package com.maemresen.fintrack.webservice.api.util;
 
-import com.maemresen.fintrack.webservice.business.exception.ExceptionType;
+import com.maemresen.fintrack.webservice.business.exception.enums.ExceptionType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,5 +1,7 @@
 package com.maemresen.fintrack.webservice.business.exception;
 
+import com.maemresen.fintrack.webservice.business.exception.enums.ExceptionType;
+
 public class InvalidParameterException extends ServiceException {
 
     public InvalidParameterException(String message, Throwable cause) {
