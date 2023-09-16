@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.webservice.common;
+package com.maemresen.fintrack.commons.io.csv;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.experimental.UtilityClass;

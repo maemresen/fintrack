@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.webservice.common;
+package com.maemresen.fintrack.commons.io.csv;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
