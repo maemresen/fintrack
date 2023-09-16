@@ -23,4 +23,27 @@
             <artifactId>fintrack-webservice-test</artifactId>
         </dependency>
     </dependencies>
+
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/rest/**</exclude>
+                                <exclude>**/constant/**</exclude>
+                                <exclude>**/config/**</exclude>
+                                <exclude>**/FintrackApplication*</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
