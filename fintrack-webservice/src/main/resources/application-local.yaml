@@ -1,0 +1,8 @@
+spring:
+    docker:
+        compose:
+            enabled: true
+            file: classpath:fintrack-webservice/docker-compose.yaml
+
+app:
+    exceptions-stack-trace: true
