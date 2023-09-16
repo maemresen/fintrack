@@ -10,4 +10,9 @@
 
     <name>Fintrack</name>
     <url>https://maemresne.com</url>
+
+    <modules>
+        <module>fintrack-api</module>
+        <module>fintrack-fe</module>
+    </modules>
 </project>
