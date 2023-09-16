@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.webservice.it;
+package com.maemresen.fintrack.webservice.api;
 
 import com.maemresen.fintrack.webservice.util.annotation.RestApiIT;
 import com.maemresen.fintrack.webservice.util.helper.ContainerFactory;

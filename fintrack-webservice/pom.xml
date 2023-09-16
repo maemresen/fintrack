@@ -61,6 +61,13 @@
             <artifactId>spring-boot-docker-compose</artifactId>
         </dependency>
 
+        <!-- OpenCSV Dependency -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+        </dependency>
+
+
         <!-- Testing -->
         <dependency>
             <groupId>com.h2database</groupId>

@@ -14,7 +14,6 @@
     <modules>
         <module>fintrack-webservice</module>
         <module>fintrack-fe</module>
-        <module>fintrack-commons</module>
     </modules>
 
     <properties>
@@ -31,6 +30,7 @@
         <liquibase.version>4.18.0</liquibase.version>
         <testcontainers.version>1.18.0</testcontainers.version>
         <spring-doc.openapi.version>2.1.0</spring-doc.openapi.version>
+        <com.openCSV.version>5.8</com.openCSV.version>
         <skipUTs>false</skipUTs>
     </properties>
 
@@ -74,6 +74,12 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${com.h2database.version}</version>
+            </dependency>
+            <!-- OpenCSV Dependency -->
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${com.openCSV.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
