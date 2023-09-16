@@ -18,5 +18,9 @@
             <groupId>com.maemresen</groupId>
             <artifactId>fintrack-webservice-business</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.maemresen</groupId>
+            <artifactId>fintrack-webservice-test</artifactId>
+        </dependency>
     </dependencies>
 </project>

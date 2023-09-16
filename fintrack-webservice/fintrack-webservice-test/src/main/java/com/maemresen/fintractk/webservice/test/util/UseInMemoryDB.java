@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.webservice.api.util.annotation;
+package com.maemresen.fintractk.webservice.test.util;
 
 import org.springframework.test.context.ActiveProfiles;
 

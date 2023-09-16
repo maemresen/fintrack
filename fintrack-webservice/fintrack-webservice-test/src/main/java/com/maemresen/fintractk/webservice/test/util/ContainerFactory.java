@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.webservice.api.util.helper;
+package com.maemresen.fintractk.webservice.test.util;
 
 import lombok.experimental.UtilityClass;
 import org.testcontainers.containers.PostgreSQLContainer;

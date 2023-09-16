@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.webservice.api.util.helper;
+package com.maemresen.fintrack.webservice.api.util;
 
 import com.maemresen.fintrack.webservice.business.exception.ExceptionType;
 import jakarta.validation.constraints.NotBlank;

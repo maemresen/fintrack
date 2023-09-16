@@ -1,17 +1,11 @@
-package com.maemresen.fintrack.webservice.api.base;
+package com.maemresen.fintractk.webservice.test.base;
 
-import com.maemresen.fintrack.webservice.api.util.annotation.RestApiIT;
-import com.maemresen.fintrack.webservice.api.util.helper.ContainerFactory;
-import com.maemresen.fintrack.webservice.api.util.helper.RequestPerformer;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.maemresen.fintractk.webservice.test.util.ContainerFactory;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-@RequiredArgsConstructor
-@RestApiIT
-public class AbstractBaseRestITTest {
+public abstract class AbstractBasePostgresIT {
 
     protected static final PostgreSQLContainer<?> GLOBAL_POSTGRESQL_CONTAINER = ContainerFactory.createPostgreSQLContainer();
 
@@ -25,7 +19,4 @@ public class AbstractBaseRestITTest {
         registry.add("spring.datasource.username", GLOBAL_POSTGRESQL_CONTAINER::getUsername);
         registry.add("spring.datasource.password", GLOBAL_POSTGRESQL_CONTAINER::getPassword);
     }
-
-    @Autowired
-    protected RequestPerformer requestPerformer;
 }
