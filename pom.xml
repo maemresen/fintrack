@@ -12,7 +12,7 @@
     <url>https://maemresne.com</url>
 
     <modules>
-        <module>fintrack-webservice</module>
+        <module>fintrack-api</module>
         <module>fintrack-commons</module>
         <module>fintrack-fe</module>
     </modules>
