@@ -2,7 +2,7 @@
   <configuration default="false" name="FintrackApplication - Local" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="local" />
     <module name="fintrack-api" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="com.maemresen.fintrack.webservice.api.FintrackApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.maemresen.fintrack.api.FintrackApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
