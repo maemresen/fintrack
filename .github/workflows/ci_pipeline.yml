@@ -64,14 +64,14 @@ jobs:
     integration-test:
         needs: unit-test
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main'
+#        if: github.ref == 'refs/heads/main'
         services:
             docker:
                 image: docker:20.10.5-dind
                 options: --privileged
         strategy:
             matrix:
-                module: [fintrack-api]  # Add or remove module names as needed
+                module: [fintrack-api,fintrack-commons]  # Add or remove module names as needed
             fail-fast: false
         steps:
             - name: Checkout code
