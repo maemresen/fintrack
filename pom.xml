@@ -23,6 +23,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <org.apache.maven.surfire-plugin.version>3.1.2</org.apache.maven.surfire-plugin.version>
+        <org.apache.maven.failsafe-plugin.version>3.1.2</org.apache.maven.failsafe-plugin.version>
         <org.lombok.version>1.18.28</org.lombok.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.lombok.mapstruct-binding.version>0.2.0</org.lombok.mapstruct-binding.version>
@@ -32,7 +33,6 @@
         <testcontainers.version>1.18.0</testcontainers.version>
         <spring-doc.openapi.version>2.1.0</spring-doc.openapi.version>
         <com.openCSV.version>5.8</com.openCSV.version>
-        <skipUTs>false</skipUTs>
     </properties>
 
     <dependencyManagement>
@@ -125,14 +125,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${org.apache.maven.surfire-plugin.version}</version>
-                    <configuration>
-                        <skip>${skipUTs}</skip>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>${org.apache.maven.failsafe-plugin.version}</version>
                     <configuration>
                         <includes>
                             <include>**/*IT.java</include>
