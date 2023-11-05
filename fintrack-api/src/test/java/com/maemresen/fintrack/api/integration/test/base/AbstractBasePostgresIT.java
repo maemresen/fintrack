@@ -1,6 +1,6 @@
-package com.maemresen.fintrack.commons.spring.test.base;
+package com.maemresen.fintrack.api.integration.test.base;
 
-import com.maemresen.fintrack.commons.spring.test.util.ContainerFactory;
+import com.maemresen.fintrack.api.integration.test.util.ContainerFactory;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.test.context.DynamicPropertyRegistry;

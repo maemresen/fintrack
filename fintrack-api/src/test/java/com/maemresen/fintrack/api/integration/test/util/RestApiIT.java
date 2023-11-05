@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.commons.spring.test.util;
+package com.maemresen.fintrack.api.integration.test.util;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;

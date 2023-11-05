@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.commons.spring.test.util;
+package com.maemresen.fintrack.api.integration.test.util;
 
 import lombok.experimental.UtilityClass;
 import org.testcontainers.containers.PostgreSQLContainer;
