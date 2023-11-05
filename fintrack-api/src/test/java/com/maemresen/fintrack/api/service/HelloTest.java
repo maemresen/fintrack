@@ -9,5 +9,6 @@ class HelloTest {
     @Test
     void test1(){
         assertTrue(true);
+
     }
 }
