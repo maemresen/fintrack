@@ -14,4 +14,6 @@ public interface BudgetService {
     BudgetDto create(@Valid BudgetCreateDto budgetCreateDto);
 
     BudgetDto addStatement(@NotNull Long id, @Valid StatementCreateDto statementCreateDto);
+
+    BudgetDto removeStatement(@NotNull Long id, @NotNull Long id1);
 }
