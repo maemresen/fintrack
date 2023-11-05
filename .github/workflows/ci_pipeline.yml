@@ -1,9 +1,6 @@
 name: Maven CI
 
 on:
-    push:
-        branches:
-            - '**/*'
     pull_request:
         branches:
             - main
