@@ -14,16 +14,11 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'fintrack-fe'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('fintrack-fe');
-  });
-
-  it('should render title', () => {
+  it('should contain swagger link', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('fintrack-fe app is running!');
+    const swaggerLink = compiled.querySelector('#swagger-link');
+    expect(swaggerLink).not.toBeNull();
   });
 });

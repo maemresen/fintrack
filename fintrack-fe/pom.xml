@@ -19,6 +19,23 @@
     <frontend-maven-plugin.nodeVersion>v20.9.0</frontend-maven-plugin.nodeVersion>
   </properties>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${frontend-maven-plugin.version}</version>
+          <configuration>
+            <installDirectory>target</installDirectory>
+            <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
+            <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
   <profiles>
     <profile>
       <id>packageFe</id>
@@ -27,7 +44,6 @@
           <plugin>
             <groupId>com.github.eirslett</groupId>
             <artifactId>frontend-maven-plugin</artifactId>
-            <version>${frontend-maven-plugin.version}</version>
             <executions>
               <execution>
                 <id>install node and npm</id>
@@ -57,11 +73,46 @@
                 <phase>process-resources</phase>
               </execution>
             </executions>
-            <configuration>
-              <installDirectory>target</installDirectory>
-              <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
-              <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
-            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install node and npm</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>npm install</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>install</arguments>
+                </configuration>
+                <phase>process-resources</phase>
+              </execution>
+              <execution>
+                <id>npm run test</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>run test-headless</arguments>
+                </configuration>
+                <phase>test</phase>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
