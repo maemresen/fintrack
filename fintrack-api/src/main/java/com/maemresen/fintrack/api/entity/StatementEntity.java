@@ -9,6 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,6 +45,10 @@ public class StatementEntity extends BaseDatedEntity {
 
     @Column(nullable = false)
     private LocalDateTime date;
+
+    @ManyToOne
+    @JoinColumn(name = "exchange_rate_id")
+    private ExchangeRate exchangeRate;
 
     private String category;
 

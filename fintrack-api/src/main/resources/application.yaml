@@ -2,7 +2,7 @@ spring:
     profiles:
         active: dev
     datasource:
-        url: jdbc:postgresql://127.0.0.1:5432/db_local
+        url: jdbc:postgresql://127.0.0.1:5432/fintrack_local
         username: postgres
         password: postgres
         driver-class-name: org.postgresql.Driver
@@ -16,5 +16,3 @@ spring:
     docker:
         compose:
             enabled: false
-app:
-    exceptions-stack-trace: false
