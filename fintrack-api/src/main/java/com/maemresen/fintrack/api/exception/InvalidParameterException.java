@@ -4,8 +4,8 @@ import com.maemresen.fintrack.api.exception.enums.ExceptionType;
 
 public class InvalidParameterException extends ServiceException {
 
-    public InvalidParameterException(String message, Throwable cause) {
-        super(message, cause, ExceptionType.INVALID_PARAMETER);
+    public InvalidParameterException(String message) {
+        super(message, ExceptionType.INVALID_PARAMETER);
     }
 
     public InvalidParameterException(Throwable cause) {

@@ -8,6 +8,12 @@ public class ServiceException extends RuntimeException {
     private final ExceptionType exceptionType;
     private final transient Object data;
 
+    protected ServiceException(String message, ExceptionType exceptionType) {
+        super(message);
+        this.exceptionType = exceptionType;
+        this.data = null;
+    }
+
     protected ServiceException(Throwable throwable, ExceptionType exceptionType) {
         super(throwable);
         this.exceptionType = exceptionType;
