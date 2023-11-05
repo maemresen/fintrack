@@ -8,6 +8,7 @@ on:
 env:
     JAVA_VERSION: 17
     MAVEN_VERSION: 3.8.1  # Adjust if you want a different Maven version
+    CACHE_KEY: maven-local-repo
 
 jobs:
     build:
@@ -16,12 +17,20 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v2
+
             - name: Set up JDK
               uses: actions/setup-java@v2
               with:
                   distribution: 'temurin'
                   java-version: ${{ env.JAVA_VERSION }}
+
             - name: Cache Maven packages
               uses: actions/cache@v2
+              with:
+                  path: ~/.m2
+                  key: ${{ env.CACHE_KEY }}-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+                  restore-keys: |
+                      ${{ env.CACHE_KEY }}-${{ runner.os }}-
+
             - name: Maven Clean Package
               run: mvn -B -Ptest clean install
