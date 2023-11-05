@@ -1,16 +1,17 @@
 package com.maemresen.fintrack.api.config;
 
+import com.maemresen.fintrack.api.config.props.AppProps;
+import com.maemresen.fintrack.api.util.constant.HeaderConstants;
 import com.maemresen.fintrack.api.dto.ErrorDto;
 import com.maemresen.fintrack.api.dto.FieldErrorDto;
-import com.maemresen.fintrack.api.exceptions.InvalidParameterException;
-import com.maemresen.fintrack.api.exceptions.NotFoundException;
-import com.maemresen.fintrack.api.exceptions.ServiceException;
-import com.maemresen.fintrack.api.exceptions.UnexpectedException;
-import com.maemresen.fintrack.api.utils.constants.ExceptionType;
-import com.maemresen.fintrack.api.utils.constants.HeaderConstants;
+import com.maemresen.fintrack.api.exception.enums.ExceptionType;
+import com.maemresen.fintrack.api.exception.InvalidParameterException;
+import com.maemresen.fintrack.api.exception.NotFoundException;
+import com.maemresen.fintrack.api.exception.ServiceException;
+import com.maemresen.fintrack.api.exception.UnexpectedException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,12 +24,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Slf4j
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Value("${app.logging.exception.stack-trace.enabled:false}")
-    private boolean logExceptionStackTrace;
+    private final AppProps appProps;
 
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<Object> handleServiceException(ServiceException serviceException, WebRequest request) {
@@ -65,7 +66,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         var error = ErrorDto.builder()
                 .message(serviceException.getMessage())
                 .data(serviceException.getData())
-                .stackTrace(logExceptionStackTrace ? serviceException.getStackTrace() : null)
+                .stackTrace(appProps.isExceptionsStackTraceEnabled() ? serviceException.getStackTrace() : null)
                 .build();
         return ResponseEntity.status(exceptionType.getHttpStatus())
                 .header(HeaderConstants.ERROR_CODE_HEADER, exceptionType.getCode())

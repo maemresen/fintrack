@@ -11,12 +11,14 @@ public class OpenApiConfiguration {
 
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("My API")
-                        .version("1.0.0")
-                        .description("My custom API for demo")
-                        .contact(new Contact().name("John Doe").email("john.doe@example.com"))
-                );
+        return new OpenAPI().info(info());
+    }
+
+    private Info info() {
+        return new Info()
+            .title("My API")
+            .version("1.0.0")
+            .description("My custom API for demo")
+            .contact(new Contact().name("John Doe").email("maemresen@yazilim.vip"));
     }
 }

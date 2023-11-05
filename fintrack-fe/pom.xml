@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.maemresen</groupId>
+    <artifactId>fintrack</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>fintrack-fe</artifactId>
+  <packaging>pom</packaging>
+
+  <properties>
+    <frontend-maven-plugin.version>1.14.2</frontend-maven-plugin.version>
+    <frontend-maven-plugin.npmVersion>10.2.1</frontend-maven-plugin.npmVersion>
+    <frontend-maven-plugin.nodeVersion>v20.9.0</frontend-maven-plugin.nodeVersion>
+  </properties>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${frontend-maven-plugin.version}</version>
+          <configuration>
+            <installDirectory>target</installDirectory>
+            <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
+            <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>packageFe</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install node and npm</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>npm install</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>install</arguments>
+                </configuration>
+                <phase>process-resources</phase>
+              </execution>
+              <execution>
+                <id>npm run build</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>run build</arguments>
+                </configuration>
+                <phase>process-resources</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install node and npm</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>npm install</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>install</arguments>
+                </configuration>
+                <phase>process-resources</phase>
+              </execution>
+              <execution>
+                <id>npm run test</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>run test-headless</arguments>
+                </configuration>
+                <phase>test</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

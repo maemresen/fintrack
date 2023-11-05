@@ -13,24 +13,26 @@
 
     <modules>
         <module>fintrack-api</module>
+        <module>fintrack-commons</module>
+        <module>fintrack-fe</module>
     </modules>
 
     <properties>
-        <org.jacaco.maven-plugin.version>0.8.10</org.jacaco.maven-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.boot.version>3.1.2</org.springframework.boot.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <org.apache.maven.surfire-plugin.version>3.1.2</org.apache.maven.surfire-plugin.version>
+        <org.apache.maven.failsafe-plugin.version>3.1.2</org.apache.maven.failsafe-plugin.version>
         <org.lombok.version>1.18.28</org.lombok.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.lombok.mapstruct-binding.version>0.2.0</org.lombok.mapstruct-binding.version>
         <org.apache.commons.collections.version>4.4</org.apache.commons.collections.version>
+        <com.h2database.version>2.2.220</com.h2database.version>
         <liquibase.version>4.18.0</liquibase.version>
         <testcontainers.version>1.18.0</testcontainers.version>
         <spring-doc.openapi.version>2.1.0</spring-doc.openapi.version>
-        <skipUTs>false</skipUTs>
-        <test.integration.docker.host>unix:///var/run/docker.sock</test.integration.docker.host>
-        <test.integration.docker.tlsVerify>0</test.integration.docker.tlsVerify>
+        <com.openCSV.version>5.8</com.openCSV.version>
     </properties>
 
     <dependencyManagement>
@@ -48,6 +50,37 @@
                 <version>${testcontainers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${org.apache.commons.collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${spring-doc.openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${com.h2database.version}</version>
+            </dependency>
+            <!-- OpenCSV Dependency -->
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${com.openCSV.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -92,14 +125,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${org.apache.maven.surfire-plugin.version}</version>
-                    <configuration>
-                        <skip>${skipUTs}</skip>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>${org.apache.maven.failsafe-plugin.version}</version>
                     <configuration>
                         <includes>
                             <include>**/*IT.java</include>
@@ -107,10 +137,6 @@
                         <excludes>
                             <exclude>**/*Test.java</exclude>
                         </excludes>
-                        <environmentVariables>
-                            <DOCKER_HOST>${test.integration.docker.host}</DOCKER_HOST>
-                            <DOCKER_TLS_VERIFY>${test.integration.docker.tlsVerify}</DOCKER_TLS_VERIFY>
-                        </environmentVariables>
                     </configuration>
                     <executions>
                         <execution>
@@ -126,4 +152,23 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
+
