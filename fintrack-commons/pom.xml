@@ -15,6 +15,7 @@
 
     <modules>
         <module>fintrack-commons-io</module>
+        <module>fintrack-commons-spring-test</module>
     </modules>
 
 </project>
