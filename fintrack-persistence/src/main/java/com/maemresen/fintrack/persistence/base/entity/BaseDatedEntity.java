@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.persistence.entity.base;
+package com.maemresen.fintrack.persistence.base.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -13,16 +13,12 @@ import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-
-@AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
-@FieldNameConstants
 public class BaseDatedEntity extends BaseEntity {
 
     @Column(nullable = false)
@@ -40,5 +36,18 @@ public class BaseDatedEntity extends BaseEntity {
     @PreUpdate
     public void preUpdate() {
         this.updatedDate = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BaseDatedEntity that)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(getCreatedDate(), that.getCreatedDate()) && Objects.equals(getUpdatedDate(), that.getUpdatedDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getCreatedDate(), getUpdatedDate());
     }
 }

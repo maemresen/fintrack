@@ -12,6 +12,7 @@
           <option name="goals">
             <list>
               <option value="install" />
+              <option value="-DskipTests" />
             </list>
           </option>
           <option name="pomFileName" />
