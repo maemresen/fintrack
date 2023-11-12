@@ -1,4 +1,4 @@
-package com.maemresen.fintrack.api.it;
+package com.maemresen.fintrack.api.it.util;
 
 import com.maemresen.fintrack.business.exception.enums.ExceptionType;
 import jakarta.validation.constraints.NotBlank;
@@ -37,7 +37,7 @@ public class RequestConfig {
     }
 
     public interface BaseBuilder {
-        RequestConfig build() throws Exception;
+        RequestConfig build();
     }
 
     public interface DefaultBuilder extends BaseBuilder {

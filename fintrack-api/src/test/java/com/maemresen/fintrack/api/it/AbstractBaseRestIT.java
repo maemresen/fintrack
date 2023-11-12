@@ -1,5 +1,7 @@
 package com.maemresen.fintrack.api.it;
 
+import com.maemresen.fintrack.api.it.util.RequestPerformer;
+import com.maemresen.fintrack.api.it.util.RestApiITConfig;
 import com.maemresen.fintrack.commons.spring.test.AbstractBasePostgresIT;
 import com.maemresen.fintrack.commons.spring.test.RestApiIT;
 import org.springframework.beans.factory.annotation.Autowired;

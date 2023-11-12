@@ -13,8 +13,5 @@ spring:
     sql:
         init:
             mode: never
-    docker:
-        compose:
-            en/abled: false
     liquibase:
         change-log: classpath:/db/changelog/db.changelog-master.xml

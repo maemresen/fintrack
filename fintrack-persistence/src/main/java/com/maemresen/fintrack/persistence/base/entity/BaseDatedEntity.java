@@ -18,6 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 @MappedSuperclass
 public class BaseDatedEntity extends BaseEntity {
 
