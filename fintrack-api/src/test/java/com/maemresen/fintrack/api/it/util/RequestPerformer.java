@@ -25,33 +25,33 @@ public class RequestPerformer {
         return objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), typeReference);
     }
 
-    public ResultActions perform(RequestConfig requestConfig) throws Exception {
-        final var requestMethod = requestConfig.getRequestMethod();
-        final var requestUri = requestConfig.getRequestUri();
-        final var requestVariables = requestConfig.getRequestVariables().toArray();
+    public ResultActions perform(ApiRequest apiRequest) throws Exception {
+        final var requestMethod = apiRequest.getRequestMethod();
+        final var requestUri = apiRequest.getRequestUri();
+        final var requestVariables = apiRequest.getRequestVariables().toArray();
         var requestBuilder = MockMvcRequestBuilders.request(requestMethod, requestUri, requestVariables)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON);
-        if (requestConfig.getRequestBody() != null) {
-            requestBuilder.content(objectMapper.writeValueAsString(requestConfig.getRequestBody()));
+        if (apiRequest.getRequestBody() != null) {
+            requestBuilder.content(objectMapper.writeValueAsString(apiRequest.getRequestBody()));
         }
 
         ResultActions resultActions = mockMvc.perform(requestBuilder);
 
-        var httpStatus = Optional.ofNullable(requestConfig.getResponseHttpStatus());
+        var httpStatus = Optional.ofNullable(apiRequest.getResponseHttpStatus());
         if (httpStatus.isPresent()) {
             resultActions.andExpect(status().is(httpStatus.get().value()));
         }
 
-        var responseExceptionType = requestConfig.getResponseExceptionType();
+        var responseExceptionType = apiRequest.getResponseExceptionType();
         if (responseExceptionType != null) {
             resultActions.andExpect(header().string(HeaderConstants.ERROR_CODE_HEADER, responseExceptionType.getCode()));
         }
         return resultActions;
     }
 
-    public <T> T perform(RequestConfig requestConfig, TypeReference<T> typeReference) throws Exception {
-        final var performResultActions = perform(requestConfig);
+    public <T> T perform(ApiRequest apiRequest, TypeReference<T> typeReference) throws Exception {
+        final var performResultActions = perform(apiRequest);
         performResultActions.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
         return readResponse(performResultActions, typeReference);
     }

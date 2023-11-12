@@ -17,7 +17,7 @@ import java.util.Objects;
 @Accessors(chain = true)
 @Setter(AccessLevel.PRIVATE)
 @Getter(AccessLevel.PUBLIC)
-public class RequestConfig {
+public class ApiRequest {
 
     private HttpMethod requestMethod;
     private String requestUri;
@@ -37,7 +37,7 @@ public class RequestConfig {
     }
 
     public interface BaseBuilder {
-        RequestConfig build();
+        ApiRequest build();
     }
 
     public interface DefaultBuilder extends BaseBuilder {
@@ -68,8 +68,8 @@ public class RequestConfig {
         private ExceptionType responseExceptionType = null;
 
         @Override
-        public RequestConfig build() {
-            return new RequestConfig()
+        public ApiRequest build() {
+            return new ApiRequest()
                     .setRequestUri(Objects.requireNonNull(requestUri))
                     .setRequestMethod(Objects.requireNonNull(requestMethod))
                     .setRequestBody(requestBody)
