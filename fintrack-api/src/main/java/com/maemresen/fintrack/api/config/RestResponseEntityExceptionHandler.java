@@ -1,14 +1,14 @@
 package com.maemresen.fintrack.api.config;
 
 import com.maemresen.fintrack.api.config.props.AppProps;
-import com.maemresen.fintrack.api.util.constant.HeaderConstants;
-import com.maemresen.fintrack.api.dto.ErrorDto;
-import com.maemresen.fintrack.api.dto.FieldErrorDto;
-import com.maemresen.fintrack.api.exception.enums.ExceptionType;
-import com.maemresen.fintrack.api.exception.InvalidParameterException;
-import com.maemresen.fintrack.api.exception.NotFoundException;
-import com.maemresen.fintrack.api.exception.ServiceException;
-import com.maemresen.fintrack.api.exception.UnexpectedException;
+import com.maemresen.fintrack.api.util.HeaderConstants;
+import com.maemresen.fintrack.api.config.dto.ErrorDto;
+import com.maemresen.fintrack.api.config.dto.FieldErrorDto;
+import com.maemresen.fintrack.business.exception.enums.ExceptionType;
+import com.maemresen.fintrack.business.exception.InvalidParameterException;
+import com.maemresen.fintrack.business.exception.NotFoundException;
+import com.maemresen.fintrack.business.exception.ServiceException;
+import com.maemresen.fintrack.business.exception.UnexpectedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;

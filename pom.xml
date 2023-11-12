@@ -12,6 +12,8 @@
     <url>https://maemresne.com</url>
 
     <modules>
+        <module>fintrack-persistence</module>
+        <module>fintrack-business</module>
         <module>fintrack-api</module>
         <module>fintrack-commons</module>
         <module>fintrack-fe</module>
@@ -137,6 +139,7 @@
                         <excludes>
                             <exclude>**/*Test.java</exclude>
                         </excludes>
+                        <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                     </configuration>
                     <executions>
                         <execution>

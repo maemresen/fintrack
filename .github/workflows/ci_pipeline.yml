@@ -37,4 +37,4 @@ jobs:
                       ${{ env.CACHE_KEY }}-${{ runner.os }}-
 
             - name: Maven Clean Package
-              run: mvn -B -Ptest clean install
+              run: mvn -B -Ptest,packageFe,assemblyFe clean install
