@@ -20,11 +20,5 @@ public class FintrackPersistenceITApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("-------------------------------------------------------------- DATA LOAD --------------------------------------------------------------");
-        log.info("fancy data loading stuff....");
-        AccountEntity accountEntity = new AccountEntity();
-        accountEntity.setEmail("Email");
-        accountRepository.save(accountEntity);
-        log.info("-------------------------------------------------------------- #DATA LOAD --------------------------------------------------------------");
     }
 }
