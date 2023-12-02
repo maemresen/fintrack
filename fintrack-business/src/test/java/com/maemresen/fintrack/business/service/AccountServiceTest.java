@@ -1,5 +1,6 @@
 package com.maemresen.fintrack.business.service;
 
+import com.maemresen.fintrack.business.service.impl.AccountServiceImpl;
 import com.maemresen.fintrack.persistence.entity.AccountEntity;
 import com.maemresen.fintrack.persistence.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ class AccountServiceTest {
     private AccountRepository accountRepository;
 
     @InjectMocks
-    private AccountService accountService;
+    private AccountServiceImpl accountService;
 
     @Test
     void findByIdReturnAccount() {

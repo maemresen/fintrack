@@ -1,6 +1,6 @@
 package com.maemresen.fintrack.api.it;
 
-import com.maemresen.fintrack.api.it.util.ApiRequest;
+import com.maemresen.fintrack.commons.spring.test.ApiRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 
@@ -9,10 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class HelloRestControllerIT extends AbstractBaseRestIT {
 
     @Test
-    void helloIntegrationTest() throws Exception {
-        final ApiRequest build = ApiRequest.success("/api/hello")
+    void helloIntegrationTest() {
+        final var apiRequest = ApiRequest.builder()
+            .requestUri("/api/hello")
             .requestMethod(HttpMethod.GET)
             .build();
-        assertDoesNotThrow(() -> requestPerformer.perform(build));
+        assertDoesNotThrow(() -> requestPerformer.performRequest(apiRequest));
     }
 }
