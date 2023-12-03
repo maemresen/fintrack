@@ -11,13 +11,14 @@
           </option>
           <option name="goals">
             <list>
-              <option value="verify" />
+              <option value="clean" />
+              <option value="install" />
             </list>
           </option>
           <option name="pomFileName" />
           <option name="profilesMap">
             <map>
-              <entry key="test" value="true" />
+              <entry key="unitTest,integrationTest" value="true" />
             </map>
           </option>
           <option name="projectsCmdOptionValues">
