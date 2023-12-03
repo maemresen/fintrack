@@ -86,7 +86,7 @@
                                     <overwrite>true</overwrite>
                                     <resources>
                                         <resource>
-                                            <directory>${project.parent.basedir}/fintrack-fe/dist/fintrack-fe/browser</directory>
+                                            <directory>${project.parent.basedir}/fintrack-fe/target/browser</directory>
                                         </resource>
                                     </resources>
                                 </configuration>
