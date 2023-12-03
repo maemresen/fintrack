@@ -10,9 +10,10 @@ on:
             - main
 
 env:
-    JAVA_VERSION: 17
+    JAVA_VERSION: 21
     MAVEN_VERSION: 3.8.1  # Adjust if you want a different Maven version
     CACHE_KEY: maven-local-repo
+    MAVEN_PROFILES: unitTest,integrationTest,packageFe,assemblyFe
 
 jobs:
     build:
@@ -37,4 +38,4 @@ jobs:
                       ${{ env.CACHE_KEY }}-${{ runner.os }}-
 
             - name: Maven Clean Package
-              run: mvn -B -Ptest,packageFe,assemblyFe clean install
+              run: mvn -B -P${{ env.MAVEN_PROFILES }} clean install
