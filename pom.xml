@@ -21,7 +21,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.springframework.boot.version>3.1.2</org.springframework.boot.version>
+        <org.springframework.boot.version>3.2.0</org.springframework.boot.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <org.apache.maven.surfire-plugin.version>3.1.2</org.apache.maven.surfire-plugin.version>
