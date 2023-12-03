@@ -1,19 +1,17 @@
-package com.maemresen.fintrack.business.it;
+package com.maemresen.fintrack.business.it.data;
 
 import com.maemresen.fintrack.persistence.entity.AccountEntity;
 import com.maemresen.fintrack.persistence.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
-public class ITDataInitializer implements CommandLineRunner {
+public class AccountDataLoader implements CommandLineRunner {
 
     private final AccountRepository accountRepository;
 
