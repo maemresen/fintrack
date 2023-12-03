@@ -1,7 +1,5 @@
 package com.maemresen.fintrack.persistence;
 
-import com.maemresen.fintrack.persistence.entity.AccountEntity;
-import com.maemresen.fintrack.persistence.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -14,11 +12,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication(scanBasePackages = "com.maemresen.fintrack")
 @EnableJpaRepositories(basePackages = "com.maemresen.fintrack")
 @EntityScan(basePackages = "com.maemresen.fintrack")
-public class FintrackPersistenceITApplication implements CommandLineRunner {
 
-    private final AccountRepository accountRepository;
-
-    @Override
-    public void run(String... args) throws Exception {
-    }
+public class FintrackPersistenceITApplication {
 }

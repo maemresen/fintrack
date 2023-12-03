@@ -47,10 +47,6 @@ public class TransactionEntity extends BaseDatedEntity {
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id")
-    private AccountEntity account;
-
     @OneToMany(mappedBy = "transaction")
     @ToString.Exclude
     private Set<ExchangeRateEntity> exchangeRates;
