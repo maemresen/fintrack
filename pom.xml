@@ -21,20 +21,18 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.springframework.boot.version>3.1.2</org.springframework.boot.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <org.springframework.boot.version>3.2.0</org.springframework.boot.version>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <org.apache.maven.surfire-plugin.version>3.1.2</org.apache.maven.surfire-plugin.version>
         <org.apache.maven.failsafe-plugin.version>3.1.2</org.apache.maven.failsafe-plugin.version>
-        <org.lombok.version>1.18.28</org.lombok.version>
+        <org.lombok.version>1.18.30</org.lombok.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.lombok.mapstruct-binding.version>0.2.0</org.lombok.mapstruct-binding.version>
         <org.apache.commons.collections.version>4.4</org.apache.commons.collections.version>
-        <com.h2database.version>2.2.220</com.h2database.version>
-        <liquibase.version>4.18.0</liquibase.version>
         <testcontainers.version>1.18.0</testcontainers.version>
         <spring-doc.openapi.version>2.1.0</spring-doc.openapi.version>
-        <com.openCSV.version>5.8</com.openCSV.version>
     </properties>
 
     <dependencyManagement>
@@ -54,11 +52,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-core</artifactId>
-                <version>${liquibase.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${org.mapstruct.version}</version>
@@ -72,17 +65,6 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${spring-doc.openapi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${com.h2database.version}</version>
-            </dependency>
-            <!-- OpenCSV Dependency -->
-            <dependency>
-                <groupId>com.opencsv</groupId>
-                <artifactId>opencsv</artifactId>
-                <version>${com.openCSV.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -100,8 +82,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.11.0</version>
                     <configuration>
-                        <source>17</source>
-                        <target>17</target>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
                         <annotationProcessorPaths>
                             <path>
                                 <groupId>org.projectlombok</groupId>
@@ -158,7 +140,22 @@
 
     <profiles>
         <profile>
-            <id>test</id>
+            <id>unitTest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>integrationTest</id>
             <build>
                 <plugins>
                     <plugin>
