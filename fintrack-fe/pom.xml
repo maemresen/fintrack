@@ -77,35 +77,5 @@
         </plugins>
       </build>
     </profile>
-    <profile>
-      <id>test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.github.eirslett</groupId>
-            <artifactId>frontend-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>install node and npm</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>install-node-and-npm</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>npm install</id>
-                <goals>
-                  <goal>npm</goal>
-                </goals>
-                <configuration>
-                  <arguments>install</arguments>
-                </configuration>
-                <phase>process-resources</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 </project>

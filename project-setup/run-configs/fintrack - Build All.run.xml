@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="fintrack - All Tests" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="fintrack - Build All" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -17,7 +17,7 @@
           <option name="pomFileName" />
           <option name="profilesMap">
             <map>
-              <entry key="unitTest,integrationTest" value="true" />
+              <entry key="packageFe" value="true" />
             </map>
           </option>
           <option name="projectsCmdOptionValues">
