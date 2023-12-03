@@ -52,6 +52,7 @@ public class TransactionEntity extends BaseDatedEntity {
     private AccountEntity account;
 
     @OneToMany(mappedBy = "transaction")
+    @ToString.Exclude
     private Set<ExchangeRateEntity> exchangeRates;
 
     @Override

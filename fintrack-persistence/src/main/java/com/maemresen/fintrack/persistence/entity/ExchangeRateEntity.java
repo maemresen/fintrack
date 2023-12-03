@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Objects;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
+@ToString(callSuper = true)
 @Entity(name = "exchangeRate")
 public class ExchangeRateEntity extends BaseEntity {
 

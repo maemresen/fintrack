@@ -8,6 +8,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
+@ToString(callSuper = true)
 @Entity(name = "account")
 public class AccountEntity extends BaseEntity {
 
@@ -30,7 +32,8 @@ public class AccountEntity extends BaseEntity {
     private String email;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<TransactionEntity> financialRecords;
+    @ToString.Exclude
+    private List<TransactionEntity> transactions;
 
     @Override
     public boolean equals(Object o) {

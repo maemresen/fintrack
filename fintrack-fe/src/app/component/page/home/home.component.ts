@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {ButtonModule} from "primeng/button";
+import {env} from "@env";
 
 @Component({
   selector: 'app-home',
@@ -11,4 +12,7 @@ import {ButtonModule} from "primeng/button";
 })
 export class HomeComponent {
 
+  constructor() {
+    console.log("Api BaseURL: ", env.apiBaseUrl)
+  }
 }

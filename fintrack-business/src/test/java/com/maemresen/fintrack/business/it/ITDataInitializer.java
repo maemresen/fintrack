@@ -3,12 +3,14 @@ package com.maemresen.fintrack.business.it;
 import com.maemresen.fintrack.persistence.entity.AccountEntity;
 import com.maemresen.fintrack.persistence.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class ITDataInitializer implements CommandLineRunner {
@@ -18,6 +20,7 @@ public class ITDataInitializer implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
+        log.trace("Initializing IT Data.");
         final Set<AccountEntity> build = Set.of(
             AccountEntity.builder()
                 .id(1L)
@@ -33,5 +36,6 @@ public class ITDataInitializer implements CommandLineRunner {
                 .build()
         );
         accountRepository.saveAll(build);
+        log.trace("IT Data initialized.");
     }
 }

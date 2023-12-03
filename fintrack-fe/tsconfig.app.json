@@ -5,6 +5,7 @@
     "outDir": "./out-tsc/app",
     "types": [],
     "paths": {
+      "@env": ["./src/env.ts"],
       "@app/*": ["./src/app/*"]
     }
   },
