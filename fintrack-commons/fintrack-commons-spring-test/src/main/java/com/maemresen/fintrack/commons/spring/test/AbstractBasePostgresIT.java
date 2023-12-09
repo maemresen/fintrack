@@ -1,5 +1,6 @@
 package com.maemresen.fintrack.commons.spring.test;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -10,6 +11,8 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+
+@Slf4j
 @ContextConfiguration(initializers = AbstractBasePostgresIT.ContextInitializer.class)
 @ActiveProfiles("it")
 public abstract class AbstractBasePostgresIT {
@@ -21,10 +24,13 @@ public abstract class AbstractBasePostgresIT {
         .build();
 
     public static class ContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
-
         @Override
         public void initialize(@NotNull ConfigurableApplicationContext applicationContext) {
-            GLOBAL_POSTGRESQL_CONTAINER.restart();
+            try {
+                GLOBAL_POSTGRESQL_CONTAINER.restart();
+            } catch (Exception e) {
+                log.error("Error while restarting the PostgreSQL container", e);
+            }
         }
 
         @Override
