@@ -20,15 +20,13 @@ tasks.getByName<BootJar>("bootJar") {
 }
 
 dependencies {
-    api(project(":modules:fintrack-persistence"))
-    api("org.springframework.boot:spring-boot-starter-web")
-    api("org.springframework.boot:spring-boot-starter-validation")
-    api("org.apache.commons:commons-collections4:4.4")
-
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.postgresql:postgresql")
+    implementation("org.liquibase:liquibase-core")
+    implementation("org.projectlombok:lombok")
+    testImplementation(project(":app:lib:spring-test"))
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-
-    testImplementation(project(":modules:commons:fintrack-spring-test"))
 }
+

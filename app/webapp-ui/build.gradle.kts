@@ -13,8 +13,8 @@ tasks.withType<Test> {
 }
 
 dependencies {
-    implementation(project(":modules:fintrack-business"))
-    testImplementation(project(":modules:commons:fintrack-spring-test"))
+    implementation(project(":app:shared:business"))
+    testImplementation(project(":app:lib:spring-test"))
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 
     compileOnly("org.projectlombok:lombok")

@@ -16,7 +16,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Fintrack"
 
-include(":modules:fintrack-webapp-ui")
-include(":modules:fintrack-persistence")
-include(":modules:fintrack-business")
-include(":modules:commons:fintrack-spring-test")
+include(":app:lib:spring-test")
+include(":app:shared:persistence")
+include(":app:shared:business")
+include(":app:webapp-ui")
