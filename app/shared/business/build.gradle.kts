@@ -1,18 +1,10 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    java
+    javaApp
     `java-library`
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 tasks.getByName<BootJar>("bootJar") {

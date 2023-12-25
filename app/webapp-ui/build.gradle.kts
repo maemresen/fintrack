@@ -1,15 +1,7 @@
 plugins {
-    id("java")
+    javaApp
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 dependencies {
@@ -20,4 +12,3 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 }
-
