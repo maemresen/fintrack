@@ -4,22 +4,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 public class BaseDatedEntity extends BaseEntity {
 
