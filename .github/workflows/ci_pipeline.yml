@@ -1,41 +1,46 @@
-name: Maven CI
+name: Gradle CI
 
 on:
-    workflow_dispatch:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 env:
-    JAVA_VERSION: 21
-    MAVEN_VERSION: 3.8.1  # Adjust if you want a different Maven version
-    CACHE_KEY: maven-local-repo
-    MAVEN_PROFILES: unitTest,integrationTest,packageFe,assemblyFe
+  JAVA_VERSION: 21
+  GRADLE_VERSION: '8.5'  # Adjust if you want a different Gradle version
+  CACHE_KEY: gradle-local-repo
+  GRADLE_TASKS: build  # Define your Gradle tasks here
 
 jobs:
-    build:
-        name: 'Build & Test'
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v2
+  build:
+    name: 'Build & Test'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-            - name: Set up JDK
-              uses: actions/setup-java@v2
-              with:
-                  distribution: 'temurin'
-                  java-version: ${{ env.JAVA_VERSION }}
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
 
-            - name: Cache Maven packages
-              uses: actions/cache@v2
-              with:
-                  path: ~/.m2
-                  key: ${{ env.CACHE_KEY }}-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
-                  restore-keys: |
-                      ${{ env.CACHE_KEY }}-${{ runner.os }}-
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ env.CACHE_KEY }}-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ env.CACHE_KEY }}-${{ runner.os }}-
 
-            - name: Maven Clean Package
-              run: mvn -B -P${{ env.MAVEN_PROFILES }} clean install
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Gradle Build
+        run: ./gradlew ${{ env.GRADLE_TASKS }} --no-daemon
