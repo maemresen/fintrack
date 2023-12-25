@@ -1,10 +1,9 @@
 package com.maemresen.fintrack.commons.spring.test;
 
+import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
-
-import java.util.Map;
 
 @Builder
 @Getter

@@ -1,11 +1,10 @@
 package com.maemresen.fintrack.commons.spring.test;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import org.springframework.http.HttpMethod;
-
-import java.util.List;
 
 @Builder
 @Getter

@@ -19,6 +19,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+@MappedSuperclass
 public class BaseDatedEntity extends BaseEntity {
 
     @Column(nullable = false)
