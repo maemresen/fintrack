@@ -3,8 +3,8 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
     java
     `java-library`
-    id("org.springframework.boot") version "3.2.1"
-    id("io.spring.dependency-management") version "1.1.4"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
 }
 
 java {
