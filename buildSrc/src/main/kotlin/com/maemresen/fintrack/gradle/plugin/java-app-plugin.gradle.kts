@@ -1,4 +1,5 @@
 package com.maemresen.fintrack.gradle.plugin
+
 plugins {
     java
 }
@@ -12,7 +13,30 @@ extensions.configure<JavaPluginExtension> {
     sourceCompatibility = JavaVersion.VERSION_21 // Replace with your desired version
 }
 
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
+tasks.withType<Test>() {
+    useJUnitPlatform {
+        filter {
+            includeTestsMatching("*Test")
+            excludeTestsMatching("*IT")
+            isFailOnNoMatchingTests = false
+        }
+        failFast = false
+    }
 }
 
+val integrationTest = tasks.register<Test>("integrationTest") {
+    useJUnitPlatform {
+        filter {
+            includeTestsMatching("*IT")
+            isFailOnNoMatchingTests = false
+        }
+    }
+}
+
+tasks.named("integrationTest") {
+    dependsOn("test")
+}
+
+tasks.named("check") {
+    dependsOn(integrationTest)
+}
