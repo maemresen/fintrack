@@ -3,13 +3,14 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
     javaApp
     `java-library`
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
+    springApp
 }
 
 tasks.getByName<BootJar>("bootJar") {
     enabled = false
 }
+
+val mapstructVersion = "1.5.5.Final"
 
 dependencies {
     api(project(":app:shared:persistence"))
@@ -17,7 +18,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-validation")
     api("org.apache.commons:commons-collections4:4.4")
 
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    implementation("org.mapstruct:mapstruct:${mapstructVersion}")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

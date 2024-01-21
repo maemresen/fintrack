@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication(scanBasePackages = "com.maemresen.fintrack")
 @EnableJpaRepositories(basePackages = "com.maemresen.fintrack")
 @EntityScan(basePackages = "com.maemresen.fintrack")
-public class FintrackApplication {
+public class FintrackApiApplication {
     public static void main(String[] args) {
-        SpringApplication.run(FintrackApplication.class, args);
+        SpringApplication.run(FintrackApiApplication.class, args);
     }
 }

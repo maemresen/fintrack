@@ -3,8 +3,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
     javaApp
     `java-library`
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
+    springApp
 }
 
 tasks.getByName<BootJar>("bootJar") {
@@ -23,5 +22,7 @@ dependencies {
     implementation("jakarta.validation:jakarta.validation-api")
 
     compileOnly("org.projectlombok:lombok")
+    compileOnly("jakarta.servlet:jakarta.servlet-api")
+
     annotationProcessor("org.projectlombok:lombok")
 }

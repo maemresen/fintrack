@@ -23,4 +23,4 @@ rootProject.name = "Fintrack"
 include(":app:lib:spring-test")
 include(":app:shared:persistence")
 include(":app:shared:business")
-include(":app:webapp-ui")
+include(":app:webapp-api")

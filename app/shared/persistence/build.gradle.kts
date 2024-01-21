@@ -3,8 +3,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
     javaApp
     `java-library`
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
+    springApp
 }
 
 tasks.getByName<BootJar>("bootJar") {
