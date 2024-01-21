@@ -1,0 +1,115 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1705850751200-1
+      author: maemresen (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 50
+            sequenceName: exchange_rate_seq
+            startValue: 1
+  - changeSet:
+      id: 1705850751200-2
+      author: maemresen (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createSequence:
+            incrementBy: 50
+            sequenceName: transaction_seq
+            startValue: 1
+  - changeSet:
+      id: 1705850751200-3
+      author: maemresen (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_exchangerate
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: base
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: target
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: rate
+                  type: DOUBLE
+              - column:
+                  name: transaction_id
+                  type: BIGINT
+            tableName: exchange_rate
+  - changeSet:
+      id: 1705850751200-4
+      author: maemresen (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_transaction
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_date
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_date
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: date
+                  type: DATETIME
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: category
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: amount
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: currency
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: transaction_type
+                  type: VARCHAR(255)
+            tableName: transaction
+  - changeSet:
+      id: 1705850751200-5
+      author: maemresen (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: transaction_id
+            baseTableName: exchange_rate
+            constraintName: FK_EXCHANGERATE_ON_TRANSACTION
+            referencedColumnNames: id
+            referencedTableName: transaction
+

@@ -79,3 +79,4 @@ bower_components/
 
 # Specific files that contain sensitive information or configuration specific to your machine
 local.properties
+/target/
