@@ -6,3 +6,7 @@
  */
 
 rootProject.name = "fintrack"
+include(
+    ":app:fintrack-backend",
+    ":app:fintrack-ui"
+)
