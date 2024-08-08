@@ -4,6 +4,8 @@ import {MenuModule} from "primeng/menu";
 import {MenuItem} from "primeng/api";
 import {Ripple} from "primeng/ripple";
 import {NgIf} from "@angular/common";
+import {AvatarModule} from "primeng/avatar";
+import {AppLogo} from "../../svg/app-logo/app-logo";
 
 @Component({
   selector: 'app-side-menu-container',
@@ -12,7 +14,9 @@ import {NgIf} from "@angular/common";
     BadgeModule,
     MenuModule,
     Ripple,
-    NgIf
+    NgIf,
+    AvatarModule,
+    AppLogo
   ],
   templateUrl: './side-menu.container.html',
 })
