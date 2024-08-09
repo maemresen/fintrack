@@ -3,7 +3,7 @@ import {AvatarModule} from "primeng/avatar";
 import {MenuModule} from "primeng/menu";
 import {BadgeModule} from "primeng/badge";
 import {RippleModule} from "primeng/ripple";
-import {SideMenuContainer} from "./container/side-menu/side-menu.container";
+import {SideMenuContainer} from "@/container/side-menu/side-menu.container";
 
 @Component({
   selector: 'app-root',

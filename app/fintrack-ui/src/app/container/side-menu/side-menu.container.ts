@@ -5,7 +5,7 @@ import {MenuItem} from "primeng/api";
 import {Ripple} from "primeng/ripple";
 import {NgIf} from "@angular/common";
 import {AvatarModule} from "primeng/avatar";
-import {AppLogo} from "../../svg/app-logo/app-logo";
+import {AppLogo} from "@/assets/svg/app-logo/app-logo";
 
 @Component({
   selector: 'app-side-menu-container',
@@ -29,9 +29,10 @@ export class SideMenuContainer implements OnInit {
         separator: true
       },
       {
-        label: 'Documents',
+        label: 'Home',
         items: [
           {
+            path: '',
             label: 'New',
             icon: 'pi pi-plus',
             shortcut: '⌘+N'
