@@ -5,11 +5,12 @@
       <span class="font-medium text-xl font-semibold">Fintrack</span>
     </div>
   </ng-template>
-  <ng-template pTemplate="submenuheader" let-item>
-    <span class="text-primary font-bold">{{ item.label }}</span>
+  <ng-template pTemplate="submenuheader" let-subMenuHeader>
+    <span class="text-primary font-bold">{{ subMenuHeader.label }}</span>
   </ng-template>
   <ng-template pTemplate="item" let-item>
-    <a pRipple class="flex align-items-center p-menuitem-link">
+    <a [routerLink]="item.routerLink" routerLinkActive="active" pRipple
+       class="flex align-items-center p-menuitem-link">
       <span [class]="item.icon"></span>
       <span class="ml-2">{{ item.label }}</span>
     </a>
