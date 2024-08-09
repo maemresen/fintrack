@@ -5,7 +5,7 @@ import {MenuItem} from "primeng/api";
 import {Ripple} from "primeng/ripple";
 import {NgIf} from "@angular/common";
 import {AvatarModule} from "primeng/avatar";
-import {AppLogo} from "@/assets/svg/app-logo/app-logo";
+import {AppLogoComponent} from "@/assets/svg/app-logo/app-logo.component";
 import {aboutRoute, homeRoute, routes} from "@/app.routes";
 import {Route, RouterLink, RouterLinkActive} from "@angular/router";
 
@@ -18,13 +18,13 @@ import {Route, RouterLink, RouterLinkActive} from "@angular/router";
     Ripple,
     NgIf,
     AvatarModule,
-    AppLogo,
+    AppLogoComponent,
     RouterLink,
     RouterLinkActive
   ],
   templateUrl: './side-menu.component.html',
 })
-export class SideMenuComponent implements OnInit {
+export class SideMenu implements OnInit {
   items: MenuItem[] | undefined;
 
   ngOnInit() {

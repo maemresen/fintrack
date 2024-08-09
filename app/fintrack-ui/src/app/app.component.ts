@@ -3,8 +3,7 @@ import {AvatarModule} from "primeng/avatar";
 import {MenuModule} from "primeng/menu";
 import {BadgeModule} from "primeng/badge";
 import {RippleModule} from "primeng/ripple";
-import {SideMenuContainer} from "@/container/side-menu/side-menu.container";
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {SideMenu} from "@/commons/side-menu/side-menu.component";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +13,7 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
     BadgeModule,
     RippleModule,
     AvatarModule,
-    SideMenuContainer,
+    SideMenu,
   ],
   templateUrl: './app.component.html',
 })

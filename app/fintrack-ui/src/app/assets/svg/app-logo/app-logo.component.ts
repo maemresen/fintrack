@@ -4,9 +4,9 @@ import {Component, Input} from '@angular/core';
   selector: 'app-logo',
   standalone: true,
   imports: [],
-  templateUrl: './app-logo.svg',
+  templateUrl: './app-logo.component.svg',
 })
-export class AppLogo {
+export class AppLogoComponent {
   @Input({required: true})
   width!: string
 
