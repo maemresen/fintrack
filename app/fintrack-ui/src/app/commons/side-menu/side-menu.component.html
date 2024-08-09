@@ -9,7 +9,9 @@
     <span class="text-primary font-bold">{{ subMenuHeader.label }}</span>
   </ng-template>
   <ng-template pTemplate="item" let-item>
-    <a [routerLink]="item.routerLink" routerLinkActive="active" pRipple
+    <a pRipple
+       [routerLink]="item.routerLink"
+       routerLinkActive="bg-primary"
        class="flex align-items-center p-menuitem-link">
       <span [class]="item.icon"></span>
       <span class="ml-2">{{ item.label }}</span>
