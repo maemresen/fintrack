@@ -14,5 +14,9 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(project(":app:persistence"))
+    api(project(":app:business-logic"))
+
+    api("org.springframework.boot:spring-boot-autoconfigure")
+    implementation("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 }

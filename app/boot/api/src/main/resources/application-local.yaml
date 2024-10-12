@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   docker:
     compose:
@@ -6,5 +9,3 @@ spring:
       profiles:
         active:
           - api
-server:
-  port: 8081

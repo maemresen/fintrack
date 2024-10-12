@@ -14,5 +14,5 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(project(":app:persistence"))
+    api(project(":app:persistence"))
 }

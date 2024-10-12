@@ -5,4 +5,4 @@ spring:
       lifecycle-management: start_only
       profiles:
         active:
-          - webapp
+          - api

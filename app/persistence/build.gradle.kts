@@ -12,3 +12,8 @@ dependencyManagement {
         mavenBom(SpringBootPlugin.BOM_COORDINATES)
     }
 }
+
+dependencies {
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
+    api("org.postgresql:postgresql")
+}
