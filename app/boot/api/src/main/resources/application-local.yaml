@@ -6,3 +6,5 @@ spring:
       profiles:
         active:
           - api
+server:
+  port: 8081

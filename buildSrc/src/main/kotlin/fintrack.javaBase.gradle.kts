@@ -37,14 +37,6 @@ tasks.register<Test>("integrationTest") {
     }
 }
 
-testing {
-    suites {
-        val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter()
-        }
-    }
-}
-
 // Do not generate reports for individual projects
 tasks.jacocoTestReport {
     enabled = false

@@ -20,8 +20,12 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/app/api" />
-            <option value="$PROJECT_DIR$/app/webapp" />
+            <option value="$PROJECT_DIR$/app/boot" />
+            <option value="$PROJECT_DIR$/app/boot/api" />
+            <option value="$PROJECT_DIR$/app/boot/webapp" />
+            <option value="$PROJECT_DIR$/app/business-logic" />
+            <option value="$PROJECT_DIR$/app/core" />
+            <option value="$PROJECT_DIR$/app/persistence" />
             <option value="$PROJECT_DIR$/buildSrc" />
           </set>
         </option>

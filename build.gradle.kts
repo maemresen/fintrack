@@ -19,6 +19,9 @@ dependencyManagement {
 }
 
 dependencies {
-    jacocoAggregation(project(":app:api"))
-    jacocoAggregation(project(":app:webapp"))
+    jacocoAggregation(project(":app:persistence"))
+    jacocoAggregation(project(":app:business-logic"))
+    jacocoAggregation(project(":app:core"))
+    jacocoAggregation(project(":app:boot:api"))
+    jacocoAggregation(project(":app:boot:webapp"))
 }

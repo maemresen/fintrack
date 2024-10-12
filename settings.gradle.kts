@@ -8,6 +8,9 @@
 rootProject.name = "fintrack"
 
 include(
-    ":app:api",
-    ":app:webapp",
+    ":app:persistence",
+    ":app:business-logic",
+    ":app:core",
+    ":app:boot:api",
+    ":app:boot:webapp",
 )
