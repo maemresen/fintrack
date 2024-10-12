@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/api/fintrack.app.api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/api/fintrack.app.api.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/api/fintrack.app.api.test.iml" filepath="$PROJECT_DIR$/.idea/modules/app/api/fintrack.app.api.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/webapp/fintrack.app.webapp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/webapp/fintrack.app.webapp.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildSrc/fintrack.buildSrc.main.iml" filepath="$PROJECT_DIR$/.idea/modules/buildSrc/fintrack.buildSrc.main.iml" />
+    </modules>
+  </component>
+</project>

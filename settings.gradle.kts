@@ -6,3 +6,8 @@
  */
 
 rootProject.name = "fintrack"
+
+include(
+    ":app:api",
+    ":app:webapp",
+)
