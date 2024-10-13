@@ -16,4 +16,11 @@ dependencyManagement {
 dependencies {
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     api("org.postgresql:postgresql")
+
+    testImplementation(project(":app:util:test-util"))
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
 }

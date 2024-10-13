@@ -13,4 +13,5 @@ include(
     ":app:core",
     ":app:boot:api",
     ":app:boot:webapp",
+    ":app:util:test-util",
 )

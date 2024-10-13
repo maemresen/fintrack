@@ -9,8 +9,15 @@ plugins {
 dependencies {
     implementation(project(":app:core"))
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation(libs.springdoc.ui)
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
 
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
