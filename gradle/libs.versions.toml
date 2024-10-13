@@ -1,8 +1,12 @@
 [versions]
 spring-boot = "3.3.4"
 spring-dependencyManagement = "1.1.6"
+bootstrap = "5.3.3"
+popperJS = "2.11.7"
 
 [libraries]
+bootstrap = { module = "org.webjars:bootstrap", version.ref = "bootstrap" }
+popperJS = { module = "org.webjars:popper.js", version.ref = "popperJS" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

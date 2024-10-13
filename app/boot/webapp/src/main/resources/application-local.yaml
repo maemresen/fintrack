@@ -6,3 +6,5 @@ spring:
       profiles:
         active:
           - api
+  thymeleaf:
+    cache: false

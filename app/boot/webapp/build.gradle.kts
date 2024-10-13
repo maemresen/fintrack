@@ -10,10 +10,14 @@ dependencies {
     implementation(project(":app:core"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation(libs.bootstrap)
+    implementation(libs.popperJS)
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
 tasks.withType<BootRun> {

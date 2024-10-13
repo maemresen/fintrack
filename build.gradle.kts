@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.spring.dependencyManagement)
 }
 
+tasks.jar {
+    enabled = false
+}
+
 repositories{
     mavenCentral()
     mavenLocal()
