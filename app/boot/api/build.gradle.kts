@@ -1,7 +1,7 @@
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    fintrack.javaBase
+    java
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependencyManagement)
 }
@@ -11,7 +11,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation(libs.springdoc.ui)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(project(":app:util:test-util"))
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     compileOnly("org.projectlombok:lombok")

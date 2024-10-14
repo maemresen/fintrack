@@ -1,7 +1,7 @@
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    fintrack.javaBase
+    java
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependencyManagement)
 }

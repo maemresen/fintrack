@@ -13,10 +13,13 @@ dependencyManagement {
 }
 
 dependencies {
-    api("org.springframework.boot:spring-boot-starter-data-jpa")
-    api("org.postgresql:postgresql")
+    api("org.springframework.boot:spring-boot-starter-test")
+    api("org.springframework.boot:spring-boot-testcontainers")
+    api("org.assertj:assertj-core")
+    api("org.testcontainers:junit-jupiter")
+    api("org.testcontainers:postgresql")
 
-    testImplementation(project(":app:util:test-util"))
+    implementation("org.springframework:spring-web")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
